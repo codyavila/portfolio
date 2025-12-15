@@ -10,6 +10,7 @@ import { DiscoverGraphic, FeasibilityGraphic, ExecuteGraphic } from "@/component
 import { JellyButton, GhostButton } from "@/components/ui/jelly-button";
 import { SectionDivider } from "@/components/ui/section-divider";
 import { KineticText } from "@/components/ui/kinetic-text";
+import { useEffect, useState } from "react";
 
 // Staggered animation variants for the Entry Sequence
 const containerVariants: Variants = {
@@ -36,7 +37,31 @@ const itemVariants: Variants = {
   },
 };
 
+// Key for sessionStorage to track if hero animation has played
+const HERO_ANIMATED_KEY = 'hero-has-animated';
+
 export default function Home() {
+  // Track if this is the initial page load to prevent re-animation on hash navigation
+  const [hasAnimated, setHasAnimated] = useState(() => {
+    // Check sessionStorage on initial render (client-side only)
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem(HERO_ANIMATED_KEY) === 'true';
+    }
+    return false;
+  });
+  
+  useEffect(() => {
+    // Mark as animated after initial render
+    if (!hasAnimated) {
+      // Small delay to ensure animation has started
+      const timer = setTimeout(() => {
+        sessionStorage.setItem(HERO_ANIMATED_KEY, 'true');
+        setHasAnimated(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasAnimated]);
+
   return (
     <main className="relative max-w-7xl mx-auto px-6 py-16 sm:py-24 md:pl-32">
       <div className="absolute top-0 left-0 w-full h-screen overflow-hidden pointer-events-none">
@@ -47,7 +72,7 @@ export default function Home() {
       <motion.section 
         className="mb-24 sm:mb-32 relative z-10 max-w-5xl mx-auto pt-16 sm:pt-24"
         variants={containerVariants}
-        initial="hidden"
+        initial={hasAnimated ? "visible" : "hidden"}
         animate="visible"
       >
         <div className="flex flex-col gap-8 sm:gap-10">
