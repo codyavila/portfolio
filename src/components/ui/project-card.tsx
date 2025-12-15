@@ -14,17 +14,18 @@ interface ProjectCardProps {
   gradient?: string;
 }
 
-export const ProjectCard = ({ title, description, link, icon, className, gradient = "from-primary/10 to-secondary/10" }: ProjectCardProps) => {
+export const ProjectCard = ({ title, description, link, icon, className, gradient = "from-[var(--neon-primary-start)]/10 to-[var(--neon-secondary-end)]/10" }: ProjectCardProps) => {
   return (
     <Link href={link} className={cn("block w-full h-full", className)}>
+      {/* Prism Card Structure */}
       <motion.div
-        whileHover={{ y: -8, scale: 1.01 }}
+        whileHover={{ y: -5, scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="group relative h-full overflow-hidden rounded-[2rem] bg-surface-variant/30 border border-outline-variant/20 p-8 transition-[background-color,box-shadow,border-color] duration-300 hover:shadow-xl hover:bg-surface-variant/50"
+        transition={{ type: "spring", mass: 1, stiffness: 1200, damping: 50 }} // "Pop" physics
+        className="prism-card group relative h-full overflow-hidden p-8 flex flex-col justify-between"
       >
-        {/* Gradient Background on Hover */}
-        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 group-hover:opacity-100", gradient)} />
+        {/* Gradient Background on Hover (Optional extra layer) */}
+        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none", gradient)} />
         
         <div className="relative z-10 flex flex-col h-full justify-between gap-6">
             {/* Header */}
@@ -32,21 +33,21 @@ export const ProjectCard = ({ title, description, link, icon, className, gradien
                 <motion.div 
                   whileHover={{ rotate: 10, scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                  className="p-4 rounded-2xl bg-primary-container text-on-primary-container shadow-sm"
+                  className="p-4 rounded-2xl bg-white/5 text-[var(--neon-primary-end)] shadow-inner border border-white/10"
                 >
                     {icon}
                 </motion.div>
-                <div className="rounded-full p-2 bg-transparent group-hover:bg-surface/20 transition-colors">
-                    <ArrowRight className="w-6 h-6 text-outline group-hover:text-on-surface -rotate-45 group-hover:rotate-0 transition-all duration-300" />
+                <div className="rounded-full p-2 bg-transparent group-hover:bg-white/10 transition-colors border border-transparent group-hover:border-white/10">
+                    <ArrowRight className="w-6 h-6 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] -rotate-45 group-hover:rotate-0 transition-all duration-300" />
                 </div>
             </div>
 
             {/* Content */}
             <div>
-                <h3 className="text-2xl font-bold tracking-tight text-on-surface mb-3 group-hover:text-primary transition-colors">
+                <h3 className="text-title-l text-[var(--text-primary)] mb-3 group-hover:text-[var(--neon-primary-end)] transition-colors font-bold">
                   {title}
                 </h3>
-                <p className="text-on-surface-variant leading-relaxed font-medium group-hover:text-on-surface transition-colors">
+                <p className="text-[var(--text-secondary)] leading-relaxed text-body-m group-hover:text-[var(--text-primary)] transition-colors">
                   {description}
                 </p>
             </div>

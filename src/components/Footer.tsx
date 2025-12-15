@@ -31,7 +31,7 @@ export function Footer() {
             <span className="sr-only">Email</span>
           </a>
         </div>
-        <div className="text-center text-sm text-[var(--text-secondary)]">
+        <div className="text-center text-body-s text-[var(--text-secondary)]">
           <p>&copy; {new Date().getFullYear()} Cody Avila. All rights reserved.</p>
           <p className="mt-2">
             Built with Next.js, TypeScript, and Tailwind CSS.

@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
+import { DynamicThemeProvider } from "@/components/dynamic-theme-provider";
 import "./globals.css";
 
 const inter = Inter({
@@ -38,9 +39,11 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Header />
-          {children}
-          <Footer />
+          <DynamicThemeProvider>
+            <Header />
+            {children}
+            <Footer />
+          </DynamicThemeProvider>
         </ThemeProvider>
       </body>
     </html>

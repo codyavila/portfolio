@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Github, Linkedin, Mail, Home, User, Briefcase, FolderGit2, Layers } from "lucide-react";
-import { ThemeToggle } from "./ThemeToggle";
+import { Home, User, Briefcase, FolderGit2, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { SettingsMenu } from "@/components/SettingsMenu";
 
 const navItems = [
   { name: "Home", href: "/", icon: Home },
@@ -15,6 +16,11 @@ const navItems = [
 ];
 
 export function Header() {
+  const [activeTab, setActiveTab] = useState("Home");
+
+  // Optional: Add intersection observer to update activeTab on scroll
+  // For now, we'll just update on click
+  
   return (
     <motion.header
       initial={{ y: 100, opacity: 0 }}
@@ -23,63 +29,64 @@ export function Header() {
       className="fixed z-50 
         bottom-8 left-1/2 -translate-x-1/2 
         md:left-8 md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:translate-x-0
-        w-auto max-w-[90vw]"
+        w-auto"
     >
-      <nav className="bg-[var(--glass-elevated)] backdrop-blur-xl rounded-full px-5 py-3 md:px-3 md:py-8 flex md:flex-col items-center gap-5 md:gap-8 shadow-2xl shadow-black/10 dark:shadow-black/40 border border-[var(--glass-border)]">
+      {/* Island Bar: Glass Level 3 */}
+      <nav className="glass-3 rounded-full px-2 py-2 md:px-2 md:py-4 flex md:flex-col items-center gap-2 shadow-2xl shadow-black/20">
         
-        {/* Logo / Home (Mobile only, or top of pill on desktop) */}
-        <Link href="/" className="p-2 rounded-full hover:bg-[var(--glass-border)] transition-colors md:mb-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-neon-blue)] to-[var(--color-neon-violet)] flex items-center justify-center text-white font-bold text-sm shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+        {/* Logo / Home */}
+        <Link 
+          href="/" 
+          onClick={() => setActiveTab("Home")}
+          className="relative p-3 rounded-full transition-colors group"
+        >
+          {activeTab === "Home" && (
+            <motion.div
+              layoutId="spotlight"
+              className="absolute inset-0 bg-gradient-to-br from-[var(--neon-primary-start)]/20 to-[var(--neon-primary-end)]/20 rounded-full blur-md"
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            />
+          )}
+          <div className="relative z-10 w-8 h-8 rounded-full bg-gradient-to-br from-[var(--neon-primary-start)] to-[var(--neon-primary-end)] flex items-center justify-center text-white font-bold text-xs shadow-[0_0_10px_var(--neon-primary-start)]">
             CA
           </div>
         </Link>
 
-        <div className="h-8 w-[1px] bg-[var(--glass-border)] md:w-8 md:h-[1px]" />
+        <div className="h-6 w-[1px] bg-white/10 md:w-6 md:h-[1px] mx-1 md:mx-0 md:my-1" />
 
         {/* Nav Items */}
-        <div className="flex md:flex-col items-center gap-3">
+        <div className="flex md:flex-col items-center gap-1">
           {navItems.slice(1).map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="group relative p-3 rounded-full hover:bg-[var(--glass-border)] transition-all hover:scale-110"
+              onClick={() => setActiveTab(item.name)}
+              className="relative p-3 rounded-full transition-all group"
               title={item.name}
             >
-              <item.icon className="w-5 h-5 text-[var(--text-tertiary)] group-hover:text-[var(--color-neon-blue)] transition-colors" />
+              {activeTab === item.name && (
+                <motion.div
+                  layoutId="spotlight"
+                  className="absolute inset-0 bg-gradient-to-br from-[var(--neon-primary-start)]/20 to-[var(--neon-primary-end)]/20 rounded-full blur-md"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <item.icon 
+                className={cn(
+                  "relative z-10 w-5 h-5 transition-colors duration-300",
+                  activeTab === item.name 
+                    ? "text-[var(--neon-primary-end)] drop-shadow-[0_0_8px_rgba(78,168,222,0.5)]" 
+                    : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+                )} 
+              />
               <span className="sr-only">{item.name}</span>
-              
-              {/* Tooltip for Desktop */}
-              <span className="absolute left-full ml-5 px-3 py-1.5 bg-[var(--color-midnight-light)]/90 backdrop-blur-md border border-[var(--glass-border)] rounded-lg text-xs font-medium text-[var(--text-primary)] opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 whitespace-nowrap hidden md:block pointer-events-none shadow-xl">
-                {item.name}
-              </span>
             </Link>
           ))}
         </div>
 
-        <div className="h-8 w-[1px] bg-[var(--glass-border)] md:w-8 md:h-[1px]" />
-
-        {/* Socials & Theme */}
-        <div className="flex md:flex-col items-center gap-3">
-          <ThemeToggle />
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-border)] transition-colors hover:scale-110"
-          >
-            <Github className="h-5 w-5" />
-            <span className="sr-only">GitHub</span>
-          </a>
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-border)] transition-colors hover:scale-110"
-          >
-            <Linkedin className="h-5 w-5" />
-            <span className="sr-only">LinkedIn</span>
-          </a>
-        </div>
+        <div className="h-6 w-[1px] bg-white/10 md:w-6 md:h-[1px] mx-1 md:mx-0 md:my-1" />
+        
+        <SettingsMenu />
       </nav>
     </motion.header>
   );
