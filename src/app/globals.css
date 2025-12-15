@@ -65,17 +65,17 @@
      Layer 2 (Prism): Interactive cards — High refraction
      Layer 3 (Lume): Source — Emissive, modals, floating nav
      ───────────────────────────────────────────────────────────────────────────── */
-  --glass-ghost-fill: rgba(255, 255, 255, 0.03);
+  --glass-ghost-fill: rgba(255, 255, 255, 0.05);
   --glass-ghost-blur: 10px;
-  --glass-ghost-noise: 0.02;
+  --glass-ghost-noise: 0.01;
 
-  --glass-prism-fill: rgba(255, 255, 255, 0.06);
+  --glass-prism-fill: rgba(255, 255, 255, 0.08);
   --glass-prism-blur: 30px;
-  --glass-prism-noise: 0.04;
+  --glass-prism-noise: 0.02;
 
-  --glass-lume-fill: rgba(255, 255, 255, 0.18);
+  --glass-lume-fill: rgba(255, 255, 255, 0.20);
   --glass-lume-blur: 50px;
-  --glass-lume-noise: 0.05;
+  --glass-lume-noise: 0.03;
 
   /* ─────────────────────────────────────────────────────────────────────────────
      LEGACY GLASS ALIASES — For backwards compatibility

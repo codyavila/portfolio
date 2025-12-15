@@ -94,7 +94,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     glowIntensity = 1, 
     onClick, 
     disabled,
-    breathing = true,
+    breathing = false,
   }, ref) => {
     const styles = gradientStyles[variant];
     const highContrast = highContrastStyles[variant];

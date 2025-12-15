@@ -57,9 +57,9 @@ const GlassCardComponent = ({
   enableTilt = true,
   enableShimmer = true,
   enableSpotlight = true,
-  enableIridescence = true,
-  enableChromatic = true,
-  enableNoise = true,
+  enableIridescence = false,
+  enableChromatic = false,
+  enableNoise = false,
   borderRadius: customRadius,
   motionProps = {},
 }: GlassCardProps) => {
