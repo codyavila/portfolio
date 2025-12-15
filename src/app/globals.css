@@ -140,33 +140,33 @@ html:not(.dark) {
   --lum-void-accent: #ebe8ef;
 
   /* Adjusted neon colors for light mode - WCAG AA compliant (4.5:1+ contrast) */
-  --neon-primary-start: #3d6b0a;
-  --neon-primary-end: #0f5132;
+  --neon-primary-start: #166534;
+  --neon-primary-end: #15803d;
   --neon-secondary-start: #9e1b4d;
   --neon-secondary-end: #075985;
   --neon-alert-start: #92400e;
   --neon-alert-end: #991b1b;
   --neon-cyan: #0c6478;
   --neon-magenta: #86198f;
-  --neon-lime: #3d6b0a;
+  --neon-lime: #166534;
 
   --lum-neon-blue: #1e40af;
   --lum-neon-purple: #5b21b6;
   --lum-neon-pink: #9e1b4d;
-  --lum-neon-green: #0f5132;
+  --lum-neon-green: #15803d;
   --lum-neon-yellow: #854d0e;
   --lum-neon-cyan: #0c6478;
   --lum-cotton-candy: #9e1b4d;
 
   /* Light mode gradients - WCAG compliant darker shades */
-  --lum-grad-cyber-lime: linear-gradient(135deg, #3d6b0a 0%, #0f5132 100%);
+  --lum-grad-cyber-lime: linear-gradient(135deg, #166534 0%, #15803d 100%);
   --lum-grad-cotton-candy: linear-gradient(135deg, #9e1b4d 0%, #075985 100%);
   --lum-grad-solar-flare: linear-gradient(135deg, #92400e 0%, #991b1b 100%);
 
   /* Chip backgrounds for light mode - higher contrast */
-  --chip-primary-bg: rgba(15, 81, 50, 0.12);
-  --chip-primary-border: rgba(15, 81, 50, 0.25);
-  --chip-primary-text: #064e3b;
+  --chip-primary-bg: rgba(22, 101, 52, 0.12);
+  --chip-primary-border: rgba(22, 101, 52, 0.3);
+  --chip-primary-text: #166534;
   --chip-secondary-bg: rgba(158, 27, 77, 0.12);
   --chip-secondary-border: rgba(158, 27, 77, 0.25);
   --chip-secondary-text: #831843;

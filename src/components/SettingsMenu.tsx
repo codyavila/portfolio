@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Settings, X, Moon, Sun, Monitor } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Settings, Moon, Sun, Sparkles, X } from "lucide-react";
+import { motion, AnimatePresence, useSpring } from "framer-motion";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
 const CONTRAST_KEY = "lum-contrast";
 
@@ -12,6 +13,13 @@ export function SettingsMenu() {
   const [highContrast, setHighContrast] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
   const { theme, setTheme } = useTheme();
+  
+  // Icon rotation animation
+  const iconRotation = useSpring(0, { stiffness: 300, damping: 20 });
+  
+  React.useEffect(() => {
+    iconRotation.set(isOpen ? 180 : 0);
+  }, [isOpen, iconRotation]);
 
   React.useEffect(() => {
     setMounted(true);
@@ -21,7 +29,7 @@ export function SettingsMenu() {
     document.documentElement.dataset.contrast = enabled ? "high" : "normal";
   }, []);
 
-  // Close menu when clicking outside
+  // Close on click outside
   React.useEffect(() => {
     if (!isOpen) return;
     const handleClick = (e: MouseEvent) => {
@@ -30,8 +38,14 @@ export function SettingsMenu() {
         setIsOpen(false);
       }
     };
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
+    // Delay to prevent immediate close on open click
+    const timeout = setTimeout(() => {
+      document.addEventListener('click', handleClick);
+    }, 0);
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener('click', handleClick);
+    };
   }, [isOpen]);
 
   // Close on escape
@@ -51,163 +65,299 @@ export function SettingsMenu() {
     localStorage.setItem(CONTRAST_KEY, next ? "high" : "normal");
   };
 
-  const themeOptions = [
-    { value: 'light', icon: Sun, label: 'Light' },
-    { value: 'dark', icon: Moon, label: 'Dark' },
-  ];
-
   return (
     <div className="relative" data-settings-menu>
+      {/* Settings trigger button */}
       <motion.button
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="p-2.5 rounded-full bg-[var(--glass-1-fill)] border border-[var(--glass-1-border)] hover:bg-[var(--glass-2-fill)] transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-        aria-label="Open settings"
+        onClick={() => setIsOpen(!isOpen)}
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.9 }}
+        className={cn(
+          "p-2.5 rounded-full transition-colors relative z-10",
+          isOpen 
+            ? "text-[var(--chip-primary-text)]" 
+            : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+        )}
+        aria-label={isOpen ? "Close settings" : "Open settings"}
         aria-expanded={isOpen}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        <Settings className={`w-5 h-5 transition-transform duration-500 ${isOpen ? "rotate-90" : ""}`} />
+        <motion.div style={{ rotate: iconRotation }}>
+          {isOpen ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <Settings className="w-5 h-5" />
+          )}
+        </motion.div>
+        
+        {/* Pulse indicator when menu is open */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, var(--neon-primary-end) 0%, transparent 70%)",
+              }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1.5, opacity: 0.3 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
+        </AnimatePresence>
       </motion.button>
 
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Mobile: Bottom sheet */}
+            {/* Desktop: Connected bubble panel */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
-              onClick={() => setIsOpen(false)}
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="md:hidden fixed bottom-0 left-0 right-0 p-5 pb-8 rounded-t-3xl bg-[var(--lum-void-surface)] border-t border-[var(--glass-2-border)] shadow-2xl z-[101] safe-area-inset-bottom"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.9, x: -16 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.9, x: -16 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="hidden md:block absolute left-full top-1/2 -translate-y-1/2 ml-3"
+              style={{ transformOrigin: "left center" }}
             >
-              {/* Drag handle */}
-              <div className="w-10 h-1 bg-[var(--text-tertiary)] rounded-full mx-auto mb-5" />
+              {/* Connection nub */}
+              <motion.div 
+                className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 rotate-45 glass-2 border border-[var(--glass-2-border)]"
+                style={{ borderRadius: "4px", borderRight: "none", borderTop: "none" }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ delay: 0.05, type: "spring", stiffness: 400, damping: 25 }}
+              />
               
-              <div className="flex items-center justify-between mb-5">
-                <span className="text-base font-bold text-[var(--text-primary)]">Appearance</span>
-                <button 
-                  onClick={() => setIsOpen(false)} 
-                  className="p-2 rounded-full bg-[var(--glass-1-fill)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              {/* Panel */}
+              <div className={cn(
+                "relative glass-2 rounded-2xl p-3",
+                "shadow-xl dark:shadow-2xl",
+                "min-w-[180px] border border-[var(--glass-2-border)]"
+              )}>
+                {/* Header */}
+                <motion.div 
+                  className="px-1 pb-2 mb-2 border-b border-[var(--glass-2-border)]"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
                 >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <div className="space-y-5">
-                {/* Theme selector */}
-                <div>
-                  <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3 block">Theme</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    {mounted && themeOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => setTheme(option.value)}
-                        className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all ${
-                          theme === option.value
-                            ? 'bg-[var(--chip-primary-bg)] border-[var(--chip-primary-border)] text-[var(--chip-primary-text)] font-semibold'
-                            : 'bg-[var(--glass-1-fill)] border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--glass-2-border)]'
-                        }`}
-                      >
-                        <option.icon className="w-4 h-4" />
-                        <span className="text-sm font-medium">{option.label}</span>
-                      </button>
-                    ))}
-                  </div>
+                  <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                    Settings
+                  </span>
+                </motion.div>
+                
+                <div className="space-y-1">
+                  {/* Theme section */}
+                  <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider px-1">
+                    Theme
+                  </span>
+                  {mounted && (
+                    <div className="space-y-1">
+                      <OptionButton
+                        icon={Sun}
+                        label="Light"
+                        isActive={theme === 'light'}
+                        onClick={() => setTheme('light')}
+                        delay={0.05}
+                      />
+                      <OptionButton
+                        icon={Moon}
+                        label="Dark"
+                        isActive={theme === 'dark'}
+                        onClick={() => setTheme('dark')}
+                        delay={0.1}
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="h-px bg-[var(--glass-2-border)] my-2" />
+                  
+                  {/* Accessibility section */}
+                  <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider px-1">
+                    Accessibility
+                  </span>
+                  <OptionButton
+                    icon={Sparkles}
+                    label={highContrast ? "High Contrast" : "Normal"}
+                    isActive={highContrast}
+                    onClick={toggleContrast}
+                    fullWidth
+                    delay={0.15}
+                  />
                 </div>
-                
-                <div className="h-px bg-[var(--glass-1-border)]" />
-                
-                {/* Enhanced contrast toggle */}
-                <button
-                  onClick={toggleContrast}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-[var(--glass-1-fill)] border border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--glass-2-border)] transition-all"
-                >
-                  <span className="text-sm font-medium">Enhanced Contrast</span>
-                  <div className={`w-11 h-6 rounded-full relative transition-colors ${
-                    highContrast ? 'bg-[var(--neon-primary-end)]' : 'bg-[var(--glass-2-fill)] border border-[var(--glass-2-border)]'
-                  }`}>
-                    <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform ${
-                      highContrast ? 'translate-x-5' : 'translate-x-0.5'
-                    }`} />
-                  </div>
-                </button>
               </div>
             </motion.div>
 
-            {/* Desktop: Popover */}
+            {/* Mobile: Bottom-attached panel */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: "spring", damping: 25, stiffness: 400 }}
-              className="hidden md:block absolute bottom-full left-0 mb-3 p-4 rounded-2xl bg-[var(--lum-void-surface)]/95 backdrop-blur-xl min-w-[220px] shadow-2xl border border-[var(--glass-2-border)] z-50"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, y: 16, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="md:hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-3"
+              style={{ transformOrigin: "bottom center" }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-bold text-[var(--text-primary)]">Appearance</span>
-                <button 
-                  onClick={() => setIsOpen(false)} 
-                  className="p-1.5 rounded-full hover:bg-[var(--glass-1-fill)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+              {/* Connection nub */}
+              <motion.div 
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 glass-2 border border-[var(--glass-2-border)]"
+                style={{ borderRadius: "4px", borderLeft: "none", borderTop: "none" }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ delay: 0.05, type: "spring", stiffness: 400, damping: 25 }}
+              />
               
-              <div className="space-y-3">
-                {/* Theme selector */}
-                <div>
-                  <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-2 block">Theme</span>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {mounted && themeOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => setTheme(option.value)}
-                        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border transition-all text-xs font-medium ${
-                          theme === option.value
-                            ? 'bg-[var(--chip-primary-bg)] border-[var(--chip-primary-border)] text-[var(--chip-primary-text)] font-semibold'
-                            : 'bg-[var(--glass-1-fill)] border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--glass-2-border)]'
-                        }`}
-                      >
-                        <option.icon className="w-3.5 h-3.5" />
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
+              {/* Panel */}
+              <div className={cn(
+                "relative glass-2 rounded-2xl p-3",
+                "shadow-xl dark:shadow-2xl border border-[var(--glass-2-border)]"
+              )}>
+                <div className="flex items-center gap-1">
+                  {/* Theme options */}
+                  {mounted && (
+                    <>
+                      <OptionButton
+                        icon={Sun}
+                        label="Light"
+                        isActive={theme === 'light'}
+                        onClick={() => setTheme('light')}
+                        compact
+                        delay={0.05}
+                      />
+                      <OptionButton
+                        icon={Moon}
+                        label="Dark"
+                        isActive={theme === 'dark'}
+                        onClick={() => setTheme('dark')}
+                        compact
+                        delay={0.1}
+                      />
+                    </>
+                  )}
+                  
+                  <div className="w-px h-8 bg-[var(--glass-2-border)] mx-1" />
+                  
+                  {/* Contrast toggle */}
+                  <OptionButton
+                    icon={Sparkles}
+                    label="AAA"
+                    isActive={highContrast}
+                    onClick={toggleContrast}
+                    compact
+                    delay={0.15}
+                  />
                 </div>
-                
-                <div className="h-px bg-[var(--glass-1-border)]" />
-                
-                {/* Enhanced contrast toggle */}
-                <button
-                  onClick={toggleContrast}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-[var(--glass-1-fill)] border border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--glass-2-border)] transition-all"
-                >
-                  <span className="text-xs font-medium">Enhanced Contrast</span>
-                  <div className={`w-9 h-5 rounded-full relative transition-colors ${
-                    highContrast ? 'bg-[var(--neon-primary-end)]' : 'bg-[var(--glass-2-fill)] border border-[var(--glass-2-border)]'
-                  }`}>
-                    <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
-                      highContrast ? 'translate-x-4' : 'translate-x-0.5'
-                    }`} />
-                  </div>
-                </button>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+// Enhanced option button component with animations
+function OptionButton({ 
+  icon: Icon, 
+  label, 
+  isActive, 
+  onClick, 
+  fullWidth = false,
+  compact = false,
+  delay = 0,
+}: { 
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+  fullWidth?: boolean;
+  compact?: boolean;
+  delay?: number;
+}) {
+  const [isHovered, setIsHovered] = React.useState(false);
+  
+  return (
+    <motion.button
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      initial={{ opacity: 0, y: 8, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 4, scale: 0.95 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 400, 
+        damping: 25,
+        delay 
+      }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.96 }}
+      className={cn(
+        "relative flex items-center gap-2 rounded-xl transition-colors overflow-hidden",
+        compact ? "p-2" : "px-3 py-2.5",
+        fullWidth && "w-full",
+        isActive
+          ? "text-[var(--chip-primary-text)]"
+          : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+      )}
+      title={label}
+    >
+      {/* Background with animated state */}
+      <motion.div
+        className="absolute inset-0 rounded-xl"
+        initial={false}
+        animate={{
+          backgroundColor: isActive 
+            ? "var(--chip-primary-bg)" 
+            : isHovered 
+              ? "rgba(128, 128, 128, 0.1)" 
+              : "transparent",
+          borderColor: isActive ? "var(--chip-primary-border)" : "transparent",
+        }}
+        style={{ border: "1px solid transparent" }}
+        transition={{ duration: 0.2 }}
+      />
+      
+      {/* Active indicator glow */}
+      {isActive && (
+        <motion.div
+          layoutId="settings-active-glow"
+          className="absolute inset-0 rounded-xl pointer-events-none"
+          style={{
+            background: "radial-gradient(circle at center, var(--neon-primary-end) 0%, transparent 70%)",
+            opacity: 0.15,
+            filter: "blur(8px)",
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        />
+      )}
+      
+      <motion.span
+        className="relative z-10"
+        animate={{ 
+          scale: isActive ? 1.1 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 400, damping: 15 }}
+      >
+        <Icon className={compact ? "w-5 h-5" : "w-4 h-4"} />
+      </motion.span>
+      {!compact && <span className="text-sm font-medium relative z-10">{label}</span>}
+      
+      {/* Checkmark indicator */}
+      <AnimatePresence>
+        {isActive && !compact && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+            className="ml-auto relative z-10"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--chip-primary-text)]" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
   );
 }
