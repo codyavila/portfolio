@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
+import { GlassCard } from "./glass-card";
 
 export const HoverEffect = ({
   items,
@@ -68,19 +69,19 @@ export const Card = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div
-      className={cn(
-        "prism-card shimmer-border h-full w-full p-4 overflow-hidden relative z-20",
-        className
-      )}
+    <GlassCard
+      size="lg"
+      enableTilt={false}
+      enableShimmer={true}
+      enableSpotlight={false}
+      enableIridescence={false}
+      enableChromatic={false}
+      className={cn("h-full w-full p-4 overflow-hidden", className)}
     >
-      {/* Shimmer effect layer */}
-      <div className="shimmer-border-layer hidden dark:block" style={{ '--shimmer-angle': '0deg' } as React.CSSProperties} />
-      
       <div className="relative z-50">
         <div className="p-4">{children}</div>
       </div>
-    </div>
+    </GlassCard>
   );
 };
 export const CardTitle = ({

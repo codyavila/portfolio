@@ -336,24 +336,65 @@ body::before {
 
 /* High Contrast Mode — Dark (WCAG AAA: 7:1 contrast) */
 .dark[data-contrast="high"] {
-  --background: #08040C;
+  --background: #000000;
   --foreground: #ffffff;
   --text-primary: #ffffff;
   --text-secondary: #f0f0f0;
-  --text-tertiary: #d9d9d9;
-  --lum-void-deep: #08040C;
-  --lum-void-surface: #0a060e;
-  --glass-ghost-fill: #0a060e;
-  --glass-prism-fill: #0a060e;
-  --glass-lume-fill: #120E1A;
-  --glass-1-fill: #0a060e;
-  --glass-2-fill: #0a060e;
-  --glass-3-fill: #120E1A;
-  --glass-4-fill: #120E1A;
-  --glass-1-border: #00e5ff;
-  --glass-2-border: #00e5ff;
-  --glass-3-border: #00e5ff;
-  --glass-4-border: #00e5ff;
+  --text-tertiary: #e0e0e0;
+  --text-disabled: #a0a0a0;
+  
+  /* Void/Background */
+  --lum-void-deep: #000000;
+  --lum-void-surface: #000000;
+  --lum-void-elevated: #0a0a0a;
+  --lum-void-accent: #141414;
+  
+  /* Glass materials - solid backgrounds for clarity */
+  --glass-ghost-fill: rgba(0, 0, 0, 0.95);
+  --glass-prism-fill: rgba(0, 0, 0, 0.95);
+  --glass-lume-fill: rgba(10, 10, 10, 0.98);
+  --glass-ghost-blur: 0px;
+  --glass-prism-blur: 0px;
+  --glass-lume-blur: 0px;
+  --glass-1-fill: rgba(0, 0, 0, 0.95);
+  --glass-2-fill: rgba(0, 0, 0, 0.95);
+  --glass-3-fill: rgba(10, 10, 10, 0.98);
+  --glass-4-fill: rgba(10, 10, 10, 0.98);
+  --glass-1-blur: 0px;
+  --glass-2-blur: 0px;
+  --glass-3-blur: 0px;
+  --glass-4-blur: 0px;
+  
+  /* High contrast borders - bright cyan */
+  --glass-1-border: #00ffff;
+  --glass-2-border: #00ffff;
+  --glass-3-border: #00ffff;
+  --glass-4-border: #00ffff;
+  
+  /* Neon colors - maximum brightness */
+  --neon-primary-start: #ffff00;
+  --neon-primary-end: #00ff00;
+  --neon-secondary-start: #ff00ff;
+  --neon-secondary-end: #00ffff;
+  --hover-accent: #00ff00;
+  
+  /* Chip styles - high contrast */
+  --chip-primary-bg: rgba(0, 255, 0, 0.2);
+  --chip-primary-border: #00ff00;
+  --chip-primary-text: #00ff00;
+  --chip-secondary-bg: rgba(255, 0, 255, 0.2);
+  --chip-secondary-border: #ff00ff;
+  --chip-secondary-text: #ff00ff;
+  --chip-blue-bg: rgba(0, 255, 255, 0.2);
+  --chip-blue-border: #00ffff;
+  --chip-blue-text: #00ffff;
+  --chip-purple-bg: rgba(200, 100, 255, 0.2);
+  --chip-purple-border: #c864ff;
+  --chip-purple-text: #c864ff;
+  
+  /* Disable glow effects for clarity */
+  --text-glow-primary: none;
+  --text-glow-secondary: none;
 }
 
 /* High Contrast Mode — Light (WCAG AAA: 7:1 contrast) */
@@ -361,21 +402,99 @@ html:not(.dark)[data-contrast="high"] {
   --background: #ffffff;
   --foreground: #000000;
   --text-primary: #000000;
-  --text-secondary: #171717;
-  --text-tertiary: #262626;
+  --text-secondary: #1a1a1a;
+  --text-tertiary: #333333;
+  --text-disabled: #666666;
+  
+  /* Void/Background */
   --lum-void-deep: #ffffff;
   --lum-void-surface: #ffffff;
-  --glass-ghost-fill: #ffffff;
-  --glass-prism-fill: #ffffff;
-  --glass-lume-fill: #ffffff;
-  --glass-1-fill: #ffffff;
-  --glass-2-fill: #ffffff;
-  --glass-3-fill: #ffffff;
-  --glass-4-fill: #ffffff;
+  --lum-void-elevated: #f5f5f5;
+  --lum-void-accent: #eeeeee;
+  
+  /* Glass materials - solid backgrounds for clarity */
+  --glass-ghost-fill: rgba(255, 255, 255, 0.98);
+  --glass-prism-fill: rgba(255, 255, 255, 0.98);
+  --glass-lume-fill: rgba(255, 255, 255, 1);
+  --glass-ghost-blur: 0px;
+  --glass-prism-blur: 0px;
+  --glass-lume-blur: 0px;
+  --glass-1-fill: rgba(255, 255, 255, 0.98);
+  --glass-2-fill: rgba(255, 255, 255, 0.98);
+  --glass-3-fill: rgba(255, 255, 255, 1);
+  --glass-4-fill: rgba(255, 255, 255, 1);
+  --glass-1-blur: 0px;
+  --glass-2-blur: 0px;
+  --glass-3-blur: 0px;
+  --glass-4-blur: 0px;
+  
+  /* High contrast borders - pure black */
   --glass-1-border: #000000;
   --glass-2-border: #000000;
   --glass-3-border: #000000;
   --glass-4-border: #000000;
+  
+  /* Neon colors - dark for contrast on white */
+  --neon-primary-start: #006600;
+  --neon-primary-end: #004400;
+  --neon-secondary-start: #660066;
+  --neon-secondary-end: #004466;
+  --hover-accent: #004400;
+  
+  /* Chip styles - high contrast */
+  --chip-primary-bg: rgba(0, 100, 0, 0.15);
+  --chip-primary-border: #004400;
+  --chip-primary-text: #004400;
+  --chip-secondary-bg: rgba(100, 0, 100, 0.15);
+  --chip-secondary-border: #660066;
+  --chip-secondary-text: #660066;
+  --chip-blue-bg: rgba(0, 50, 100, 0.15);
+  --chip-blue-border: #003366;
+  --chip-blue-text: #003366;
+  --chip-purple-bg: rgba(75, 0, 130, 0.15);
+  --chip-purple-border: #4b0082;
+  --chip-purple-text: #4b0082;
+  
+  /* Disable glow effects for clarity */
+  --text-glow-primary: none;
+  --text-glow-secondary: none;
+}
+
+/* High Contrast — Disable decorative effects */
+[data-contrast="high"] .shimmer-border-layer,
+[data-contrast="high"] .shimmer-border-layer-secondary,
+[data-contrast="high"] .iridescent-layer,
+[data-contrast="high"] .iridescent-fresnel,
+[data-contrast="high"] .chroma-red,
+[data-contrast="high"] .chroma-cyan,
+[data-contrast="high"] .chroma-green {
+  display: none !important;
+}
+
+[data-contrast="high"] .glass-noise::after {
+  display: none !important;
+}
+
+/* High Contrast — Ensure focus states are visible */
+[data-contrast="high"] *:focus-visible {
+  outline: 3px solid currentColor !important;
+  outline-offset: 2px !important;
+}
+
+/* High Contrast — Increase border widths */
+[data-contrast="high"] .prism-card,
+[data-contrast="high"] .nano-card,
+[data-contrast="high"] .portal-card {
+  border-width: 2px !important;
+}
+
+/* High Contrast — Disable backdrop blur (causes readability issues) */
+[data-contrast="high"] .glass-1,
+[data-contrast="high"] .glass-2,
+[data-contrast="high"] .glass-3,
+[data-contrast="high"] .glass-4 {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -482,9 +601,10 @@ p {
    ───────────────────────────────────────────────────────────────────────────── */
 .prism-card {
   position: relative;
+  --card-radius: 24px;
   background: var(--glass-prism-fill);
   backdrop-filter: blur(var(--glass-prism-blur));
-  border-radius: 24px;
+  border-radius: var(--card-radius);
   border: 1px solid var(--glass-2-border);
   
   /* Light mode: solid white with subtle shadow for depth */
@@ -524,7 +644,8 @@ html.dark .prism-card:hover {
 
 /* Nano-card specific styling - smaller, more compact */
 .nano-card {
-  border-radius: 20px;
+  --card-radius: 20px;
+  border-radius: var(--card-radius);
 }
 
 .nano-card .card-content {
@@ -544,6 +665,11 @@ html.dark .nano-card:hover {
     inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
     0 20px 40px -10px rgba(0,0,0,0.5),
     0 0 40px -12px rgba(0, 255, 153, 0.2);
+}
+
+/* Portal card - uses rounded-3xl from Tailwind (24px) */
+.portal-card {
+  --card-radius: 24px;
 }
 
 /* Glow variants based on category color - dark mode only */
@@ -585,9 +711,8 @@ html.dark .prism-card.glow-solar-flare:hover {
 .shimmer-border-layer {
   content: "";
   position: absolute;
-  inset: -1px;
-  padding: 1px;
-  border-radius: inherit;
+  inset: 0;
+  border-radius: var(--card-radius, 24px);
   background: conic-gradient(
     from var(--shimmer-angle, 0deg),
     rgba(204, 255, 0, 0.4),
@@ -600,6 +725,7 @@ html.dark .prism-card.glow-solar-flare:hover {
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
+  padding: 1px;
   animation: shimmer-rotate var(--shimmer-speed) linear infinite;
   pointer-events: none;
   z-index: 1;
@@ -617,8 +743,7 @@ html.dark .shimmer-border:hover .shimmer-border-layer {
   content: "";
   position: absolute;
   inset: 0;
-  padding: 2px;
-  border-radius: inherit;
+  border-radius: var(--card-radius, 24px);
   background: conic-gradient(
     from calc(var(--shimmer-angle, 0deg) + 180deg),
     transparent,
@@ -631,6 +756,7 @@ html.dark .shimmer-border:hover .shimmer-border-layer {
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
+  padding: 2px;
   animation: shimmer-rotate var(--shimmer-speed) linear infinite reverse;
   pointer-events: none;
   z-index: 1;
@@ -838,7 +964,7 @@ html.dark .shimmer-border:hover .shimmer-border-layer-secondary {
 .chroma-red {
   position: absolute;
   inset: calc(-1 * var(--chroma-offset, 1px));
-  border-radius: inherit;
+  border-radius: var(--card-radius, 24px);
   border: 1px solid transparent;
   background: linear-gradient(135deg, rgba(255, 0, 50, 0.2), transparent 50%) border-box;
   -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
@@ -857,7 +983,7 @@ html.dark .shimmer-border:hover .shimmer-border-layer-secondary {
 .chroma-cyan {
   position: absolute;
   inset: calc(-1 * var(--chroma-offset, 1px));
-  border-radius: inherit;
+  border-radius: var(--card-radius, 24px);
   border: 1px solid transparent;
   background: linear-gradient(315deg, rgba(0, 150, 255, 0.2), transparent 50%) border-box;
   -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
@@ -881,7 +1007,7 @@ html.dark .chromatic-edge:hover .chroma-cyan {
 .chroma-green {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
+  border-radius: var(--card-radius, 24px);
   box-shadow: 0 0 0 1px rgba(0, 255, 100, 0.1);
   opacity: 0;
   transition: opacity 0.4s var(--spring-smooth);
@@ -906,7 +1032,7 @@ html.dark .chromatic-edge:hover .chroma-green {
 .iridescent-layer {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
+  border-radius: var(--card-radius, 24px);
   background: 
     /* Primary holographic sweep */
     linear-gradient(
@@ -932,7 +1058,7 @@ html.dark .chromatic-edge:hover .chroma-green {
 .iridescent-fresnel {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
+  border-radius: var(--card-radius, 24px);
   background: radial-gradient(
     ellipse 80% 50% at 50% 0%,
     rgba(255, 255, 255, 0.1) 0%,

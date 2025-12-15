@@ -19,6 +19,25 @@ interface JellyButtonProps {
   breathing?: boolean;
 }
 
+// Check if high contrast mode is enabled
+const useHighContrast = () => {
+  const [isHighContrast, setIsHighContrast] = React.useState(false);
+  
+  React.useEffect(() => {
+    const checkContrast = () => {
+      setIsHighContrast(document.documentElement.dataset.contrast === "high");
+    };
+    checkContrast();
+    
+    // Watch for changes
+    const observer = new MutationObserver(checkContrast);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-contrast"] });
+    return () => observer.disconnect();
+  }, []);
+  
+  return isHighContrast;
+};
+
 const gradientStyles: Record<GradientVariant, { gradient: string; colors: string[]; glow: string; textColor: string }> = {
   "cyber-lime": {
     gradient: "linear-gradient(135deg, #CCFF00 0%, #00FF99 100%)",
@@ -37,6 +56,25 @@ const gradientStyles: Record<GradientVariant, { gradient: string; colors: string
     colors: ["#FFCC00", "#FF3366"],
     glow: "rgba(255, 51, 102, 0.6)",
     textColor: "#0f0d12",
+  },
+};
+
+// High contrast variants - solid colors, no gradients
+const highContrastStyles: Record<GradientVariant, { background: string; textColor: string; border: string }> = {
+  "cyber-lime": {
+    background: "#00ff00",
+    textColor: "#000000",
+    border: "#000000",
+  },
+  "cotton-candy": {
+    background: "#ff00ff",
+    textColor: "#000000",
+    border: "#000000",
+  },
+  "solar-flare": {
+    background: "#ffff00",
+    textColor: "#000000",
+    border: "#000000",
   },
 };
 
@@ -59,6 +97,8 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     breathing = true,
   }, ref) => {
     const styles = gradientStyles[variant];
+    const highContrast = highContrastStyles[variant];
+    const isHighContrast = useHighContrast();
     
     // Magnetic effect — button follows cursor slightly
     const mx = useMotionValue(0);
@@ -79,18 +119,22 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     const breatheScale = useMotionValue(1);
     
     useAnimationFrame((time) => {
-      if (breathing && !disabled) {
+      // Disable breathing in high contrast mode
+      if (breathing && !disabled && !isHighContrast) {
         // 4 second cycle = 0.25 Hz = time * 0.00025 * 2π
         const phase = (time * 0.00157) % (Math.PI * 2); // ~4s cycle
         breatheOpacity.set(0.9 + Math.sin(phase) * 0.1);
         breatheScale.set(1 + Math.sin(phase) * 0.015);
+      } else {
+        breatheOpacity.set(1);
+        breatheScale.set(1);
       }
     });
 
-    // Glow intensity pulsing with breath
+    // Glow intensity pulsing with breath (disabled in high contrast)
     const animatedGlow = useTransform(
       breatheOpacity,
-      (opacity) => `0 0 ${20 * glowIntensity * opacity}px ${styles.glow}`
+      (opacity) => isHighContrast ? "none" : `0 0 ${20 * glowIntensity * opacity}px ${styles.glow}`
     );
 
     const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -135,42 +179,48 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
         }}
         className={cn(
           "group relative inline-flex items-center justify-center rounded-full font-semibold tracking-wide cursor-pointer overflow-hidden",
-          "transition-shadow duration-300 chromatic-edge",
+          "transition-shadow duration-300",
+          !isHighContrast && "chromatic-edge",
           sizeStyles[size],
           disabled && "opacity-50 cursor-not-allowed",
           className
         )}
         style={{
-          x: springX,
-          y: springY,
+          x: isHighContrast ? 0 : springX,
+          y: isHighContrast ? 0 : springY,
           scale: breatheScale,
           opacity: breatheOpacity,
-          background: styles.gradient,
-          color: styles.textColor,
+          background: isHighContrast ? highContrast.background : styles.gradient,
+          color: isHighContrast ? highContrast.textColor : styles.textColor,
           boxShadow: animatedGlow,
+          border: isHighContrast ? `2px solid ${highContrast.border}` : undefined,
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={onClick}
         disabled={disabled}
       >
-        {/* Animated gradient overlay - visible on hover, follows mouse */}
-        <motion.div
-          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-70 transition-opacity duration-300"
-          style={{ background: animatedGradient }}
-        />
+        {/* Animated gradient overlay - visible on hover, follows mouse (disabled in high contrast) */}
+        {!isHighContrast && (
+          <motion.div
+            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-70 transition-opacity duration-300"
+            style={{ background: animatedGradient }}
+          />
+        )}
         
-        {/* Shine/glare effect on hover */}
-        <motion.div
-          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 pointer-events-none"
-          style={{
-            background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 55%, transparent 60%)",
-            backgroundSize: "200% 100%",
-          }}
-          initial={{ backgroundPosition: "200% 0" }}
-          whileHover={{ backgroundPosition: "-200% 0" }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
-        />
+        {/* Shine/glare effect on hover (disabled in high contrast) */}
+        {!isHighContrast && (
+          <motion.div
+            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 pointer-events-none"
+            style={{
+              background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 55%, transparent 60%)",
+              backgroundSize: "200% 100%",
+            }}
+            initial={{ backgroundPosition: "200% 0" }}
+            whileHover={{ backgroundPosition: "-200% 0" }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+          />
+        )}
         
         {/* Content */}
         <span className="relative z-10">{children}</span>
@@ -205,22 +255,26 @@ interface GhostButtonProps {
 
 export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>(
   ({ children, size = "md", href, className, accentColor, onClick, disabled, breathing = false }, ref) => {
+    const isHighContrast = useHighContrast();
     const mx = useMotionValue(0);
     const my = useMotionValue(0);
     const springX = useSpring(mx, { stiffness: 400, damping: 25 });
     const springY = useSpring(my, { stiffness: 400, damping: 25 });
 
-    // Subtle breathing for ghost buttons when enabled
+    // Subtle breathing for ghost buttons when enabled (disabled in high contrast)
     const breatheOpacity = useMotionValue(1);
     
     useAnimationFrame((time) => {
-      if (breathing && !disabled) {
+      if (breathing && !disabled && !isHighContrast) {
         const phase = (time * 0.00157) % (Math.PI * 2);
         breatheOpacity.set(0.95 + Math.sin(phase) * 0.05);
+      } else {
+        breatheOpacity.set(1);
       }
     });
 
     const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (isHighContrast) return;
       const rect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -238,24 +292,26 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
     const buttonContent = (
       <motion.button
         ref={ref}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
+        whileHover={{ scale: isHighContrast ? 1 : 1.03 }}
+        whileTap={{ scale: isHighContrast ? 1 : 0.97 }}
         transition={{ type: "spring", stiffness: 400, damping: 15 }}
         className={cn(
           "relative inline-flex items-center justify-center rounded-full font-medium cursor-pointer",
-          "bg-[var(--glass-1-fill)] backdrop-blur-md",
-          "border border-[var(--glass-2-border)] hover:border-[var(--hover-accent)]",
+          "bg-[var(--glass-1-fill)]",
+          !isHighContrast && "backdrop-blur-md",
+          "border-2 border-[var(--glass-2-border)] hover:border-[var(--hover-accent)]",
           "text-[var(--text-primary)]",
-          "transition-colors duration-300 shimmer-border iridescent",
+          "transition-colors duration-300",
+          !isHighContrast && "shimmer-border iridescent",
           disabled && "opacity-50 cursor-not-allowed",
           sizeStyles[size],
           className
         )}
         style={{
-          x: springX,
-          y: springY,
+          x: isHighContrast ? 0 : springX,
+          y: isHighContrast ? 0 : springY,
           opacity: breatheOpacity,
-          boxShadow: accentStyles 
+          boxShadow: (accentStyles && !isHighContrast)
             ? `0 0 20px ${accentStyles.glow.replace("0.6", "0.2")}` 
             : undefined,
         }}

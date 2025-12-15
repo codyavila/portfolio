@@ -1,9 +1,10 @@
 "use client";
 
-import { motion, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { GlassCard } from "./glass-card";
+import { motion } from "framer-motion";
 
 interface ProjectCardProps {
   title: string;
@@ -15,41 +16,19 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard = ({ title, description, link, icon, className, gradient = "from-[var(--neon-primary-start)]/10 to-[var(--neon-secondary-end)]/10" }: ProjectCardProps) => {
-  const tiltX = useMotionValue(0);
-  const tiltY = useMotionValue(0);
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const rotateY = ((x / rect.width) - 0.5) * 8;
-    const rotateX = -((y / rect.height) - 0.5) * 8;
-    tiltX.set(rotateX);
-    tiltY.set(rotateY);
-  };
-
-  const handleMouseLeave = () => {
-    tiltX.set(0);
-    tiltY.set(0);
-  };
-
   return (
     <Link href={link} className={cn("block w-full h-full", className)}>
-      {/* Prism Card Structure */}
-      <motion.div
-        whileHover={{ y: -12, scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ type: "spring", mass: 1, stiffness: 1200, damping: 50 }} // "Pop" physics
-        className="prism-card shimmer-border group relative h-full overflow-hidden p-8 flex flex-col justify-between"
-        style={{ rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+      <GlassCard
+        size="lg"
+        enableTilt={true}
+        enableShimmer={true}
+        enableIridescence={false}
+        enableChromatic={false}
+        enableSpotlight={false}
+        className="h-full p-8 flex flex-col justify-between"
       >
-        {/* Shimmer effect layers */}
-        <div className="shimmer-border-layer hidden dark:block" style={{ '--shimmer-angle': '0deg' } as React.CSSProperties} />
-        
         {/* Gradient Background on Hover (Optional extra layer) */}
-        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none", gradient)} />
+        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none rounded-3xl", gradient)} />
         
         <div className="relative z-10 flex flex-col h-full justify-between gap-6">
             {/* Header */}
@@ -76,7 +55,7 @@ export const ProjectCard = ({ title, description, link, icon, className, gradien
                 </p>
             </div>
         </div>
-      </motion.div>
+      </GlassCard>
     </Link>
   );
 };
