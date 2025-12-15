@@ -78,16 +78,15 @@ export function Header() {
         className={cn(
           "relative rounded-full px-2 py-2 md:px-2 md:py-3",
           "flex md:flex-col items-center gap-1",
-          "floating-blob backdrop-saturate-150"
+          "backdrop-saturate-150 border border-[var(--glass-2-border)]"
         )}
         style={{ 
           filter: "url('#gooey')",
           background: "var(--glass-lume-fill)",
-          backdropFilter: "blur(var(--glass-lume-blur))",
+          backdropFilter: "blur(24px)",
           boxShadow: `
-            0 20px 50px -18px rgba(0,0,0,0.65),
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
-            0 0 40px -20px rgba(0, 255, 153, 0.3)
+            0 20px 50px -18px rgba(0,0,0,0.25),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.15)
           `,
         }}
         onMouseMove={handleMove}
@@ -97,8 +96,9 @@ export function Header() {
         <motion.div
           className="absolute rounded-full pointer-events-none"
           style={{
-            background: "radial-gradient(circle, rgba(0,255,153,0.4) 0%, rgba(51,204,255,0.2) 70%, transparent 100%)",
+            background: "radial-gradient(circle, var(--neon-primary-end) 0%, transparent 70%)",
             filter: "blur(12px)",
+            opacity: 0.4,
           }}
           animate={{
             left: indicator.x,
@@ -113,7 +113,7 @@ export function Header() {
           }}
         />
 
-        {/* Logo / Home — Morphing blob shape */}
+        {/* Logo / Home — Morphing blob shape with iridescence */}
         <Link
           href="/"
           data-tab="Home"
@@ -123,26 +123,26 @@ export function Header() {
           className="relative p-2 rounded-full transition-all group"
         >
           <motion.div
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            whileHover={{ scale: 1.15, rotate: 8 }}
+            whileTap={{ scale: 0.9, scaleX: 1.1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 12 }}
             className={cn(
               "relative z-10 w-10 h-10 rounded-full flex items-center justify-center",
-              "text-[var(--lum-void-deep)] font-bold text-xs",
-              "transition-shadow duration-300"
+              "text-[var(--lum-void-deep)] font-bold text-sm tracking-tight",
+              "transition-shadow duration-300 heartbeat"
             )}
             style={{
               x: springX,
               y: springY,
               background: "var(--lum-grad-cyber-lime)",
-              boxShadow: "0 0 20px rgba(204, 255, 0, 0.6)",
+              boxShadow: "0 0 25px rgba(204, 255, 0, 0.7), 0 0 50px rgba(0, 255, 153, 0.3)",
             }}
           >
             CA
           </motion.div>
         </Link>
 
-        <div className="h-4 w-[1px] bg-white/10 md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1" />
+        <div className="h-4 w-[1px] bg-[var(--glass-2-border)] md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1" />
 
         {/* Nav Items — With magnetic effect */}
         <div className="flex md:flex-col items-center gap-0.5">
@@ -167,8 +167,8 @@ export function Header() {
                   className={cn(
                     "relative z-10 w-5 h-5 transition-all duration-300",
                     activeTab === item.name
-                      ? "text-[var(--neon-primary-end)] drop-shadow-[0_0_12px_rgba(0,255,153,0.8)]"
-                      : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                      ? "text-[var(--neon-primary-end)]"
+                      : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
                   )}
                 />
               </motion.div>
@@ -177,7 +177,7 @@ export function Header() {
           ))}
         </div>
 
-        <div className="h-4 w-[1px] bg-white/10 md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1" />
+        <div className="h-4 w-[1px] bg-[var(--glass-2-border)] md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1" />
 
         <SettingsMenu />
 

@@ -107,7 +107,7 @@ const PortalCardComponent = ({
       onMouseEnter={handleMouseEnter}
       className={cn(
         "portal-card group relative overflow-hidden cursor-pointer",
-        "rounded-3xl",
+        "rounded-3xl chromatic-edge iridescent",
         className
       )}
       style={{ 

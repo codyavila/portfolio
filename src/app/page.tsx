@@ -59,9 +59,20 @@ export default function Home() {
         <div className="flex flex-col gap-8 sm:gap-10">
           <motion.h1 
             variants={itemVariants}
-            className="text-display-xl font-bold tracking-tighter text-[var(--text-primary)]"
+            className="text-display-xl font-bold tracking-tighter text-[var(--text-primary)] heartbeat"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            <span className="text-glow">Cody Avila</span>
+            <span 
+              className="text-glow inline-block"
+              style={{
+                background: "linear-gradient(135deg, var(--text-primary) 0%, var(--neon-primary-end) 50%, var(--text-primary) 100%)",
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >Cody Avila</span>
           </motion.h1>
           <motion.h2 
             variants={itemVariants}

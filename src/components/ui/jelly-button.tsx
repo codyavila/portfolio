@@ -99,7 +99,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
         }}
         className={cn(
           "group relative inline-flex items-center justify-center rounded-full font-semibold tracking-wide cursor-pointer overflow-hidden",
-          "transition-shadow duration-300",
+          "transition-shadow duration-300 chromatic-edge",
           sizeStyles[size],
           className
         )}

@@ -84,7 +84,7 @@ export const NanoCard = ({ children, className, onClick, delay = 0 }: NanoCardPr
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "prism-card shimmer-border group relative overflow-hidden cursor-pointer",
+        "prism-card shimmer-border group relative overflow-hidden cursor-pointer iridescent chromatic-edge",
         className
       )}
       style={{ rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }}

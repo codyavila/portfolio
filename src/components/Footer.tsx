@@ -1,42 +1,90 @@
+"use client";
+
 import { Github, Linkedin, Mail } from "lucide-react";
+import { motion } from "framer-motion";
+
+const socialLinks = [
+  { name: "GitHub", href: "https://github.com", icon: Github },
+  { name: "LinkedIn", href: "https://linkedin.com", icon: Linkedin },
+  { name: "Email", href: "mailto:your.email@example.com", icon: Mail },
+];
 
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--glass-border)] bg-transparent">
-      <div className="mx-auto max-w-4xl px-6 py-12 flex flex-col items-center gap-6">
-        <div className="flex gap-6">
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full text-[var(--text-tertiary)] hover:bg-[var(--glass-border)] hover:text-[var(--text-primary)] transition-colors"
-          >
-            <Github className="h-5 w-5" />
-            <span className="sr-only">GitHub</span>
-          </a>
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full text-[var(--text-tertiary)] hover:bg-[var(--glass-border)] hover:text-[var(--text-primary)] transition-colors"
-          >
-            <Linkedin className="h-5 w-5" />
-            <span className="sr-only">LinkedIn</span>
-          </a>
-          <a
-            href="mailto:your.email@example.com"
-            className="p-2 rounded-full text-[var(--text-tertiary)] hover:bg-[var(--glass-border)] hover:text-[var(--text-primary)] transition-colors"
-          >
-            <Mail className="h-5 w-5" />
-            <span className="sr-only">Email</span>
-          </a>
+    <footer className="relative mt-20">
+      {/* Glass-Ghost background layer */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: "var(--glass-ghost-fill)",
+          backdropFilter: "blur(var(--glass-ghost-blur))",
+        }}
+      />
+      
+      {/* Subtle top border with gradient */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{
+          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 80%, transparent)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-5xl px-6 py-16 flex flex-col items-center gap-8">
+        {/* Social Links with magnetic hover */}
+        <div className="flex gap-3">
+          {socialLinks.map((link, index) => (
+            <motion.a
+              key={link.name}
+              href={link.href}
+              target={link.href.startsWith("http") ? "_blank" : undefined}
+              rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="relative p-3 rounded-full group"
+              style={{
+                background: "var(--glass-prism-fill)",
+                backdropFilter: "blur(20px)",
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 20,
+                delay: index * 0.1 
+              }}
+              whileHover={{ 
+                scale: 1.1,
+                boxShadow: "0 0 20px rgba(0, 255, 153, 0.3)",
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <link.icon className="h-5 w-5 text-[var(--text-tertiary)] group-hover:text-[var(--neon-primary-end)] transition-colors duration-300" />
+              <span className="sr-only">{link.name}</span>
+            </motion.a>
+          ))}
         </div>
-        <div className="text-center text-body-s text-[var(--text-secondary)]">
-          <p>&copy; {new Date().getFullYear()} Cody Avila. All rights reserved.</p>
-          <p className="mt-2">
-            Built with Next.js, TypeScript, and Tailwind CSS.
+
+        {/* Copyright with glass legibility */}
+        <motion.div 
+          className="text-center on-glass"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <p className="text-sm text-[var(--text-secondary)] tracking-wide">
+            &copy; {new Date().getFullYear()} Cody Avila
           </p>
-        </div>
+          <p className="mt-2 text-xs text-[var(--text-tertiary)]">
+            Crafted with Next.js, TypeScript & Framer Motion
+          </p>
+        </motion.div>
+
+        {/* Subtle heartbeat indicator */}
+        <motion.div 
+          className="w-1.5 h-1.5 rounded-full bg-[var(--neon-primary-end)] heartbeat"
+          style={{ boxShadow: "0 0 10px rgba(0, 255, 153, 0.5)" }}
+        />
       </div>
     </footer>
   );
