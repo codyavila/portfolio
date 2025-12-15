@@ -57,7 +57,7 @@ export function Footer() {
               }}
               whileTap={{ scale: 0.95 }}
             >
-              <link.icon className="h-5 w-5 text-[var(--text-tertiary)] group-hover:text-[var(--neon-primary-end)] transition-colors duration-300" />
+              <link.icon className="h-5 w-5 text-[var(--text-tertiary)] group-hover:text-[var(--hover-accent)] transition-colors duration-300" />
               <span className="sr-only">{link.name}</span>
             </motion.a>
           ))}

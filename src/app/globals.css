@@ -120,6 +120,9 @@
   --chip-purple-border: rgba(168, 85, 247, 0.3);
   --chip-purple-text: #a855f7;
 
+  /* Hover accent color - bright in dark mode */
+  --hover-accent: #00ff99;
+
   /* Base Variables for Theme Provider */
   --background: var(--lum-void-surface);
   --foreground: var(--text-primary);
@@ -173,6 +176,9 @@ html:not(.dark) {
   --chip-purple-bg: rgba(91, 33, 182, 0.12);
   --chip-purple-border: rgba(91, 33, 182, 0.25);
   --chip-purple-text: #4c1d95;
+
+  /* Hover accent color - dark in light mode for visibility */
+  --hover-accent: #064e3b;
 
   /* Text for light mode - WCAG AA compliant contrast ratios */
   --text-primary: #09070c;

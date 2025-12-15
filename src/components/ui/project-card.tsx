@@ -65,7 +65,7 @@ export const ProjectCard = ({ title, description, link, icon, className, gradien
 
             {/* Content */}
             <div>
-                <h3 className="text-title-l text-[var(--text-primary)] mb-3 group-hover:text-[var(--neon-primary-end)] transition-colors font-bold">
+                <h3 className="text-title-l text-[var(--text-primary)] mb-3 group-hover:text-[var(--hover-accent)] transition-colors font-bold">
                   {title}
                 </h3>
                 <p className="text-[var(--text-secondary)] leading-relaxed text-body-m group-hover:text-[var(--text-primary)] transition-colors">

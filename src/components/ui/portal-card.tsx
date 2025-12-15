@@ -181,7 +181,7 @@ export const PortalCardTitle = memo(({ children, className }: { children: React.
         "text-xl font-bold transition-all duration-300",
         "text-[var(--text-primary)]",
         "dark:drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]",
-        "group-hover:text-[var(--neon-primary-end)]",
+        "group-hover:text-[var(--hover-accent)]",
         className
       )}
     >

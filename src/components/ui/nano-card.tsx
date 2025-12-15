@@ -115,7 +115,7 @@ export const NanoCardTitle = ({ children, className }: { children: React.ReactNo
       "text-lg font-semibold transition-colors duration-300",
       "text-[var(--text-primary)]",
       "dark:drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]",
-      "group-hover:text-[var(--neon-primary-end)]",
+      "group-hover:text-[var(--hover-accent)]",
       className
     )}>
       {children}

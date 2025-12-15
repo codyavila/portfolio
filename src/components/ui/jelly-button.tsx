@@ -182,7 +182,7 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
         className={cn(
           "relative inline-flex items-center justify-center rounded-full font-medium cursor-pointer",
           "bg-[var(--glass-1-fill)] backdrop-blur-md",
-          "border border-[var(--glass-2-border)] hover:border-[var(--neon-primary-end)]",
+          "border border-[var(--glass-2-border)] hover:border-[var(--hover-accent)]",
           "text-[var(--text-primary)]",
           "transition-colors duration-300",
           sizeStyles[size],
