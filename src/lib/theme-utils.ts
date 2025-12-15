@@ -97,24 +97,17 @@ export const applyThemeToDom = (theme: MaterialThemeColors) => {
   root.style.setProperty("--neon-secondary-start", theme.secondary);
   root.style.setProperty("--neon-secondary-end", theme.secondaryContainer);
   
-  // Backgrounds
-  root.style.setProperty("--color-void", theme.background);
-  root.style.setProperty("--color-deep-space", theme.surface);
+  // NOTE: We intentionally do NOT override the void/background colors here.
+  // The Project Luminous void colors (#08040C, #120E1A) are carefully crafted
+  // purple-tinted darks that should not be replaced by Material's generated colors.
   
-  // Text
-  root.style.setProperty("--text-primary", theme.onSurface);
-  root.style.setProperty("--text-secondary", theme.onSurfaceVariant);
-  root.style.setProperty("--text-disabled", theme.outline);
+  // Text - only override in light mode, dark mode uses Luminous defaults
+  // root.style.setProperty("--text-primary", theme.onSurface);
+  // root.style.setProperty("--text-secondary", theme.onSurfaceVariant);
+  // root.style.setProperty("--text-disabled", theme.outline);
 
-  // Glass System - Adjusting opacity based on surface color
-  // We use the surface color but with transparency
-  const surfaceRgb = hexToRgb(theme.surface);
-  if (surfaceRgb) {
-      root.style.setProperty("--glass-1-fill", `rgba(${surfaceRgb.r}, ${surfaceRgb.g}, ${surfaceRgb.b}, 0.03)`);
-      root.style.setProperty("--glass-2-fill", `rgba(${surfaceRgb.r}, ${surfaceRgb.g}, ${surfaceRgb.b}, 0.06)`);
-      root.style.setProperty("--glass-3-fill", `rgba(${surfaceRgb.r}, ${surfaceRgb.g}, ${surfaceRgb.b}, 0.09)`);
-      root.style.setProperty("--glass-4-fill", `rgba(${surfaceRgb.r}, ${surfaceRgb.g}, ${surfaceRgb.b}, 0.12)`);
-  }
+  // Glass System - Use white-based transparency for Luminous glass materials
+  // We keep the Luminous glass system intact rather than using surface colors
 };
 
 function hexToRgb(hex: string) {

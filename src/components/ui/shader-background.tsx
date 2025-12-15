@@ -3,7 +3,6 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, useMemo, Suspense } from "react";
 import * as THREE from "three";
-import { useDynamicTheme } from "@/components/dynamic-theme-provider";
 import { useMouseStore } from "@/lib/mouse-store";
 import { useTheme } from "next-themes";
 
@@ -65,17 +64,17 @@ const GradientShaderMaterial = {
 
 function GradientMesh() {
   const mesh = useRef<THREE.Mesh>(null);
-  const { sourceColor } = useDynamicTheme();
   const normalizedX = useMouseStore((state) => state.normalizedX);
   const normalizedY = useMouseStore((state) => state.normalizedY);
   const mouse = useRef(new THREE.Vector2(0, 0));
   
+  // Use Luminous void colors - subtle purple tints, not dynamic theme colors
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(0, 0) },
-      uColorStart: { value: new THREE.Color("#050508") },
-      uColorEnd: { value: new THREE.Color(sourceColor) },
+      uColorStart: { value: new THREE.Color("#08040C") }, // lum-void-deep
+      uColorEnd: { value: new THREE.Color("#120E1A") },   // lum-void-surface (subtle purple)
     }),
     []
   );
@@ -90,9 +89,6 @@ function GradientMesh() {
       mouse.current.x = THREE.MathUtils.lerp(mouse.current.x, normalizedX, 0.03);
       mouse.current.y = THREE.MathUtils.lerp(mouse.current.y, normalizedY, 0.03);
       material.uniforms.uMouse.value.copy(mouse.current);
-      
-      // Update color smoothly
-      material.uniforms.uColorEnd.value.lerp(new THREE.Color(sourceColor), 0.02);
     }
   });
 

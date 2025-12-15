@@ -10,12 +10,12 @@
 
   /* ─────────────────────────────────────────────────────────────────────────────
      LAYER 0: THE VOID (Canvas/Background)
-     Deep blacks for maximum contrast and readability.
+     Purple-tinted darks for warmth and magic. Never pure black.
      ───────────────────────────────────────────────────────────────────────────── */
-  --lum-void-deep: #000000;
-  --lum-void-surface: #0a0a0c;
-  --lum-void-elevated: #121216;
-  --lum-void-accent: #1a1a1f;
+  --lum-void-deep: #08040C;
+  --lum-void-surface: #120E1A;
+  --lum-void-elevated: #1A1424;
+  --lum-void-accent: #241C2E;
 
   /* ─────────────────────────────────────────────────────────────────────────────
      PLAYFUL GRADIENTS (The Life) — Holographic/Bioluminescent
@@ -303,10 +303,10 @@ body {
 /* Dark mode background - using .dark class on html */
 html.dark body,
 .dark body {
-  background: radial-gradient(ellipse at 20% 0%, rgba(20, 15, 30, 0.6) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(15, 10, 25, 0.4) 0%, transparent 40%),
-    radial-gradient(ellipse at 40% 80%, rgba(10, 8, 18, 0.5) 0%, transparent 50%),
-    #000000 !important;
+  background: radial-gradient(ellipse at 20% 0%, rgba(18, 10, 26, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(12, 8, 18, 0.3) 0%, transparent 40%),
+    radial-gradient(ellipse at 40% 80%, rgba(10, 6, 14, 0.35) 0%, transparent 50%),
+    #08040C !important;
 }
 
 /* High contrast backgrounds */
@@ -336,20 +336,20 @@ body::before {
 
 /* High Contrast Mode — Dark (WCAG AAA: 7:1 contrast) */
 .dark[data-contrast="high"] {
-  --background: #000000;
+  --background: #08040C;
   --foreground: #ffffff;
   --text-primary: #ffffff;
   --text-secondary: #f0f0f0;
   --text-tertiary: #d9d9d9;
-  --lum-void-deep: #000000;
-  --lum-void-surface: #0a0a0a;
-  --glass-ghost-fill: #0a0a0a;
-  --glass-prism-fill: #0a0a0a;
-  --glass-lume-fill: #111111;
-  --glass-1-fill: #0a0a0a;
-  --glass-2-fill: #0a0a0a;
-  --glass-3-fill: #111111;
-  --glass-4-fill: #111111;
+  --lum-void-deep: #08040C;
+  --lum-void-surface: #0a060e;
+  --glass-ghost-fill: #0a060e;
+  --glass-prism-fill: #0a060e;
+  --glass-lume-fill: #120E1A;
+  --glass-1-fill: #0a060e;
+  --glass-2-fill: #0a060e;
+  --glass-3-fill: #120E1A;
+  --glass-4-fill: #120E1A;
   --glass-1-border: #00e5ff;
   --glass-2-border: #00e5ff;
   --glass-3-border: #00e5ff;
