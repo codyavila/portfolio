@@ -8,11 +8,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useTheme } from "next-themes";
 
 const navItems = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/#about", icon: User },
-  { name: "Process", href: "/#process", icon: Layers },
-  { name: "Experience", href: "/#experience", icon: Briefcase },
-  { name: "Projects", href: "/#projects", icon: FolderGit2 },
+  { name: "Home", href: "/", icon: Home, sectionId: null },
+  { name: "About", href: "/#about", icon: User, sectionId: "about" },
+  { name: "Process", href: "/#process", icon: Layers, sectionId: "process" },
+  { name: "Experience", href: "/#experience", icon: Briefcase, sectionId: "experience" },
+  { name: "Projects", href: "/#projects", icon: FolderGit2, sectionId: "projects" },
 ];
 
 const CONTRAST_KEY = "lum-contrast";
@@ -62,6 +62,65 @@ export function Header() {
     const enabled = stored === "high";
     setHighContrast(enabled);
     document.documentElement.dataset.contrast = enabled ? "high" : "normal";
+  }, []);
+
+  // Scroll spy - track which section is in view
+  useEffect(() => {
+    const sectionIds = navItems
+      .filter(item => item.sectionId)
+      .map(item => item.sectionId as string);
+    
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      // Find the section that's most visible
+      const visibleEntries = entries.filter(entry => entry.isIntersecting);
+      
+      if (visibleEntries.length === 0) {
+        // Check if we're at the top of the page
+        if (window.scrollY < 200) {
+          setActiveTab("Home");
+        }
+        return;
+      }
+
+      // Get the topmost visible section
+      const sorted = visibleEntries.sort((a, b) => {
+        return a.boundingClientRect.top - b.boundingClientRect.top;
+      });
+      
+      const topSection = sorted[0];
+      const sectionId = topSection.target.id;
+      const navItem = navItems.find(item => item.sectionId === sectionId);
+      
+      if (navItem) {
+        setActiveTab(navItem.name);
+      }
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      rootMargin: "-20% 0px -60% 0px", // Trigger when section is in upper-middle of viewport
+      threshold: 0,
+    });
+
+    sectionIds.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    // Also handle scroll to top for "Home"
+    const handleScroll = () => {
+      if (window.scrollY < 200) {
+        setActiveTab("Home");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   useEffect(() => {

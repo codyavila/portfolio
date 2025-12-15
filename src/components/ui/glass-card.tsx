@@ -146,8 +146,8 @@ const GlassCardComponent = ({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 30, filter: "blur(0px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-50px" }}
       whileHover={{ 
         y: -8,
@@ -178,15 +178,19 @@ const GlassCardComponent = ({
         rotateY: enableTilt ? springTiltY : 0, 
         transformStyle: "preserve-3d",
         perspective: "1000px",
+        willChange: "transform, opacity",
+        backfaceVisibility: "hidden",
       }}
     >
       {/* Glass Background */}
       <div 
-        className="absolute inset-0 border border-[var(--glass-2-border)] transition-colors duration-300 group-hover:border-[var(--neon-primary-end)]"
+        className="absolute inset-0 border border-[var(--glass-2-border)] group-hover:border-[var(--neon-primary-end)]"
         style={{
           borderRadius: `${radius}px`,
           background: "var(--glass-prism-fill)",
           backdropFilter: "blur(var(--glass-prism-blur))",
+          WebkitBackdropFilter: "blur(var(--glass-prism-blur))",
+          transition: "border-color 0.3s ease",
         }}
       />
 

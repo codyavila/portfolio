@@ -309,6 +309,13 @@ html.dark body,
     #08040C !important;
 }
 
+/* Prevent backdrop-filter flash during animations */
+.glass-card {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  isolation: isolate;
+}
+
 /* High contrast backgrounds */
 html.dark[data-contrast="high"] body,
 .dark[data-contrast="high"] body {
