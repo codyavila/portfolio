@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 
 // Context to share mouse position
@@ -18,6 +18,8 @@ export const BentoGrid = ({
 }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+   const { scrollYProgress } = useScroll();
+   const gap = useTransform(scrollYProgress, [0, 1], ["1rem", "1.5rem"]);
 
   function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
     const { left, top } = currentTarget.getBoundingClientRect();
@@ -27,15 +29,16 @@ export const BentoGrid = ({
 
   return (
     <MouseContext.Provider value={{ mouseX, mouseY }}>
-      <div
+      <motion.div
         className={cn(
           "grid grid-cols-4 md:grid-cols-12 gap-4 md:gap-6 max-w-7xl mx-auto relative group",
           className
         )}
+        style={{ gap }}
         onMouseMove={handleMouseMove}
       >
         {children}
-      </div>
+      </motion.div>
     </MouseContext.Provider>
   );
 };

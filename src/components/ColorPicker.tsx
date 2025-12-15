@@ -5,14 +5,14 @@ import { useDynamicTheme } from "@/components/dynamic-theme-provider";
 import { cn } from "@/lib/utils";
 
 const PRESETS = [
-  { name: "Aurora Blue", color: "#5E60CE" },
-  { name: "Neon Purple", color: "#7400B8" },
-  { name: "Alert Red", color: "#D00000" },
-  { name: "Forest Green", color: "#2E7D32" },
-  { name: "Ocean Teal", color: "#00695C" },
-  { name: "Solar Orange", color: "#E65100" },
-  { name: "Deep Pink", color: "#C2185B" },
-  { name: "Cyan", color: "#00BCD4" },
+  { name: "Cyber Lime", color: "#ccff00" },
+  { name: "Neon Mint", color: "#00ff99" },
+  { name: "Cotton Candy Pink", color: "#ff99cc" },
+  { name: "Cotton Candy Blue", color: "#33ccff" },
+  { name: "Solar Flare Gold", color: "#ffcc00" },
+  { name: "Solar Flare Coral", color: "#ff3366" },
+  { name: "Iridescent Violet", color: "#b388ff" },
+  { name: "Deep Void", color: "#120e1a" },
 ];
 
 export function ColorPicker() {

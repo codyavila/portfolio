@@ -4,12 +4,14 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DynamicThemeProvider } from "@/components/dynamic-theme-provider";
+import { MouseTracker } from "@/components/MouseTracker";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -40,6 +42,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <DynamicThemeProvider>
+            <MouseTracker />
             <Header />
             {children}
             <Footer />

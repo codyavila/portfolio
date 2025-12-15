@@ -1,19 +1,48 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Database, Layers, Zap, Users } from "lucide-react";
 import { NanoCard } from "@/components/ui/nano-card";
+import { motion, type Variants } from "framer-motion";
+
+const container: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 320, damping: 26 },
+  },
+};
 
 export default function BloxNxtCmsRebuild() {
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12 sm:py-20">
-      <Link
+    <motion.main
+      className="max-w-4xl mx-auto px-6 py-12 sm:py-20 squish-scroll"
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={item}>
+        <Link
         href="/#projects"
         className="inline-flex items-center text-body-s text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-12"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Projects
       </Link>
+      </motion.div>
 
-      <header className="mb-16">
+      <motion.header className="mb-16" variants={item}>
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 rounded-lg bg-[var(--lum-neon-purple)]/10 text-[var(--lum-neon-purple)]">
             <Database className="h-6 w-6" />
@@ -22,15 +51,15 @@ export default function BloxNxtCmsRebuild() {
             BLOX Digital
           </span>
         </div>
-        <h1 className="text-display-l text-[var(--text-primary)] mb-6">
+        <h1 className="text-display-l text-[var(--text-primary)] mb-6 on-glass">
           BLOX NXT CMS Rebuild
         </h1>
-        <p className="text-title-m text-[var(--text-secondary)] leading-relaxed max-w-2xl">
+        <p className="text-title-m text-[var(--text-secondary)] leading-relaxed max-w-2xl on-glass">
           Rebuilding the core content management system for over 2,000 media organizations, focusing on performance, scalability, and editorial workflow efficiency.
         </p>
-      </header>
+      </motion.header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-20 border-y border-[var(--glass-border)] py-8">
+      <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-20 border-y border-[var(--glass-border)] py-8" variants={item}>
         <div>
           <h3 className="text-label-s text-[var(--text-tertiary)] mb-2 uppercase tracking-wider">Role</h3>
           <p className="text-body-l text-[var(--text-primary)]">Lead Frontend Engineer</p>
@@ -43,9 +72,9 @@ export default function BloxNxtCmsRebuild() {
           <h3 className="text-label-s text-[var(--text-tertiary)] mb-2 uppercase tracking-wider">Tech Stack</h3>
           <p className="text-body-l text-[var(--text-primary)]">React, TypeScript, MUI</p>
         </div>
-      </div>
+      </motion.div>
 
-      <section className="space-y-20">
+      <motion.section className="space-y-20" variants={item}>
         {/* Problem */}
         <div>
           <h2 className="text-display-s text-[var(--text-primary)] mb-6">The Challenge</h2>
@@ -127,7 +156,7 @@ export default function BloxNxtCmsRebuild() {
             </NanoCard>
           </div>
         </div>
-      </section>
-    </main>
+      </motion.section>
+    </motion.main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,14 +15,35 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard = ({ title, description, link, icon, className, gradient = "from-[var(--neon-primary-start)]/10 to-[var(--neon-secondary-end)]/10" }: ProjectCardProps) => {
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const rotateY = ((x / rect.width) - 0.5) * 8;
+    const rotateX = -((y / rect.height) - 0.5) * 8;
+    tiltX.set(rotateX);
+    tiltY.set(rotateY);
+  };
+
+  const handleMouseLeave = () => {
+    tiltX.set(0);
+    tiltY.set(0);
+  };
+
   return (
     <Link href={link} className={cn("block w-full h-full", className)}>
       {/* Prism Card Structure */}
       <motion.div
-        whileHover={{ y: -5, scale: 1.01 }}
+        whileHover={{ y: -12, scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", mass: 1, stiffness: 1200, damping: 50 }} // "Pop" physics
-        className="prism-card group relative h-full overflow-hidden p-8 flex flex-col justify-between"
+        className="prism-card shimmer-border group relative h-full overflow-hidden p-8 flex flex-col justify-between"
+        style={{ rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
         {/* Gradient Background on Hover (Optional extra layer) */}
         <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none", gradient)} />

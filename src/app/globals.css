@@ -3,57 +3,104 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Project Luminous - Design Tokens */
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PROJECT LUMINOUS — Design System Tokens v1.0
+     "Bioluminescent Material" | Interface as an Organism
+     ═══════════════════════════════════════════════════════════════════════════ */
 
-  /* 2.1 Color Palette: "Aurora Dark" */
-  /* Base Layers (The Void) */
-  --color-void: #050505;
-  --color-deep-space: #0B0C15;
+  /* ─────────────────────────────────────────────────────────────────────────────
+     LAYER 0: THE VOID (Canvas/Background)
+     Deep violet-blacks, never pure black. Warm and magical.
+     ───────────────────────────────────────────────────────────────────────────── */
+  --lum-void-deep: #08040C;
+  --lum-void-surface: #120E1A;
+  --lum-void-elevated: #1a1425;
+  --lum-void-accent: #241c32;
 
-  /* Luminous Accents (The Light Sources) */
-  --neon-primary-start: #5E60CE;
-  --neon-primary-end: #4EA8DE;
-  --neon-secondary-start: #7400B8;
-  --neon-secondary-end: #C77DFF;
-  --neon-alert-start: #D00000;
-  --neon-alert-end: #FFBA08;
+  /* ─────────────────────────────────────────────────────────────────────────────
+     PLAYFUL GRADIENTS (The Life) — Holographic/Bioluminescent
+     Used for buttons, active borders, hero text
+     ───────────────────────────────────────────────────────────────────────────── */
+  --lum-grad-cyber-lime: linear-gradient(135deg, #CCFF00 0%, #00FF99 100%);
+  --lum-grad-cotton-candy: linear-gradient(135deg, #FF99CC 0%, #33CCFF 100%);
+  --lum-grad-solar-flare: linear-gradient(135deg, #FFCC00 0%, #FF3366 100%);
+  --lum-grad-holographic: linear-gradient(135deg, #ccff00, #00ff99, #33ccff, #ff99cc, #ff3366, #ccff00);
+  --lum-grad-aurora: linear-gradient(135deg, #00ff99 0%, #33ccff 50%, #ff99cc 100%);
 
-  /* Text Colors */
-  --text-primary: #FFFFFF;
-  --text-secondary: rgba(235, 240, 255, 0.7);
-  --text-disabled: rgba(235, 240, 255, 0.3);
+  /* Neon Color Rails (individual colors) */
+  --neon-primary-start: #ccff00;
+  --neon-primary-end: #00ff99;
+  --neon-secondary-start: #ff99cc;
+  --neon-secondary-end: #33ccff;
+  --neon-alert-start: #ffcc00;
+  --neon-alert-end: #ff3366;
+  --neon-cyan: #00ffff;
+  --neon-magenta: #ff00ff;
+  --neon-lime: #ccff00;
 
-  /* 2.2 The Glass System */
-  /* Glass 1: Standard Card */
-  --glass-1-fill: rgba(255, 255, 255, 0.03);
-  --glass-1-border: rgba(255, 255, 255, 0.05);
-  --glass-1-blur: 12px;
+  /* ─────────────────────────────────────────────────────────────────────────────
+     TEXT SYSTEM — With Glass Legibility Shadow
+     ───────────────────────────────────────────────────────────────────────────── */
+  --text-primary: #f8f3ff;
+  --text-secondary: rgba(248, 243, 255, 0.78);
+  --text-tertiary: rgba(248, 243, 255, 0.55);
+  --text-disabled: rgba(248, 243, 255, 0.28);
+  --text-glass-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --text-glow-primary: 0 0 20px rgba(204, 255, 0, 0.5), 0 0 40px rgba(0, 255, 153, 0.3);
+  --text-glow-secondary: 0 0 20px rgba(255, 153, 204, 0.5), 0 0 40px rgba(51, 204, 255, 0.3);
 
-  /* Glass 2: Elevated Card */
-  --glass-2-fill: rgba(255, 255, 255, 0.06);
+  /* ─────────────────────────────────────────────────────────────────────────────
+     GLASS MATERIALS — Optical Density System (Spatial UI Layers)
+     Layer 1 (Ghost): Mist — Ambient, recessive context
+     Layer 2 (Prism): Interactive cards — High refraction
+     Layer 3 (Lume): Source — Emissive, modals, floating nav
+     ───────────────────────────────────────────────────────────────────────────── */
+  --glass-ghost-fill: rgba(255, 255, 255, 0.02);
+  --glass-ghost-blur: 10px;
+  --glass-ghost-noise: 0.02;
+
+  --glass-prism-fill: rgba(255, 255, 255, 0.05);
+  --glass-prism-blur: 30px;
+  --glass-prism-noise: 0.04;
+
+  --glass-lume-fill: rgba(255, 255, 255, 0.15);
+  --glass-lume-blur: 50px;
+  --glass-lume-noise: 0.05;
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     LEGACY GLASS ALIASES — For backwards compatibility
+     ───────────────────────────────────────────────────────────────────────────── */
+  --glass-1-fill: var(--glass-ghost-fill);
+  --glass-1-border: rgba(255, 255, 255, 0.06);
+  --glass-1-blur: var(--glass-ghost-blur);
+
+  --glass-2-fill: var(--glass-prism-fill);
   --glass-2-border: rgba(255, 255, 255, 0.12);
-  --glass-2-blur: 24px;
+  --glass-2-blur: var(--glass-prism-blur);
 
-  /* Glass 3: Sidebar/Nav */
   --glass-3-fill: rgba(255, 255, 255, 0.09);
-  --glass-3-border: rgba(255, 255, 255, 0.15);
-  --glass-3-blur: 32px;
+  --glass-3-border: rgba(255, 255, 255, 0.2);
+  --glass-3-blur: 36px;
 
-  /* Glass 4: Modal/Popup */
-  --glass-4-fill: rgba(255, 255, 255, 0.12);
-  --glass-4-border: rgba(255, 255, 255, 0.25);
-  --glass-4-blur: 48px;
+  --glass-4-fill: var(--glass-lume-fill);
+  --glass-4-border: rgba(255, 255, 255, 0.28);
+  --glass-4-blur: var(--glass-lume-blur);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     SPRING PHYSICS — Motion Tokens (No linear ease allowed!)
+     ───────────────────────────────────────────────────────────────────────────── */
+  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --spring-snappy: cubic-bezier(0.2, 0.8, 0.3, 1.2);
+  --spring-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   /* Base Variables for Theme Provider */
-  --background: var(--color-deep-space);
+  --background: var(--lum-void-surface);
   --foreground: var(--text-primary);
 }
 
-/* Light mode overrides (Inverting for Solar theme if needed, but spec focuses on Dark) */
-/* For now, we map light mode to a similar structure or keep it dark-centric as per "Aurora Dark" name */
-/* Assuming the user wants the "Aurora Dark" look primarily. */
 .dark {
-  --background: var(--color-deep-space);
+  --background: var(--lum-void-surface);
   --foreground: var(--text-primary);
 }
 
@@ -61,8 +108,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   
-  --color-void: var(--color-void);
-  --color-deep-space: var(--color-deep-space);
+  --color-void: var(--lum-void-deep);
+  --color-deep-space: var(--lum-void-surface);
   
   --color-neon-primary-start: var(--neon-primary-start);
   --color-neon-primary-end: var(--neon-primary-end);
@@ -77,7 +124,8 @@
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 
   --animate-spotlight: spotlight 2s ease .75s 1 forwards;
-  --animate-gradient-xy: gradient-xy 15s ease infinite;
+  --animate-gradient-xy: gradient-xy 18s ease infinite;
+  --animate-heartbeat: heartbeat 4s ease-in-out infinite;
 
   @keyframes spotlight {
     0% {
@@ -98,11 +146,43 @@
       background-position: 100% 50%;
     }
   }
+
+  @keyframes heartbeat {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    40% { opacity: 1; transform: scale(1.015); }
+    60% { opacity: 0.95; transform: scale(0.995); }
+  }
+
+  @keyframes shimmer-border {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 153, 0.4); }
+    50% { box-shadow: 0 0 40px rgba(0, 255, 153, 0.7); }
+  }
+
+  @keyframes morph {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  }
 }
 
-/* Global Styles */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   GLOBAL STYLES — Interface as an Organism
+   ═══════════════════════════════════════════════════════════════════════════════ */
 body {
-  background-color: var(--color-deep-space);
+  background: radial-gradient(circle at 20% 20%, #1c1230 0%, transparent 35%),
+    radial-gradient(circle at 80% 10%, #1a0f29 0%, transparent 30%),
+    radial-gradient(circle at 50% 80%, #0f0a1a 0%, transparent 40%),
+    var(--lum-void-deep);
   color: var(--text-primary);
   font-family: var(--font-sans);
   overflow-x: hidden;
@@ -125,20 +205,71 @@ body::before {
   mix-blend-mode: overlay;
 }
 
-/* Typography: Kinetic Type */
+/* High Contrast Mode */
+[data-contrast="high"] {
+  --background: #0f0f11;
+  --foreground: #e9faff;
+  --text-primary: #e9faff;
+  --text-secondary: #c7e9ff;
+  --text-tertiary: #9ac8e6;
+  --glass-ghost-fill: #111;
+  --glass-prism-fill: #111;
+  --glass-lume-fill: #111;
+  --glass-1-fill: #111;
+  --glass-2-fill: #111;
+  --glass-3-fill: #111;
+  --glass-4-fill: #111;
+  --glass-1-border: #0ff;
+  --glass-2-border: #0ff;
+  --glass-3-border: #0ff;
+  --glass-4-border: #0ff;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHY — Variable Personality with "Weight Shift"
+   Headlines are tight (-0.04em), Body is loose (0.01em)
+   ───────────────────────────────────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.1;
-  transition: font-weight 0.3s ease;
+  letter-spacing: -0.04em;
+  transition: font-weight 0.35s var(--spring-smooth), 
+              letter-spacing 0.35s var(--spring-smooth),
+              text-shadow 0.35s var(--spring-smooth);
 }
 
+/* Weight Shift on hover — 700 → 850 */
 h1:hover, h2:hover, h3:hover {
-  font-weight: 800;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+}
+
+/* Hover weight shift utility class */
+.hover-weight-shift {
+  transition: font-weight 0.35s var(--spring-smooth);
+}
+.hover-weight-shift:hover {
+  font-weight: 850;
 }
 
 p {
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+/* Text glow effect */
+.text-glow {
+  text-shadow: var(--text-glow-primary);
+}
+
+.text-glow-secondary {
+  text-shadow: var(--text-glow-secondary);
+}
+
+/* Glass legibility */
+.on-glass {
+  text-shadow: var(--text-glass-shadow);
 }
 
 /* Glass Utilities */
@@ -172,7 +303,9 @@ p {
   border: 1px solid var(--glass-4-border);
 }
 
-/* Prism Card Base Styles */
+/* ─────────────────────────────────────────────────────────────────────────────
+   PORTAL CARD — Glass-Prism Material with Shimmer Border
+   ───────────────────────────────────────────────────────────────────────────── */
 .prism-card {
   position: relative;
   background: linear-gradient(
@@ -180,22 +313,156 @@ p {
     rgba(255,255,255,0.05) 0%, 
     rgba(255,255,255,0.01) 100%
   );
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(var(--glass-prism-blur));
   border-radius: 24px;
   
-  /* The Rim Light (Top Highlight) */
+  /* The Rim Light (Top Highlight) + Deep shadow for depth */
   box-shadow: 
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.2), /* Top rim */
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05), /* Subtle outline */
-    0 20px 40px -10px rgba(0,0,0,0.5); /* Deep shadow */
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 20px 40px -10px rgba(0,0,0,0.4);
     
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: box-shadow 0.4s var(--spring-smooth);
 }
 
+/* Hover: Subtle glow enhancement (transform handled by Framer Motion) */
 .prism-card:hover {
-  transform: translateY(-5px) scale(1.01);
   box-shadow: 
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.5), /* Brighter rim */
-    inset 0 0 20px rgba(255, 255, 255, 0.05), /* Inner Glow */
-    0 30px 60px -12px rgba(0,0,0,0.6);
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 25px 50px -12px rgba(0,0,0,0.5),
+    0 0 30px -10px rgba(0, 255, 153, 0.2);
 }
+
+/* Glow variants based on category color */
+.prism-card.glow-cyber-lime:hover {
+  box-shadow: 
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 20px rgba(204, 255, 0, 0.1),
+    0 30px 60px -12px rgba(0,0,0,0.6),
+    0 0 50px -10px rgba(204, 255, 0, 0.4);
+}
+
+.prism-card.glow-cotton-candy:hover {
+  box-shadow: 
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 20px rgba(255, 153, 204, 0.1),
+    0 30px 60px -12px rgba(0,0,0,0.6),
+    0 0 50px -10px rgba(255, 153, 204, 0.4);
+}
+
+.prism-card.glow-solar-flare:hover {
+  box-shadow: 
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 20px rgba(255, 204, 0, 0.1),
+    0 30px 60px -12px rgba(0,0,0,0.6),
+    0 0 50px -10px rgba(255, 204, 0, 0.4);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SHIMMER BORDER — Subtle gradient border that glows on hover
+   ───────────────────────────────────────────────────────────────────────────── */
+.shimmer-border {
+  position: relative;
+}
+
+.shimmer-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg, 
+    rgba(204, 255, 0, 0.3), 
+    rgba(0, 255, 153, 0.2), 
+    rgba(51, 204, 255, 0.3), 
+    rgba(255, 153, 204, 0.2),
+    rgba(204, 255, 0, 0.3)
+  );
+  background-size: 200% 200%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: shimmer-move 8s ease infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+  transition: opacity 0.4s var(--spring-smooth);
+}
+
+.shimmer-border:hover::before {
+  opacity: 1;
+}
+
+@keyframes shimmer-move {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   JELLY / HEARTBEAT — Living breathing components
+   ───────────────────────────────────────────────────────────────────────────── */
+.heartbeat {
+  animation: var(--animate-heartbeat);
+}
+
+/* Jelly button squish effect */
+.jelly-squish:active {
+  transform: scale(0.95) scaleX(1.08);
+  transition: transform 80ms var(--spring-elastic);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CURSOR MAGNETISM — Interactive elements attract cursor
+   ───────────────────────────────────────────────────────────────────────────── */
+.magnetic {
+  transition: transform 0.3s var(--spring-snappy);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SQUISH SCROLL — Resistance at scroll boundaries
+   ───────────────────────────────────────────────────────────────────────────── */
+.squish-scroll {
+  overscroll-behavior: contain;
+}
+
+.squish-scroll:active {
+  transform: scaleY(0.99);
+  transition: transform 180ms var(--spring-snappy);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FLOATING BLOB NAVIGATION
+   ───────────────────────────────────────────────────────────────────────────── */
+.floating-blob {
+  background: var(--glass-lume-fill);
+  backdrop-filter: blur(var(--glass-lume-blur));
+  box-shadow: 
+    0 20px 50px -18px rgba(0,0,0,0.65),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ACCESSIBILITY — Prefer Reduced Motion & High Contrast
+   ───────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .heartbeat { animation: none; }
+  .shimmer-border::before { animation: none; }
+  .prism-card:hover { transform: none; }
+}
+
+/* Entry animation stagger delays */
+.stagger-1 { animation-delay: 0ms; }
+.stagger-2 { animation-delay: 50ms; }
+.stagger-3 { animation-delay: 100ms; }
+.stagger-4 { animation-delay: 150ms; }
+.stagger-5 { animation-delay: 200ms; }
+.stagger-6 { animation-delay: 250ms; }
+.stagger-7 { animation-delay: 300ms; }
+.stagger-8 { animation-delay: 350ms; }

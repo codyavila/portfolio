@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion, HTMLMotionProps, useMotionValue } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
@@ -17,22 +17,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // "Photon" Actions
     const variants = {
       primary: cn(
-        // Fill: Live gradient mesh (simulated with gradient)
-        "bg-gradient-to-br from-[var(--neon-primary-start)] via-[var(--neon-primary-end)] to-[var(--neon-primary-start)] bg-[length:200%_200%]",
-        "animate-gradient-xy", // Assuming we might add this animation, or just rely on hover
-        // Glow: Drop-shadow matching dominant color
-        "shadow-[0_0_20px_-5px_var(--neon-primary-start)]",
-        // Text
-        "text-white font-semibold tracking-wide",
-        "border-none"
+        "relative overflow-hidden",
+        "bg-[var(--neon-primary-start)] text-[var(--lum-void-deep)] font-semibold tracking-wide",
+        "shadow-[0_0_22px_-6px_rgba(0,255,153,0.8)]",
+        "before:absolute before:inset-0 before:bg-[var(--lum-grad-cyber-lime)] before:bg-[length:200%_200%] before:animate-[gradient-xy_18s_ease_infinite] before:-z-10",
+        "border border-transparent"
       ),
       secondary: cn(
-        // Fill: Transparent
         "bg-transparent",
-        // Border: 1px solid rgba(255,255,255,0.2)
-        "border border-white/20",
-        // Backdrop: blur(4px)
-        "backdrop-blur-[4px]",
+        "border border-white/25",
+        "backdrop-blur-[6px]",
         "text-[var(--text-primary)]",
         "hover:bg-white/5"
       ),
@@ -40,21 +34,43 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const Component = motion.button;
 
+      const mx = useMotionValue(0);
+      const my = useMotionValue(0);
+
+      const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const moveX = ((x / rect.width) - 0.5) * 16;
+        const moveY = ((y / rect.height) - 0.5) * 16;
+        mx.set(moveX);
+        my.set(moveY);
+      };
+
+      const handleMouseLeave = () => {
+        mx.set(0);
+        my.set(0);
+      };
+
     const content = (
       <Component
         ref={ref}
-        // Spring Config: "Pop" (Mass: 1, Tension: 1200, Friction: 50)
-        whileHover={{ scale: 1.02, fontWeight: 550 }} // Optical compression on press/hover mentioned in spec
-        whileTap={{ scale: 0.95, fontWeight: 550 }}
-        transition={{ type: "spring", mass: 1, stiffness: 1200, damping: 50 }}
+        whileHover={{ scale: 1.05, rotate: 0.5, transition: { type: "spring", stiffness: 400, damping: 18 } }}
+        whileTap={{ scale: 0.92, scaleX: 1.08, rotate: -0.5, transition: { type: "spring", stiffness: 520, damping: 24 } }}
         className={cn(
-          "inline-flex items-center justify-center rounded-full px-8 py-4 text-base transition-all cursor-pointer",
+          "inline-flex items-center justify-center rounded-full px-8 py-4 text-base transition-[filter,transform] cursor-pointer",
+          "[filter:drop-shadow(0_0_12px_rgba(0,255,153,0.4))]",
+          "active:scale-95",
+          "heartbeat",
           variants[variant],
           className
         )}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ x: mx, y: my, backgroundSize: "200% 200%" }}
         {...props}
       >
-        {children}
+        <span className="relative z-10">{children}</span>
       </Component>
     );
 

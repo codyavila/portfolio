@@ -1,38 +1,70 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ArrowRight, Code2, Layout, Users, BarChart3, Database } from "lucide-react";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { BentoGrid } from "@/components/ui/bento-grid";
 import { NanoCard, NanoCardTitle, NanoCardDescription } from "@/components/ui/nano-card";
+import { PortalCard, PortalCardTitle, PortalCardDescription } from "@/components/ui/portal-card";
 import { DiscoverGraphic, FeasibilityGraphic, ExecuteGraphic } from "@/components/ui/process-graphics";
-import { Button } from "@/components/ui/button";
-import { HyperGlassCard } from "@/components/ui/hyper-glass-card";
-import { ShaderBackground } from "@/components/ui/shader-background";
+import { JellyButton, GhostButton } from "@/components/ui/jelly-button";
+import dynamic from "next/dynamic";
+
+// Lazy load heavy 3D components
+const ShaderBackground = dynamic(
+  () => import("@/components/ui/shader-background").then(mod => ({ default: mod.ShaderBackground })),
+  { ssr: false }
+);
+
+// Staggered animation variants for the Entry Sequence
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 15,
+    },
+  },
+};
 
 export default function Home() {
   return (
     <main className="relative max-w-7xl mx-auto px-6 py-16 sm:py-24 md:pl-32">
       <ShaderBackground />
       <div className="absolute top-0 left-0 w-full h-screen overflow-hidden pointer-events-none">
-        <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="var(--lum-neon-blue)" />
+        <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="var(--neon-primary-end)" />
       </div>
 
-      {/* Hero Section */}
-      <section className="mb-24 sm:mb-32 relative z-10 max-w-5xl mx-auto pt-16 sm:pt-24">
+      {/* Hero Section — Entry Sequence with stagger */}
+      <motion.section 
+        className="mb-24 sm:mb-32 relative z-10 max-w-5xl mx-auto pt-16 sm:pt-24"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="flex flex-col gap-8 sm:gap-10">
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            variants={itemVariants}
             className="text-display-xl font-bold tracking-tighter text-[var(--text-primary)]"
           >
             <span className="text-glow">Cody Avila</span>
           </motion.h1>
           <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            variants={itemVariants}
             className="text-2xl sm:text-4xl font-medium text-[var(--text-secondary)] flex flex-wrap items-center gap-4 tracking-tight"
           >
             Frontend Engineer 
@@ -40,61 +72,101 @@ export default function Home() {
             <span className="text-[var(--text-primary)]">Technical Product Manager</span>
           </motion.h2>
           <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            variants={itemVariants}
             className="text-body-l leading-relaxed max-w-2xl text-[var(--text-secondary)] font-normal"
           >
             I bridge the gap between engineering reality and product vision. 
             With deep roots in frontend architecture, I translate complex technical constraints into viable product strategies.
           </motion.p>
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+            variants={itemVariants}
             className="flex flex-wrap gap-5 mt-8"
           >
-            <Button href="#contact" variant="primary">
+            <JellyButton href="#contact" variant="cyber-lime">
               Get in Touch
-            </Button>
-            <Button href="#projects" variant="secondary">
+            </JellyButton>
+            <GhostButton href="#projects" accentColor="cotton-candy">
               View Case Studies
-            </Button>
+            </GhostButton>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* About / Transition Story */}
+      {/* About / Transition Story — The Technical Edge */}
       <section id="about" className="mb-20 sm:mb-32 scroll-mt-32 max-w-5xl mx-auto">
-        <h3 className="text-display-m mb-8 sm:mb-10 text-[var(--text-primary)]">The Technical Edge</h3>
-        <div className="hidden md:block">
-          <HyperGlassCard width={8} height={4}>
-            <div className="prose prose-lg max-w-none text-white text-left">
-              <p className="leading-relaxed drop-shadow-md">
-                At BLOX Digital, I didn't just implement features; I owned the technical lifecycle of product initiatives. 
-                I partnered with Product and Design to de-risk complex requirements early, identifying API limitations and architectural trade-offs before a single line of code was written.
-              </p>
-              <p className="leading-relaxed mt-6 drop-shadow-md">
-                My background allows me to earn the trust of engineering teams immediately. I can dive into API specs, understand database schemas, 
-                and make informed decisions about technical debt versus speed. I'm now applying this rigorous technical lens to product strategy, ensuring we build scalable solutions that deliver real value.
-              </p>
-            </div>
-          </HyperGlassCard>
-        </div>
-        <div className="md:hidden">
-          <NanoCard className="p-8 sm:p-12 bg-gradient-to-br from-[var(--glass-1-fill)] to-transparent">
-            <div className="prose prose-lg max-w-none text-[var(--text-secondary)]">
-              <p className="leading-relaxed">
-                At BLOX Digital, I didn't just implement features; I owned the technical lifecycle of product initiatives. 
-                I partnered with Product and Design to de-risk complex requirements early, identifying API limitations and architectural trade-offs before a single line of code was written.
-              </p>
-              <p className="leading-relaxed mt-6">
-                My background allows me to earn the trust of engineering teams immediately. I can dive into API specs, understand database schemas, 
-                and make informed decisions about technical debt versus speed. I'm now applying this rigorous technical lens to product strategy, ensuring we build scalable solutions that deliver real value.
-              </p>
-            </div>
-          </NanoCard>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        >
+          <h3 className="text-display-m mb-10 sm:mb-14 text-[var(--text-primary)]">The Technical Edge</h3>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Main Story Card */}
+            <PortalCard 
+              className="md:col-span-2 p-8 sm:p-12" 
+              glow="cyber-lime"
+              delay={0.1}
+            >
+              <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                <div className="flex-1">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--neon-primary-end)]/10 border border-[var(--neon-primary-end)]/20 mb-6">
+                    <Code2 className="w-4 h-4 text-[var(--neon-primary-end)]" />
+                    <span className="text-sm font-medium text-[var(--neon-primary-end)]">Engineer → PM</span>
+                  </div>
+                  <PortalCardTitle className="text-2xl sm:text-3xl mb-4">
+                    I speak both languages fluently
+                  </PortalCardTitle>
+                  <PortalCardDescription className="text-base sm:text-lg leading-relaxed">
+                    At BLOX Digital, I didn't just implement features—I owned the technical lifecycle of product initiatives. 
+                    I partnered with Product and Design to de-risk complex requirements early, identifying API limitations 
+                    and architectural trade-offs before a single line of code was written.
+                  </PortalCardDescription>
+                </div>
+                <div className="flex-1">
+                  <PortalCardDescription className="text-base sm:text-lg leading-relaxed">
+                    My background allows me to earn the trust of engineering teams immediately. I can dive into API specs, 
+                    understand database schemas, and make informed decisions about technical debt versus speed.
+                  </PortalCardDescription>
+                  <p className="mt-6 text-[var(--text-primary)] font-medium text-lg">
+                    I'm now applying this rigorous technical lens to product strategy, ensuring we build scalable solutions 
+                    that deliver real value.
+                  </p>
+                </div>
+              </div>
+            </PortalCard>
+
+            {/* Stats/Highlights */}
+            <NanoCard delay={0.2} className="p-6 sm:p-8">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-2xl bg-[var(--neon-primary-end)]/10">
+                  <Database className="w-6 h-6 text-[var(--neon-primary-end)]" />
+                </div>
+                <div>
+                  <NanoCardTitle className="text-lg mb-2">Technical Due Diligence</NanoCardTitle>
+                  <NanoCardDescription>
+                    API specs, database schemas, system architecture—I understand the constraints before defining the solution.
+                  </NanoCardDescription>
+                </div>
+              </div>
+            </NanoCard>
+
+            <NanoCard delay={0.3} className="p-6 sm:p-8">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-2xl bg-[var(--lum-cotton-candy)]/10">
+                  <Users className="w-6 h-6 text-[var(--lum-cotton-candy)]" />
+                </div>
+                <div>
+                  <NanoCardTitle className="text-lg mb-2">Cross-Functional Trust</NanoCardTitle>
+                  <NanoCardDescription>
+                    Engineering teams trust me because I've been in their shoes. I bridge the gap between vision and reality.
+                  </NanoCardDescription>
+                </div>
+              </div>
+            </NanoCard>
+          </div>
+        </motion.div>
       </section>
 
       {/* Process Section */}
@@ -223,58 +295,58 @@ export default function Home() {
         </BentoGrid>
       </section>
 
-      {/* Projects / Case Studies */}
+      {/* Projects / Case Studies — Using Portal Cards */}
       <section id="projects" className="mb-20 sm:mb-32 scroll-mt-32 max-w-5xl mx-auto">
         <h3 className="text-display-l font-bold mb-8 sm:mb-12 tracking-tight text-[var(--text-primary)]">Case Studies</h3>
-        <BentoGrid className="grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          <a href="/projects/email-campaign-system" className="block h-full col-span-1">
-            <NanoCard delay={0.1} className="h-full p-10 flex flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <a href="/projects/email-campaign-system" className="block h-full">
+            <PortalCard delay={0.1} glow="cyber-lime" className="h-full p-10 flex flex-col">
               <div className="flex items-start justify-between mb-8">
-                <div className="p-4 rounded-2xl bg-[var(--lum-neon-blue)]/10 text-[var(--lum-neon-blue)]">
+                <div className="p-4 rounded-2xl bg-[var(--neon-primary-start)]/10 text-[var(--neon-primary-end)]">
                   <Layout className="h-6 w-6" />
                 </div>
-                <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45" />
+                <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45 group-hover:rotate-0 transition-transform" />
               </div>
-              <NanoCardTitle className="mb-4 text-title-l">Email Campaign Management System</NanoCardTitle>
-              <NanoCardDescription className="text-body-l">
+              <PortalCardTitle className="mb-4 text-title-l">Email Campaign Management System</PortalCardTitle>
+              <PortalCardDescription className="text-body-l">
                 Built a multi‑step wizard with advanced validation and natural‑language scheduling. Reduced setup friction and increased successful campaign launches.
-              </NanoCardDescription>
-            </NanoCard>
+              </PortalCardDescription>
+            </PortalCard>
           </a>
           
-          <a href="/projects/blox-nxt-cms-rebuild" className="block h-full col-span-1">
-            <NanoCard delay={0.2} className="h-full p-10 flex flex-col">
+          <a href="/projects/blox-nxt-cms-rebuild" className="block h-full">
+            <PortalCard delay={0.2} glow="cotton-candy" className="h-full p-10 flex flex-col">
               <div className="flex items-start justify-between mb-8">
-                <div className="p-4 rounded-2xl bg-[var(--lum-neon-purple)]/10 text-[var(--lum-neon-purple)]">
+                <div className="p-4 rounded-2xl bg-[var(--neon-secondary-start)]/10 text-[var(--neon-secondary-end)]">
                   <Database className="h-6 w-6" />
                 </div>
-                <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45" />
+                <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45 group-hover:rotate-0 transition-transform" />
               </div>
-              <NanoCardTitle className="mb-4 text-title-l">BLOX NXT CMS Rebuild</NanoCardTitle>
-              <NanoCardDescription className="text-body-l">
+              <PortalCardTitle className="mb-4 text-title-l">BLOX NXT CMS Rebuild</PortalCardTitle>
+              <PortalCardDescription className="text-body-l">
                 Contributed to modular, pattern‑driven front‑end architecture. Built data‑driven dashboards and real‑time authoring affordances to streamline editorial workflows.
-              </NanoCardDescription>
-            </NanoCard>
+              </PortalCardDescription>
+            </PortalCard>
           </a>
-        </BentoGrid>
+        </div>
       </section>
 
-      {/* Contact */}
+      {/* Contact — Glass-Lume material */}
       <section id="contact" className="scroll-mt-32 pb-24">
-        <NanoCard className="px-6 py-16 text-center sm:px-16 bg-gradient-to-br from-[var(--glass-elevated)] to-transparent">
-          <h3 className="text-display-m font-semibold text-[var(--text-primary)] mb-6">Ready to Connect?</h3>
-          <p className="text-body-l text-[var(--text-secondary)] mb-10 max-w-lg mx-auto">
+        <PortalCard glow="aurora" className="px-6 py-16 text-center sm:px-16">
+          <h3 className="text-display-m font-semibold text-[var(--text-primary)] mb-6 on-glass">Ready to Connect?</h3>
+          <p className="text-body-l text-[var(--text-secondary)] mb-10 max-w-lg mx-auto on-glass">
             I'm currently open to Product Management roles where I can leverage my engineering background to build better products.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-            <a href="mailto:your.email@example.com" className="w-full sm:w-auto px-8 py-4 rounded-full bg-[var(--lum-neon-blue)] text-[var(--lum-void-950)] font-medium hover:bg-[var(--lum-neon-blue)]/90 transition-colors">
+            <JellyButton href="mailto:your.email@example.com" variant="cyber-lime">
               Send me an email
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-8 py-4 rounded-full border border-[var(--glass-border)] text-[var(--text-primary)] font-medium hover:bg-[var(--glass-surface)] transition-colors">
+            </JellyButton>
+            <GhostButton href="https://linkedin.com" accentColor="cotton-candy">
               Connect on LinkedIn
-            </a>
+            </GhostButton>
           </div>
-        </NanoCard>
+        </PortalCard>
       </section>
     </main>
   );

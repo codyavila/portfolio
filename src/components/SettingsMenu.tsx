@@ -6,8 +6,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ColorPicker } from "@/components/ColorPicker";
 
+const CONTRAST_KEY = "lum-contrast";
+
 export function SettingsMenu() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [highContrast, setHighContrast] = React.useState(false);
+
+  React.useEffect(() => {
+    const stored = localStorage.getItem(CONTRAST_KEY);
+    const enabled = stored === "high";
+    setHighContrast(enabled);
+    document.documentElement.dataset.contrast = enabled ? "high" : "normal";
+  }, []);
+
+  const toggleContrast = () => {
+    const next = !highContrast;
+    setHighContrast(next);
+    document.documentElement.dataset.contrast = next ? "high" : "normal";
+    localStorage.setItem(CONTRAST_KEY, next ? "high" : "normal");
+  };
 
   return (
     <div className="relative">
@@ -42,6 +59,16 @@ export function SettingsMenu() {
               
               <div className="h-[1px] bg-white/10" />
               
+              <button
+                onClick={toggleContrast}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-white/20 transition-colors"
+              >
+                <span className="text-xs font-medium">High Contrast</span>
+                <span className="text-[10px] px-2 py-1 rounded-full bg-white/10 border border-white/10">{highContrast ? "On" : "Off"}</span>
+              </button>
+
+              <div className="h-[1px] bg-white/10" />
+
               <ColorPicker />
             </div>
           </motion.div>

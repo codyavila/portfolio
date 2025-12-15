@@ -1,17 +1,13 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useMemo, useEffect } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useMemo, Suspense } from "react";
 import * as THREE from "three";
 import { useDynamicTheme } from "@/components/dynamic-theme-provider";
+import { useMouseStore } from "@/lib/mouse-store";
 
+// Simplified shader for better performance
 const GradientShaderMaterial = {
-  uniforms: {
-    uTime: { value: 0 },
-    uMouse: { value: new THREE.Vector2(0, 0) },
-    uColorStart: { value: new THREE.Color("#000000") },
-    uColorEnd: { value: new THREE.Color("#000000") },
-  },
   vertexShader: `
     varying vec2 vUv;
     void main() {
@@ -26,57 +22,42 @@ const GradientShaderMaterial = {
     uniform vec3 uColorEnd;
     varying vec2 vUv;
 
-    // Simplex 2D noise
-    vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+    // Optimized noise function
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
 
-    float snoise(vec2 v){
-      const vec4 C = vec4(0.211324865405187, 0.366025403784439,
-               -0.577350269189626, 0.024390243902439);
-      vec2 i  = floor(v + dot(v, C.yy) );
-      vec2 x0 = v -   i + dot(i, C.xx);
-      vec2 i1;
-      i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-      vec4 x12 = x0.xyxy + C.xxzz;
-      x12.xy -= i1;
-      i = mod(i, 289.0);
-      vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-      + i.x + vec3(0.0, i1.x, 1.0 ));
-      vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-      m = m*m ;
-      m = m*m ;
-      vec3 x = 2.0 * fract(p * C.www) - 1.0;
-      vec3 h = abs(x) - 0.5;
-      vec3 ox = floor(x + 0.5);
-      vec3 a0 = x - ox;
-      m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-      vec3 g;
-      g.x  = a0.x  * x0.x  + h.x  * x0.y;
-      g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-      return 130.0 * dot(m, g);
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+        f.y
+      );
     }
 
     void main() {
       vec2 uv = vUv;
       
-      // Mouse interaction: distort UVs slightly based on mouse position
-      vec2 mouseDistort = uMouse * 0.1;
+      // Simple mouse ripple
+      float dist = distance(uv, uMouse * 0.5 + 0.5);
+      float ripple = sin((dist - uTime * 0.5) * 8.0) * exp(-dist * 3.0) * 0.015;
+      uv += ripple;
       
-      // Slow moving noise
-      float noiseValue = snoise(uv * 2.5 + uTime * 0.05 + mouseDistort);
+      // Flowing gradient
+      float n1 = noise(uv * 2.0 + uTime * 0.03);
+      float n2 = noise(uv * 1.5 - uTime * 0.02);
+      float mixFactor = smoothstep(-0.3, 0.3, n1 + n2 * 0.4 - 0.5);
       
-      // Create organic flow
-      float flow = snoise(uv * 1.2 - uTime * 0.02);
+      vec3 color = mix(uColorStart, uColorEnd, mixFactor);
       
-      // Mix colors based on noise
-      float mixFactor = smoothstep(-0.6, 0.6, noiseValue + flow * 0.4);
-      
-      vec3 finalColor = mix(uColorStart, uColorEnd, mixFactor);
-      
-      // Add subtle grain
-      float grain = fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
-      finalColor += grain * 0.03;
+      // Subtle grain (cheap)
+      float grain = hash(uv + uTime * 0.01) * 0.03;
+      color += grain - 0.015;
 
-      gl_FragColor = vec4(finalColor, 1.0);
+      gl_FragColor = vec4(color, 1.0);
     }
   `
 };
@@ -84,45 +65,39 @@ const GradientShaderMaterial = {
 function GradientMesh() {
   const mesh = useRef<THREE.Mesh>(null);
   const { sourceColor } = useDynamicTheme();
+  const normalizedX = useMouseStore((state) => state.normalizedX);
+  const normalizedY = useMouseStore((state) => state.normalizedY);
   const mouse = useRef(new THREE.Vector2(0, 0));
   
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(0, 0) },
-      uColorStart: { value: new THREE.Color("#050505") }, // Void
-      uColorEnd: { value: new THREE.Color(sourceColor) }, // Dynamic Theme Color
+      uColorStart: { value: new THREE.Color("#050508") },
+      uColorEnd: { value: new THREE.Color(sourceColor) },
     }),
     []
   );
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      // Normalize mouse position to -1 to 1
-      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // Update colors when theme changes
-  useFrame((state) => {
+  // Animate shader at reduced frequency
+  useFrame((state, delta) => {
     if (mesh.current) {
       const material = mesh.current.material as THREE.ShaderMaterial;
-      material.uniforms.uTime.value = state.clock.getElapsedTime();
+      material.uniforms.uTime.value += delta * 0.5; // Slower time progression
       
-      // Smoothly interpolate mouse position
-      material.uniforms.uMouse.value.lerp(mouse.current, 0.05);
+      // Smooth mouse interpolation
+      mouse.current.x = THREE.MathUtils.lerp(mouse.current.x, normalizedX, 0.03);
+      mouse.current.y = THREE.MathUtils.lerp(mouse.current.y, normalizedY, 0.03);
+      material.uniforms.uMouse.value.copy(mouse.current);
       
-      material.uniforms.uColorEnd.value.lerp(new THREE.Color(sourceColor), 0.05);
+      // Update color smoothly
+      material.uniforms.uColorEnd.value.lerp(new THREE.Color(sourceColor), 0.02);
     }
   });
 
   return (
     <mesh ref={mesh} scale={[10, 10, 1]}>
-      <planeGeometry args={[2, 2]} />
+      <planeGeometry args={[2, 2, 1, 1]} />
       <shaderMaterial
         fragmentShader={GradientShaderMaterial.fragmentShader}
         vertexShader={GradientShaderMaterial.vertexShader}
@@ -135,8 +110,19 @@ function GradientMesh() {
 export function ShaderBackground() {
   return (
     <div className="fixed inset-0 z-[-1] pointer-events-none">
-      <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 2]}>
-        <GradientMesh />
+      <Canvas 
+        camera={{ position: [0, 0, 1] }} 
+        dpr={1}
+        gl={{ 
+          antialias: false, 
+          powerPreference: "high-performance",
+          alpha: false,
+        }}
+        performance={{ min: 0.5 }}
+      >
+        <Suspense fallback={null}>
+          <GradientMesh />
+        </Suspense>
       </Canvas>
     </div>
   );
