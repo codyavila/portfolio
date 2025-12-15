@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Pentatonic scale for melodic variety (A minor pentatonic)
 const PENTATONIC = [220.00, 261.63, 293.66, 329.63, 392.00, 440.00];
@@ -35,6 +35,8 @@ const HAPTIC_PATTERNS: Record<string, number | number[]> = {
   home: [12, 40, 8],
 };
 
+const SOUND_MUTED_KEY = 'lum-sound-muted';
+
 export function useSoundSystem() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
@@ -42,6 +44,24 @@ export function useSoundSystem() {
   const lastTickTimeRef = useRef<number>(0);
   const tickIndexRef = useRef<number>(0);
   const hapticsEnabledRef = useRef<boolean>(true);
+  const mutedRef = useRef<boolean>(() => {
+    // Initialize from localStorage immediately
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(SOUND_MUTED_KEY) === 'true';
+    }
+    return false;
+  });
+  const [isMuted, setIsMuted] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(SOUND_MUTED_KEY) === 'true';
+    }
+    return false;
+  });
+
+  // Sync ref with initial state
+  useEffect(() => {
+    mutedRef.current = isMuted;
+  }, [isMuted]);
 
   // Check if device supports vibration (iOS Safari does NOT support this)
   const supportsHaptics = useCallback(() => {
@@ -69,6 +89,14 @@ export function useSoundSystem() {
   // Allow users to enable/disable haptics
   const setHapticsEnabled = useCallback((enabled: boolean) => {
     hapticsEnabledRef.current = enabled;
+  }, []);
+
+  // Toggle mute state
+  const toggleMute = useCallback(() => {
+    const newMuted = !mutedRef.current;
+    mutedRef.current = newMuted;
+    setIsMuted(newMuted);
+    localStorage.setItem(SOUND_MUTED_KEY, String(newMuted));
   }, []);
 
   useEffect(() => {
@@ -186,7 +214,7 @@ export function useSoundSystem() {
 
   // Soft, organic hover - gentle "bloom" with warmth
   const playHover = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.light);
 
     const ctx = audioContextRef.current;
@@ -215,7 +243,7 @@ export function useSoundSystem() {
 
   // Refined click - soft "pop" with texture
   const playClick = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.click);
 
     const ctx = audioContextRef.current;
@@ -256,7 +284,7 @@ export function useSoundSystem() {
 
   // Deep, satisfying thud with natural resonance
   const playThud = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.thud);
 
     const ctx = audioContextRef.current;
@@ -304,7 +332,7 @@ export function useSoundSystem() {
 
   // Toggle switch - smooth mechanical "click-settle" with warmth
   const playToggle = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.toggle);
 
     const ctx = audioContextRef.current;
@@ -354,7 +382,7 @@ export function useSoundSystem() {
 
   // Success - warm, gentle arpeggio with shimmer
   const playSuccess = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.success);
 
     const ctx = audioContextRef.current;
@@ -385,7 +413,7 @@ export function useSoundSystem() {
 
   // Navigation - smooth filtered whoosh with resonance
   const playNavigate = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.navigate);
 
     const ctx = audioContextRef.current;
@@ -428,7 +456,7 @@ export function useSoundSystem() {
 
   // Card select - warm dyad with gentle bloom
   const playSelect = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.click);
 
     const ctx = audioContextRef.current;
@@ -456,7 +484,7 @@ export function useSoundSystem() {
 
   // Slider tick - soft filtered tick with musical pitch
   const playTick = useCallback((value: number, min: number, max: number) => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     
     const now = Date.now();
     if (now - lastTickTimeRef.current < 40) return;
@@ -486,7 +514,7 @@ export function useSoundSystem() {
 
   // Open/expand - gentle ascending sweep with airy texture
   const playOpen = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.open);
 
     const ctx = audioContextRef.current;
@@ -529,7 +557,7 @@ export function useSoundSystem() {
 
   // Close/collapse - gentle descending sweep
   const playClose = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.close);
 
     const ctx = audioContextRef.current;
@@ -561,7 +589,7 @@ export function useSoundSystem() {
 
   // Error - soft dissonant pulse (not harsh)
   const playError = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.error);
 
     const ctx = audioContextRef.current;
@@ -593,7 +621,7 @@ export function useSoundSystem() {
   }, [haptic]);
   // Ambient bloom - soft pad for transitions
   const playAmbient = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
 
     const ctx = audioContextRef.current;
     
@@ -619,7 +647,7 @@ export function useSoundSystem() {
 
   // Nav note - warm filtered note per navigation item
   const playNavNote = useCallback((index: number) => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.light);
 
     const ctx = audioContextRef.current;
@@ -646,7 +674,7 @@ export function useSoundSystem() {
 
   // Light mode - warm ascending with gentle shimmer
   const playLightMode = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.themeSwitch);
 
     const ctx = audioContextRef.current;
@@ -674,7 +702,7 @@ export function useSoundSystem() {
 
   // Dark mode - cool descending with depth
   const playDarkMode = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.themeSwitch);
 
     const ctx = audioContextRef.current;
@@ -715,7 +743,7 @@ export function useSoundSystem() {
 
   // Home - warm welcoming bounce with organic feel
   const playHome = useCallback(() => {
-    if (!audioContextRef.current || !gainNodeRef.current) return;
+    if (!!mutedRef.current || !audioContextRef.current || !gainNodeRef.current) return;
     haptic(HAPTIC_PATTERNS.home);
 
     const ctx = audioContextRef.current;
@@ -770,5 +798,8 @@ export function useSoundSystem() {
     // Haptics control
     setHapticsEnabled,
     supportsHaptics,
+    // Sound mute control
+    isMuted,
+    toggleMute,
   };
 }

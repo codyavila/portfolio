@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X, BookOpen } from "lucide-react";
+import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X, BookOpen, Volume2, VolumeX } from "lucide-react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -50,7 +50,7 @@ export function Header() {
   const { theme, setTheme } = useTheme();
   const { timeOverride, setTimeOverride } = useDynamicTheme();
   useTimeOfDay();
-  const { playToggle, playHover, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome } = useSoundSystem();
+  const { playToggle, playHover, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome, isMuted, toggleMute } = useSoundSystem();
   
   // Magnetic effect values with smoother springs
   const mx = useMotionValue(0);
@@ -351,6 +351,13 @@ export function Header() {
 
                 <div className="w-px h-8 bg-[var(--glass-2-border)] mx-1" />
                 <MobileOption
+                  icon={isMuted ? VolumeX : Volume2}
+                  label={isMuted ? "Muted" : "Sound"}
+                  isActive={!isMuted}
+                  onClick={toggleMute}
+                />
+                <div className="w-px h-8 bg-[var(--glass-2-border)] mx-1" />
+                <MobileOption
                   icon={Sparkles}
                   label="Contrast"
                   isActive={highContrast}
@@ -621,6 +628,21 @@ export function Header() {
                       <span>11PM</span>
                     </div>
                   </div>
+                </div>
+
+                <div className="h-px bg-[var(--glass-2-border)] my-2" />
+                
+                {/* Sound Section */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider px-1">
+                    Sound
+                  </span>
+                  <SettingsOption
+                    icon={isMuted ? VolumeX : Volume2}
+                    label={isMuted ? "Muted" : "On"}
+                    isActive={!isMuted}
+                    onClick={toggleMute}
+                  />
                 </div>
 
                 <div className="h-px bg-[var(--glass-2-border)] my-2" />
