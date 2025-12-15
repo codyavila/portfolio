@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Home, User, Briefcase, FolderGit2, Layers } from "lucide-react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X } from "lucide-react";
+import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { SettingsMenu } from "@/components/SettingsMenu";
+import { useTheme } from "next-themes";
 
 const navItems = [
   { name: "Home", href: "/", icon: Home },
@@ -15,12 +15,34 @@ const navItems = [
   { name: "Projects", href: "/#projects", icon: FolderGit2 },
 ];
 
+const CONTRAST_KEY = "lum-contrast";
+
+// Liquid glass spring config - bouncy and satisfying
+const liquidSpring = {
+  type: "spring" as const,
+  stiffness: 300,
+  damping: 20,
+  mass: 0.8,
+};
+
+// Extra bouncy for the panel expansion
+const jellySpring = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 15,
+  mass: 0.6,
+};
+
 export function Header() {
   const [activeTab, setActiveTab] = useState("Home");
   const [hoverTab, setHoverTab] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [indicator, setIndicator] = useState({ x: 0, y: 0, w: 56, h: 56 });
+  const { theme, setTheme } = useTheme();
   
   // Magnetic effect values with smoother springs
   const mx = useMotionValue(0);
@@ -30,6 +52,21 @@ export function Header() {
 
   // Ambient glow pulse
   const glowOpacity = useSpring(0.3, { stiffness: 100, damping: 20 });
+  
+  // Icon rotation - bouncy
+  const iconRotation = useSpring(0, { stiffness: 400, damping: 12 });
+
+  useEffect(() => {
+    setMounted(true);
+    const stored = localStorage.getItem(CONTRAST_KEY);
+    const enabled = stored === "high";
+    setHighContrast(enabled);
+    document.documentElement.dataset.contrast = enabled ? "high" : "normal";
+  }, []);
+
+  useEffect(() => {
+    iconRotation.set(settingsOpen ? 180 : 0);
+  }, [settingsOpen, iconRotation]);
 
   // Track indicator position based on active/hover tab
   useEffect(() => {
@@ -53,10 +90,38 @@ export function Header() {
     glowOpacity.set(isHovered ? 0.6 : 0.3);
   }, [isHovered, glowOpacity]);
 
+  // Close settings on escape
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSettingsOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [settingsOpen]);
+
+  // Close on click outside
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-nav-container]')) {
+        setSettingsOpen(false);
+      }
+    };
+    const timeout = setTimeout(() => {
+      document.addEventListener('click', handleClick);
+    }, 0);
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener('click', handleClick);
+    };
+  }, [settingsOpen]);
+
   // Magnetic cursor follow effect
   const handleMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
-    if (target.closest('[data-settings-menu]')) {
+    if (target.closest('[data-settings-panel]')) {
       mx.set(0);
       my.set(0);
       return;
@@ -80,6 +145,13 @@ export function Header() {
   const handleEnter = useCallback(() => {
     setIsHovered(true);
   }, []);
+
+  const toggleContrast = () => {
+    const next = !highContrast;
+    setHighContrast(next);
+    document.documentElement.dataset.contrast = next ? "high" : "normal";
+    localStorage.setItem(CONTRAST_KEY, next ? "high" : "normal");
+  };
   
   return (
     <motion.header
@@ -95,7 +167,7 @@ export function Header() {
     >
       {/* Outer glow effect */}
       <motion.div
-        className="absolute inset-0 rounded-full pointer-events-none"
+        className="absolute inset-0 rounded-[28px] pointer-events-none"
         style={{
           background: "radial-gradient(circle, var(--neon-primary-end) 0%, transparent 70%)",
           filter: "blur(20px)",
@@ -104,157 +176,363 @@ export function Header() {
         }}
       />
 
-      {/* Floating Blob Navigation */}
-      <motion.nav
-        ref={containerRef}
+      {/* Mobile Settings Panel - absolutely positioned above navbar */}
+      <AnimatePresence>
+        {settingsOpen && (
+          <motion.div
+            data-settings-panel
+            key="mobile-settings"
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={jellySpring}
+            className="md:hidden absolute bottom-full left-0 right-0 mb-2 glass-2 glass-noise glass-noise-ghost rounded-2xl border border-[var(--glass-2-border)] shadow-lg overflow-hidden"
+          >
+            <div className="px-3 py-3">
+              <div className="flex items-center justify-center gap-2">
+                {mounted && (
+                  <>
+                    <MobileOption
+                      icon={Sun}
+                      label="Light"
+                      isActive={theme === 'light'}
+                      onClick={() => setTheme('light')}
+                    />
+                    <MobileOption
+                      icon={Moon}
+                      label="Dark"
+                      isActive={theme === 'dark'}
+                      onClick={() => setTheme('dark')}
+                    />
+                  </>
+                )}
+                <div className="w-px h-8 bg-[var(--glass-2-border)] mx-1" />
+                <MobileOption
+                  icon={Sparkles}
+                  label="Contrast"
+                  isActive={highContrast}
+                  onClick={toggleContrast}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main glass container */}
+      <motion.div
+        data-nav-container
+        layout
         className={cn(
-          "relative rounded-full px-2 py-2 md:px-2 md:py-3",
-          "flex md:flex-col items-center gap-1",
+          "relative",
           "glass-2 glass-noise glass-noise-ghost",
           "shadow-lg dark:shadow-2xl",
           "backdrop-saturate-150",
-          "border border-[var(--glass-2-border)]"
+          "border border-[var(--glass-2-border)]",
+          "overflow-hidden",
+          "flex md:flex-row"
         )}
+        style={{
+          borderRadius: 28,
+        }}
+        animate={{
+          borderRadius: settingsOpen ? 24 : 28,
+        }}
+        transition={liquidSpring}
         onMouseMove={handleMove}
         onMouseLeave={resetMove}
         onMouseEnter={handleEnter}
-        whileHover={{ 
-          boxShadow: "0 0 40px -10px var(--neon-primary-end)",
-        }}
-        transition={{ duration: 0.3 }}
       >
-        {/* Active indicator glow */}
-        <motion.div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            background: "radial-gradient(circle, var(--neon-primary-end) 0%, transparent 70%)",
-            filter: "blur(12px)",
-          }}
-          animate={{
-            left: indicator.x,
-            top: indicator.y,
-            width: indicator.w,
-            height: indicator.h,
-            opacity: hoverTab ? 0.5 : 0.35,
-          }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 400, 
-            damping: 30,
-          }}
-        />
-
-        {/* Logo / Home */}
-        <Link
-          href="/"
-          data-tab="Home"
-          onMouseEnter={() => setHoverTab("Home")}
-          onMouseLeave={() => setHoverTab(null)}
-          onClick={() => setActiveTab("Home")}
-          className="relative p-2 rounded-full group"
+        {/* Nav content */}
+        <motion.nav
+          ref={containerRef}
+          layout="position"
+          className={cn(
+            "relative px-2 py-2 md:px-2 md:py-3",
+            "flex md:flex-col items-center gap-1",
+          )}
+          transition={liquidSpring}
         >
+          {/* Active indicator glow */}
           <motion.div
-            whileHover={{ scale: 1.12, rotate: 5 }}
-            whileTap={{ scale: 0.92 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            className={cn(
-              "relative z-10 w-10 h-10 rounded-full flex items-center justify-center",
-              "text-white font-bold text-sm tracking-tight",
-              "shadow-lg"
-            )}
+            className="absolute rounded-full pointer-events-none"
             style={{
-              x: springX,
-              y: springY,
-              background: "var(--lum-grad-cyber-lime)",
+              background: "radial-gradient(circle, var(--neon-primary-end) 0%, transparent 70%)",
+              filter: "blur(12px)",
             }}
-          >
-            <motion.span
-              initial={{ opacity: 1 }}
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 15 }}
-            >
-              CA
-            </motion.span>
-          </motion.div>
-          
-          {/* Tooltip */}
-          <motion.div
-            initial={{ opacity: 0, x: -10, scale: 0.9 }}
-            whileHover={{ opacity: 1, x: 0, scale: 1 }}
-            className="hidden md:block absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg glass-2 text-xs font-medium text-[var(--text-primary)] whitespace-nowrap pointer-events-none"
-          >
-            Home
-          </motion.div>
-        </Link>
+            animate={{
+              left: indicator.x,
+              top: indicator.y,
+              width: indicator.w,
+              height: indicator.h,
+              opacity: hoverTab ? 0.5 : 0.35,
+            }}
+            transition={liquidSpring}
+          />
 
-        <motion.div 
-          className="h-4 w-[1px] bg-[var(--glass-2-border)] md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
-        />
-
-        {/* Nav Items */}
-        <div className="flex md:flex-col items-center gap-0.5">
-          {navItems.slice(1).map((item, index) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              data-tab={item.name}
-              onMouseEnter={() => setHoverTab(item.name)}
-              onMouseLeave={() => setHoverTab(null)}
-              onClick={() => setActiveTab(item.name)}
-              className="relative p-2.5 rounded-full group"
-              title={item.name}
+          {/* Logo / Home */}
+          <Link
+            href="/"
+            data-tab="Home"
+            onMouseEnter={() => setHoverTab("Home")}
+            onMouseLeave={() => setHoverTab(null)}
+            onClick={() => setActiveTab("Home")}
+            className="relative p-2 rounded-full group"
+          >
+            <motion.div
+              whileHover={{ scale: 1.12, rotate: 5 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className={cn(
+                "relative z-10 w-10 h-10 rounded-full flex items-center justify-center",
+                "text-white font-bold text-sm tracking-tight",
+                "shadow-lg"
+              )}
+              style={{
+                x: springX,
+                y: springY,
+                background: "var(--lum-grad-cyber-lime)",
+              }}
             >
-              <motion.div 
-                style={{ x: springX, y: springY }}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.85 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              <motion.span
+                initial={{ opacity: 1 }}
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 500, damping: 15 }}
               >
-                <motion.div
-                  animate={{
-                    scale: activeTab === item.name ? 1 : 0.95,
-                  }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                CA
+              </motion.span>
+            </motion.div>
+            
+            {/* Tooltip */}
+            <motion.div
+              initial={{ opacity: 0, x: -10, scale: 0.9 }}
+              whileHover={{ opacity: 1, x: 0, scale: 1 }}
+              className="hidden md:block absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg glass-2 text-xs font-medium text-[var(--text-primary)] whitespace-nowrap pointer-events-none"
+            >
+              Home
+            </motion.div>
+          </Link>
+
+          <motion.div 
+            layout
+            className="h-4 w-[1px] bg-[var(--glass-2-border)] md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1"
+            transition={liquidSpring}
+          />
+
+          {/* Nav Items */}
+          <div className="flex md:flex-col items-center gap-0.5">
+            {navItems.slice(1).map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                data-tab={item.name}
+                onMouseEnter={() => setHoverTab(item.name)}
+                onMouseLeave={() => setHoverTab(null)}
+                onClick={() => setActiveTab(item.name)}
+                className="relative p-2.5 rounded-full group"
+                title={item.name}
+              >
+                <motion.div 
+                  style={{ x: springX, y: springY }}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.85 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  <item.icon
-                    className={cn(
-                      "relative z-10 w-5 h-5 transition-colors duration-200",
-                      activeTab === item.name
-                        ? "text-[var(--chip-primary-text)]"
-                        : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
-                    )}
-                  />
+                  <motion.div
+                    animate={{
+                      scale: activeTab === item.name ? 1 : 0.95,
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <item.icon
+                      className={cn(
+                        "relative z-10 w-5 h-5 transition-colors duration-200",
+                        activeTab === item.name
+                          ? "text-[var(--chip-primary-text)]"
+                          : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+                      )}
+                    />
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-              
-              {/* Tooltip */}
+                
+                {/* Tooltip */}
+                <motion.div
+                  initial={{ opacity: 0, x: -10, scale: 0.9 }}
+                  whileHover={{ opacity: 1, x: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  className="hidden md:block absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg glass-2 text-xs font-medium text-[var(--text-primary)] whitespace-nowrap pointer-events-none z-50"
+                >
+                  {item.name}
+                </motion.div>
+                
+                <span className="sr-only">{item.name}</span>
+              </Link>
+            ))}
+          </div>
+
+          <motion.div 
+            layout
+            className="h-4 w-[1px] bg-[var(--glass-2-border)] md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1"
+            transition={liquidSpring}
+          />
+
+          {/* Settings Button */}
+          <motion.button
+            layout
+            onClick={() => setSettingsOpen(!settingsOpen)}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            className={cn(
+              "p-2.5 rounded-full transition-colors relative z-10",
+              settingsOpen 
+                ? "text-[var(--chip-primary-text)]" 
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            )}
+            aria-label={settingsOpen ? "Close settings" : "Open settings"}
+            aria-expanded={settingsOpen}
+            transition={liquidSpring}
+          >
+            <motion.div style={{ rotate: iconRotation }}>
+              {settingsOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Settings className="w-5 h-5" />
+              )}
+            </motion.div>
+          </motion.button>
+        </motion.nav>
+
+        {/* Settings Panel - Desktop only (horizontal expansion) */}
+        <AnimatePresence mode="popLayout">
+          {settingsOpen && (
+            <motion.div
+              data-settings-panel
+              key="desktop-panel"
+              initial={{ width: 0, opacity: 0, scaleX: 0.8 }}
+              animate={{ width: "auto", opacity: 1, scaleX: 1 }}
+              exit={{ width: 0, opacity: 0, scaleX: 0.8 }}
+              transition={jellySpring}
+              className="hidden md:block overflow-hidden origin-left"
+            >
               <motion.div
-                initial={{ opacity: 0, x: -10, scale: 0.9 }}
-                whileHover={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className="hidden md:block absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg glass-2 text-xs font-medium text-[var(--text-primary)] whitespace-nowrap pointer-events-none z-50"
+                initial={{ opacity: 0, x: -15, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -15, scale: 0.95 }}
+                transition={{ ...jellySpring, delay: 0.03 }}
+                className="py-3 px-4 min-w-[170px] border-l border-[var(--glass-2-border)]"
               >
-                {item.name}
+                {/* Theme Section */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider px-1">
+                    Theme
+                  </span>
+                  {mounted && (
+                    <div className="space-y-1">
+                      <SettingsOption
+                        icon={Sun}
+                        label="Light"
+                        isActive={theme === 'light'}
+                        onClick={() => setTheme('light')}
+                      />
+                      <SettingsOption
+                        icon={Moon}
+                        label="Dark"
+                        isActive={theme === 'dark'}
+                        onClick={() => setTheme('dark')}
+                      />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="h-px bg-[var(--glass-2-border)] my-2" />
+                
+                {/* Accessibility Section */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider px-1">
+                    Accessibility
+                  </span>
+                  <SettingsOption
+                    icon={Sparkles}
+                    label={highContrast ? "High Contrast" : "Normal"}
+                    isActive={highContrast}
+                    onClick={toggleContrast}
+                  />
+                </div>
               </motion.div>
-              
-              <span className="sr-only">{item.name}</span>
-            </Link>
-          ))}
-        </div>
-
-        <motion.div 
-          className="h-4 w-[1px] bg-[var(--glass-2-border)] md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ delay: 0.6, duration: 0.3 }}
-        />
-
-        <SettingsMenu />
-      </motion.nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </motion.header>
+  );
+}
+
+// Desktop settings option
+function SettingsOption({ 
+  icon: Icon, 
+  label, 
+  isActive, 
+  onClick 
+}: { 
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.96 }}
+      className={cn(
+        "relative flex items-center gap-2.5 w-full px-3 py-2 rounded-xl transition-colors overflow-hidden",
+        "text-sm font-medium",
+        isActive 
+          ? "bg-[var(--chip-primary-bg)] border border-[var(--chip-primary-border)] text-[var(--chip-primary-text)]"
+          : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-1-fill)] border border-transparent"
+      )}
+    >
+      <Icon className="w-4 h-4" />
+      <span>{label}</span>
+      {isActive && (
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--chip-primary-text)]"
+        />
+      )}
+    </motion.button>
+  );
+}
+
+// Mobile compact option
+function MobileOption({ 
+  icon: Icon, 
+  label,
+  isActive, 
+  onClick 
+}: { 
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      className={cn(
+        "p-2.5 rounded-xl transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center",
+        isActive
+          ? "bg-[var(--chip-primary-bg)] border border-[var(--chip-primary-border)] text-[var(--chip-primary-text)]"
+          : "text-[var(--text-secondary)] active:text-[var(--text-primary)] active:bg-[var(--glass-1-fill)] border border-transparent"
+      )}
+      title={label}
+    >
+      <Icon className="w-5 h-5" />
+    </motion.button>
   );
 }
 
