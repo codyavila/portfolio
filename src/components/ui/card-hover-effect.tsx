@@ -74,6 +74,9 @@ export const Card = ({
         className
       )}
     >
+      {/* Shimmer effect layer */}
+      <div className="shimmer-border-layer hidden dark:block" style={{ '--shimmer-angle': '0deg' } as React.CSSProperties} />
+      
       <div className="relative z-50">
         <div className="p-4">{children}</div>
       </div>

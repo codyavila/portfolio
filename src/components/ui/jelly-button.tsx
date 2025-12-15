@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type GradientVariant = "cyber-lime" | "cotton-candy" | "solar-flare";
@@ -15,21 +15,26 @@ interface JellyButtonProps {
   glowIntensity?: number;
   onClick?: () => void;
   disabled?: boolean;
+  /** Enable idle heartbeat breathing animation (per Luminous spec) */
+  breathing?: boolean;
 }
 
-const gradientStyles: Record<GradientVariant, { gradient: string; glow: string; textColor: string }> = {
+const gradientStyles: Record<GradientVariant, { gradient: string; colors: string[]; glow: string; textColor: string }> = {
   "cyber-lime": {
     gradient: "linear-gradient(135deg, #CCFF00 0%, #00FF99 100%)",
+    colors: ["#CCFF00", "#00FF99"],
     glow: "rgba(0, 255, 153, 0.6)",
     textColor: "#0f0d12",
   },
   "cotton-candy": {
     gradient: "linear-gradient(135deg, #FF99CC 0%, #33CCFF 100%)",
+    colors: ["#FF99CC", "#33CCFF"],
     glow: "rgba(255, 153, 204, 0.6)",
     textColor: "#0f0d12",
   },
   "solar-flare": {
     gradient: "linear-gradient(135deg, #FFCC00 0%, #FF3366 100%)",
+    colors: ["#FFCC00", "#FF3366"],
     glow: "rgba(255, 51, 102, 0.6)",
     textColor: "#0f0d12",
   },
@@ -42,7 +47,17 @@ const sizeStyles = {
 };
 
 export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>(
-  ({ children, variant = "cyber-lime", size = "md", href, className, glowIntensity = 1, onClick, disabled }, ref) => {
+  ({ 
+    children, 
+    variant = "cyber-lime", 
+    size = "md", 
+    href, 
+    className, 
+    glowIntensity = 1, 
+    onClick, 
+    disabled,
+    breathing = true,
+  }, ref) => {
     const styles = gradientStyles[variant];
     
     // Magnetic effect — button follows cursor slightly
@@ -51,12 +66,31 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     const springX = useSpring(mx, { stiffness: 400, damping: 25 });
     const springY = useSpring(my, { stiffness: 400, damping: 25 });
 
-    // Gradient rotation on hover
+    // Gradient rotation on hover (Luminous spec: gradient rotates on hover)
     const gradientRotation = useMotionValue(135);
     const springRotation = useSpring(gradientRotation, { stiffness: 100, damping: 20 });
     const animatedGradient = useTransform(
       springRotation,
-      (r) => `linear-gradient(${r}deg, ${styles.gradient.match(/#[A-Fa-f0-9]{6}/g)?.join(", ")})`
+      (r) => `linear-gradient(${r}deg, ${styles.colors[0]}, ${styles.colors[1]})`
+    );
+
+    // Heartbeat breathing animation (Luminous spec: opacity 0.9→1.0, scale pulse every 4s)
+    const breatheOpacity = useMotionValue(1);
+    const breatheScale = useMotionValue(1);
+    
+    useAnimationFrame((time) => {
+      if (breathing && !disabled) {
+        // 4 second cycle = 0.25 Hz = time * 0.00025 * 2π
+        const phase = (time * 0.00157) % (Math.PI * 2); // ~4s cycle
+        breatheOpacity.set(0.9 + Math.sin(phase) * 0.1);
+        breatheScale.set(1 + Math.sin(phase) * 0.015);
+      }
+    });
+
+    // Glow intensity pulsing with breath
+    const animatedGlow = useTransform(
+      breatheOpacity,
+      (opacity) => `0 0 ${20 * glowIntensity * opacity}px ${styles.glow}`
     );
 
     const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -82,14 +116,16 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     const buttonContent = (
       <motion.button
         ref={ref}
-        // The Squish — scale(0.95, 0.9) on click (wider and shorter)
+        // The Squish — scale(0.95, 0.9) on click (wider and shorter) per Luminous spec
         whileHover={{ 
           scale: 1.05, 
           rotate: 1,
         }}
         whileTap={{ 
-          scale: 0.92, 
+          // Squash and stretch: wider (1.1x) and shorter (0.9y)
+          scale: 0.9, 
           scaleX: 1.1, 
+          scaleY: 0.85,
           rotate: -0.5,
         }}
         transition={{ 
@@ -101,24 +137,39 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
           "group relative inline-flex items-center justify-center rounded-full font-semibold tracking-wide cursor-pointer overflow-hidden",
           "transition-shadow duration-300 chromatic-edge",
           sizeStyles[size],
+          disabled && "opacity-50 cursor-not-allowed",
           className
         )}
         style={{
           x: springX,
           y: springY,
+          scale: breatheScale,
+          opacity: breatheOpacity,
           background: styles.gradient,
           color: styles.textColor,
-          boxShadow: `0 0 ${20 * glowIntensity}px ${styles.glow}`,
+          boxShadow: animatedGlow,
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={onClick}
         disabled={disabled}
       >
-        {/* Animated gradient overlay - only visible on hover */}
+        {/* Animated gradient overlay - visible on hover, follows mouse */}
         <motion.div
-          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-50 transition-opacity"
+          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-70 transition-opacity duration-300"
           style={{ background: animatedGradient }}
+        />
+        
+        {/* Shine/glare effect on hover */}
+        <motion.div
+          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 pointer-events-none"
+          style={{
+            background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 55%, transparent 60%)",
+            backgroundSize: "200% 100%",
+          }}
+          initial={{ backgroundPosition: "200% 0" }}
+          whileHover={{ backgroundPosition: "-200% 0" }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
         />
         
         {/* Content */}
@@ -140,7 +191,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
 
 JellyButton.displayName = "JellyButton";
 
-// Secondary "Ghost" Button — Glass material
+// Secondary "Ghost" Button — Glass material with breathing
 interface GhostButtonProps {
   children: React.ReactNode;
   size?: "sm" | "md" | "lg";
@@ -149,14 +200,25 @@ interface GhostButtonProps {
   accentColor?: GradientVariant;
   onClick?: () => void;
   disabled?: boolean;
+  breathing?: boolean;
 }
 
 export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>(
-  ({ children, size = "md", href, className, accentColor, onClick, disabled }, ref) => {
+  ({ children, size = "md", href, className, accentColor, onClick, disabled, breathing = false }, ref) => {
     const mx = useMotionValue(0);
     const my = useMotionValue(0);
     const springX = useSpring(mx, { stiffness: 400, damping: 25 });
     const springY = useSpring(my, { stiffness: 400, damping: 25 });
+
+    // Subtle breathing for ghost buttons when enabled
+    const breatheOpacity = useMotionValue(1);
+    
+    useAnimationFrame((time) => {
+      if (breathing && !disabled) {
+        const phase = (time * 0.00157) % (Math.PI * 2);
+        breatheOpacity.set(0.95 + Math.sin(phase) * 0.05);
+      }
+    });
 
     const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
       const rect = event.currentTarget.getBoundingClientRect();
@@ -184,13 +246,15 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
           "bg-[var(--glass-1-fill)] backdrop-blur-md",
           "border border-[var(--glass-2-border)] hover:border-[var(--hover-accent)]",
           "text-[var(--text-primary)]",
-          "transition-colors duration-300",
+          "transition-colors duration-300 shimmer-border iridescent",
+          disabled && "opacity-50 cursor-not-allowed",
           sizeStyles[size],
           className
         )}
         style={{
           x: springX,
           y: springY,
+          opacity: breatheOpacity,
           boxShadow: accentStyles 
             ? `0 0 20px ${accentStyles.glow.replace("0.6", "0.2")}` 
             : undefined,

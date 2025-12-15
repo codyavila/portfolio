@@ -78,14 +78,10 @@ export function Header() {
         className={cn(
           "relative rounded-full px-2 py-2 md:px-2 md:py-3",
           "flex md:flex-col items-center gap-1",
-          "backdrop-saturate-150 border border-[var(--glass-2-border)]",
-          "shadow-lg dark:shadow-2xl"
+          "glass-2 glass-noise glass-noise-ghost",
+          "shadow-lg dark:shadow-2xl",
+          "backdrop-saturate-150"
         )}
-        style={{ 
-          filter: "url('#gooey')",
-          background: "var(--glass-lume-fill)",
-          backdropFilter: "blur(24px)",
-        }}
         onMouseMove={handleMove}
         onMouseLeave={resetMove}
       >
@@ -176,15 +172,6 @@ export function Header() {
         <div className="h-4 w-[1px] bg-[var(--glass-2-border)] md:w-4 md:h-[1px] mx-1 md:mx-0 md:my-1" />
 
         <SettingsMenu />
-
-        {/* Gooey filter */}
-        <svg className="absolute inset-0 pointer-events-none opacity-0" width="0" height="0">
-          <filter id="gooey">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" />
-            <feBlend in="SourceGraphic" in2="goo" />
-          </filter>
-        </svg>
       </nav>
     </motion.header>
   );

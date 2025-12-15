@@ -31,7 +31,7 @@ export const BentoGrid = ({
     <MouseContext.Provider value={{ mouseX, mouseY }}>
       <motion.div
         className={cn(
-          "grid grid-cols-4 md:grid-cols-12 gap-4 md:gap-6 max-w-7xl mx-auto relative group",
+          "grid grid-cols-4 md:grid-cols-12 gap-4 md:gap-6 max-w-7xl mx-auto relative",
           className
         )}
         style={{ gap }}

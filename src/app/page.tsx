@@ -8,13 +8,6 @@ import { NanoCard, NanoCardTitle, NanoCardDescription } from "@/components/ui/na
 import { PortalCard, PortalCardTitle, PortalCardDescription } from "@/components/ui/portal-card";
 import { DiscoverGraphic, FeasibilityGraphic, ExecuteGraphic } from "@/components/ui/process-graphics";
 import { JellyButton, GhostButton } from "@/components/ui/jelly-button";
-import dynamic from "next/dynamic";
-
-// Lazy load heavy 3D components
-const ShaderBackground = dynamic(
-  () => import("@/components/ui/shader-background").then(mod => ({ default: mod.ShaderBackground })),
-  { ssr: false }
-);
 
 // Staggered animation variants for the Entry Sequence
 const containerVariants: Variants = {
@@ -44,7 +37,6 @@ const itemVariants: Variants = {
 export default function Home() {
   return (
     <main className="relative max-w-7xl mx-auto px-6 py-16 sm:py-24 md:pl-32">
-      <ShaderBackground />
       <div className="absolute top-0 left-0 w-full h-screen overflow-hidden pointer-events-none">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="var(--neon-primary-end)" />
       </div>

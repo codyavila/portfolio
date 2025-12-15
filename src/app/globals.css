@@ -456,6 +456,27 @@ p {
   border: 1px solid var(--glass-4-border);
 }
 
+/* Glass with noise texture overlay (per Luminous spec: 2-5% noise) */
+.glass-noise {
+  position: relative;
+}
+
+.glass-noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: var(--glass-noise-opacity, 0.03);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Noise intensity variants */
+.glass-noise-ghost { --glass-noise-opacity: 0.02; }
+.glass-noise-prism { --glass-noise-opacity: 0.04; }
+.glass-noise-lume { --glass-noise-opacity: 0.05; }
+
 /* ─────────────────────────────────────────────────────────────────────────────
    PORTAL CARD — Glass-Prism Material with Shimmer Border
    ───────────────────────────────────────────────────────────────────────────── */
@@ -501,6 +522,30 @@ html.dark .prism-card:hover {
     0 0 30px -10px rgba(0, 255, 153, 0.15);
 }
 
+/* Nano-card specific styling - smaller, more compact */
+.nano-card {
+  border-radius: 20px;
+}
+
+.nano-card .card-content {
+  padding: 1.25rem;
+}
+
+html.dark .nano-card {
+  background: linear-gradient(
+    155deg, 
+    rgba(255,255,255,0.045) 0%, 
+    rgba(255,255,255,0.015) 100%
+  );
+}
+
+html.dark .nano-card:hover {
+  box-shadow: 
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+    0 20px 40px -10px rgba(0,0,0,0.5),
+    0 0 40px -12px rgba(0, 255, 153, 0.2);
+}
+
 /* Glow variants based on category color - dark mode only */
 html.dark .prism-card.glow-cyber-lime:hover {
   box-shadow: 
@@ -527,44 +572,107 @@ html.dark .prism-card.glow-solar-flare:hover {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   SHIMMER BORDER — Subtle gradient border that glows on hover (dark mode only)
+   SHIMMER BORDER — Rotating gradient border (endless rotation per spec)
+   The border rotates around the card continuously at slow speed
+   NOTE: Uses a child element approach to avoid ::before/::after conflicts
    ───────────────────────────────────────────────────────────────────────────── */
 .shimmer-border {
   position: relative;
+  --shimmer-speed: 8s;
 }
 
-html.dark .shimmer-border::before {
+/* Shimmer border layer - injected via JS in components */
+.shimmer-border-layer {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   padding: 1px;
   border-radius: inherit;
-  background: linear-gradient(
-    135deg, 
-    rgba(204, 255, 0, 0.3), 
-    rgba(0, 255, 153, 0.2), 
-    rgba(51, 204, 255, 0.3), 
-    rgba(255, 153, 204, 0.2),
-    rgba(204, 255, 0, 0.3)
+  background: conic-gradient(
+    from var(--shimmer-angle, 0deg),
+    rgba(204, 255, 0, 0.4),
+    rgba(0, 255, 153, 0.3),
+    rgba(51, 204, 255, 0.4),
+    rgba(255, 153, 204, 0.3),
+    rgba(255, 51, 102, 0.3),
+    rgba(204, 255, 0, 0.4)
   );
-  background-size: 200% 200%;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: shimmer-move 8s ease infinite;
+  animation: shimmer-rotate var(--shimmer-speed) linear infinite;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.5;
+  opacity: 0.4;
   transition: opacity 0.4s var(--spring-smooth);
 }
 
-html.dark .shimmer-border:hover::before {
+html.dark .shimmer-border:hover .shimmer-border-layer {
   opacity: 1;
+  --shimmer-speed: 4s; /* Speed up on hover */
+}
+
+/* Secondary shimmer layer for depth - also injected via JS */
+.shimmer-border-layer-secondary {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from calc(var(--shimmer-angle, 0deg) + 180deg),
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: shimmer-rotate var(--shimmer-speed) linear infinite reverse;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s var(--spring-smooth);
+}
+
+html.dark .shimmer-border:hover .shimmer-border-layer-secondary {
+  opacity: 0.6;
+}
+
+@keyframes shimmer-rotate {
+  from { --shimmer-angle: 0deg; }
+  to { --shimmer-angle: 360deg; }
+}
+
+/* Fallback for browsers without @property support */
+@supports not (background: conic-gradient(red, blue)) {
+  html.dark .shimmer-border::before {
+    background: linear-gradient(
+      135deg, 
+      rgba(204, 255, 0, 0.3), 
+      rgba(0, 255, 153, 0.2), 
+      rgba(51, 204, 255, 0.3), 
+      rgba(255, 153, 204, 0.2),
+      rgba(204, 255, 0, 0.3)
+    );
+    background-size: 200% 200%;
+    animation: shimmer-move 8s ease infinite;
+  }
 }
 
 @keyframes shimmer-move {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+}
+
+/* CSS @property for animatable custom property */
+@property --shimmer-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -712,72 +820,149 @@ html.dark .shimmer-border:hover::before {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   CHROMATIC ABERRATION — Subtle RGB split on glass edges (dark mode only)
+   CHROMATIC ABERRATION — RGB split on glass edges mimicking light dispersion
+   Luminous spec: 2px RGB channel separation at edges
+   NOTE: Uses child elements to avoid ::before/::after conflicts
    ───────────────────────────────────────────────────────────────────────────── */
 .chromatic-edge {
   position: relative;
+  /* CSS custom property for dynamic offset */
+  --chroma-offset: 1px;
 }
 
-html.dark .chromatic-edge::before,
-html.dark .chromatic-edge::after {
-  content: "";
+.chromatic-edge:hover {
+  --chroma-offset: 2px;
+}
+
+/* Red channel - offset top-left - use child element */
+.chroma-red {
   position: absolute;
-  inset: -1px;
+  inset: calc(-1 * var(--chroma-offset, 1px));
   border-radius: inherit;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, rgba(255, 0, 50, 0.2), transparent 50%) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   pointer-events: none;
   opacity: 0;
+  transform: translate(calc(-1 * var(--chroma-offset, 1px)), calc(-1 * var(--chroma-offset, 1px)));
+  transition: 
+    opacity 0.4s var(--spring-smooth),
+    transform 0.4s var(--spring-smooth);
+}
+
+/* Cyan/Blue channel - offset bottom-right - use child element */
+.chroma-cyan {
+  position: absolute;
+  inset: calc(-1 * var(--chroma-offset, 1px));
+  border-radius: inherit;
+  border: 1px solid transparent;
+  background: linear-gradient(315deg, rgba(0, 150, 255, 0.2), transparent 50%) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(var(--chroma-offset, 1px), var(--chroma-offset, 1px));
+  transition: 
+    opacity 0.4s var(--spring-smooth),
+    transform 0.4s var(--spring-smooth);
+}
+
+html.dark .chromatic-edge:hover .chroma-red,
+html.dark .chromatic-edge:hover .chroma-cyan {
+  opacity: 1;
+}
+
+/* Additional green channel for full RGB dispersion */
+.chroma-green {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(0, 255, 100, 0.1);
+  opacity: 0;
   transition: opacity 0.4s var(--spring-smooth);
+  pointer-events: none;
 }
 
-html.dark .chromatic-edge::before {
-  border: 1px solid rgba(255, 0, 0, 0.15);
-  transform: translate(-1px, -1px);
-}
-
-html.dark .chromatic-edge::after {
-  border: 1px solid rgba(0, 100, 255, 0.15);
-  transform: translate(1px, 1px);
-}
-
-html.dark .chromatic-edge:hover::before,
-html.dark .chromatic-edge:hover::after {
+html.dark .chromatic-edge:hover .chroma-green {
   opacity: 1;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   IRIDESCENCE — Oil-slick rainbow at glancing angles (dark mode only)
+   IRIDESCENCE — Oil-slick rainbow at glancing angles (Fresnel effect)
+   Visible only at edge angles, simulating real glass light dispersion
+   NOTE: Uses child elements to avoid ::before/::after conflicts
    ───────────────────────────────────────────────────────────────────────────── */
 .iridescent {
   position: relative;
+  --iridescent-angle: 135deg;
 }
 
-html.dark .iridescent::before {
-  content: "";
+/* Iridescent sweep layer - child element */
+.iridescent-layer {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 0, 128, 0.05) 0%,
-    rgba(0, 255, 255, 0.05) 25%,
-    rgba(255, 255, 0, 0.05) 50%,
-    rgba(128, 0, 255, 0.05) 75%,
-    rgba(255, 0, 128, 0.05) 100%
-  );
-  background-size: 400% 400%;
-  animation: iridescent-shift 12s ease infinite;
+  background: 
+    /* Primary holographic sweep */
+    linear-gradient(
+      var(--iridescent-angle, 135deg),
+      rgba(255, 0, 128, 0.0) 0%,
+      rgba(255, 0, 128, 0.08) 15%,
+      rgba(0, 255, 255, 0.06) 30%,
+      rgba(255, 255, 0, 0.04) 45%,
+      rgba(128, 0, 255, 0.06) 60%,
+      rgba(0, 255, 153, 0.08) 75%,
+      rgba(255, 0, 128, 0.0) 100%
+    );
+  background-size: 300% 300%;
+  animation: iridescent-sweep 15s ease-in-out infinite;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.5s var(--spring-smooth);
+  mix-blend-mode: screen;
+  transition: opacity 0.6s var(--spring-smooth);
+  z-index: 2;
 }
 
-html.dark .iridescent:hover::before {
+/* Fresnel edge glow - more visible at card edges - child element */
+.iridescent-fresnel {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s var(--spring-smooth);
+  z-index: 2;
+}
+
+html.dark .iridescent:hover .iridescent-layer {
   opacity: 1;
 }
 
-@keyframes iridescent-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+html.dark .iridescent:hover .iridescent-fresnel {
+  opacity: 0.6;
+}
+
+@keyframes iridescent-sweep {
+  0%, 100% { 
+    background-position: 0% 50%;
+    --iridescent-angle: 135deg;
+  }
+  25% { background-position: 50% 0%; }
+  50% { 
+    background-position: 100% 50%;
+    --iridescent-angle: 225deg;
+  }
+  75% { background-position: 50% 100%; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

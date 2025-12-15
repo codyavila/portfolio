@@ -45,6 +45,9 @@ export const ProjectCard = ({ title, description, link, icon, className, gradien
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
+        {/* Shimmer effect layers */}
+        <div className="shimmer-border-layer hidden dark:block" style={{ '--shimmer-angle': '0deg' } as React.CSSProperties} />
+        
         {/* Gradient Background on Hover (Optional extra layer) */}
         <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none", gradient)} />
         
