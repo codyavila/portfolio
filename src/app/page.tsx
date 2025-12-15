@@ -1,23 +1,26 @@
 import Link from "next/link";
 import { ArrowRight, Code2, Layout, Users, BarChart3, Database, GitBranch, Terminal } from "lucide-react";
+import { Spotlight } from "@/components/ui/Spotlight";
+import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
+import { ProjectCard } from "@/components/ui/project-card";
+import { DiscoverGraphic, FeasibilityGraphic, ExecuteGraphic } from "@/components/ui/process-graphics";
 
 export default function Home() {
   return (
-    <main className="relative max-w-4xl mx-auto px-6 py-12 sm:py-20">
+    <main className="relative max-w-7xl mx-auto px-6 py-12 sm:py-20">
       {/* Background Pattern */}
       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-dot-pattern opacity-50" />
-      <div className="absolute top-0 right-0 -z-10 h-[500px] w-[500px] bg-blue-500/10 blur-[100px] rounded-full opacity-50 dark:bg-blue-500/20" />
-      <div className="absolute bottom-0 left-0 -z-10 h-[500px] w-[500px] bg-purple-500/10 blur-[100px] rounded-full opacity-50 dark:bg-purple-500/20" />
+      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
 
       {/* Hero Section */}
-      <section className="mb-20 sm:mb-32 relative">
+      <section className="mb-20 sm:mb-32 relative max-w-4xl mx-auto">
         <div className="flex flex-col gap-6">
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 to-zinc-500 dark:from-white dark:to-zinc-400">
+          <h1 className="text-4xl sm:text-7xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 dark:from-neutral-50 dark:to-neutral-400">
               Cody Avila
             </span>
           </h1>
-          <h2 className="text-xl sm:text-2xl font-medium text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+          <h2 className="text-xl sm:text-3xl font-medium text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
             Frontend Engineer 
             <ArrowRight className="h-5 w-5 text-blue-500" />
             <span className="text-zinc-900 dark:text-zinc-100">Technical Product Manager</span>
@@ -32,14 +35,14 @@ export default function Home() {
               Get in Touch
             </a>
             <a href="#case-studies" className="inline-flex items-center justify-center rounded-full border border-zinc-200 px-6 py-3 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-50 hover:scale-105 dark:border-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-900">
-              View Work
+              View Case Studies
             </a>
           </div>
         </div>
       </section>
 
       {/* About / Transition Story */}
-      <section id="about" className="mb-20 sm:mb-32 scroll-mt-24">
+      <section id="about" className="mb-20 sm:mb-32 scroll-mt-24 max-w-4xl mx-auto">
         <h3 className="text-2xl font-semibold mb-8 tracking-tight">The Technical Edge</h3>
         <div className="prose prose-zinc dark:prose-invert max-w-none">
           <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -53,8 +56,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Process Section */}
+      <section id="process" className="mb-20 sm:mb-32 scroll-mt-24">
+        <h3 className="text-2xl font-semibold mb-8 tracking-tight max-w-4xl mx-auto">My Process</h3>
+        <BentoGrid className="max-w-4xl mx-auto">
+          <BentoGridItem
+            title="Discover & Define"
+            description="I start by understanding the 'why'. I analyze user data, interview stakeholders, and define success metrics before discussing solutions."
+            header={<DiscoverGraphic />}
+            icon={<Users className="h-4 w-4 text-neutral-500" />}
+            className="md:col-span-1"
+          />
+          <BentoGridItem
+            title="Technical Feasibility"
+            description="I evaluate architectural constraints early. I work with engineers to identify risks, dependencies, and trade-offs to ensure realistic roadmaps."
+            header={<FeasibilityGraphic />}
+            icon={<Code2 className="h-4 w-4 text-neutral-500" />}
+            className="md:col-span-1"
+          />
+          <BentoGridItem
+            title="Execute & Iterate"
+            description="I prioritize iterative delivery. I use data from each release to refine the backlog, ensuring we're always building the highest-value features."
+            header={<ExecuteGraphic />}
+            icon={<BarChart3 className="h-4 w-4 text-neutral-500" />}
+            className="md:col-span-1"
+          />
+        </BentoGrid>
+      </section>
+
       {/* Experience */}
-      <section id="experience" className="mb-20 sm:mb-32 scroll-mt-24">
+      <section id="experience" className="mb-20 sm:mb-32 scroll-mt-24 max-w-4xl mx-auto">
         <h3 className="text-2xl font-semibold mb-8 tracking-tight">Experience</h3>
         <div className="relative border-l border-zinc-200 dark:border-zinc-800 ml-3 space-y-12">
           <div className="relative pl-8">
@@ -90,7 +121,7 @@ export default function Home() {
       </section>
 
       {/* Skills */}
-      <section className="mb-20 sm:mb-32 scroll-mt-24">
+      <section className="mb-20 sm:mb-32 scroll-mt-24 max-w-4xl mx-auto">
         <h3 className="text-2xl font-semibold mb-8 tracking-tight">Skills</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="group rounded-2xl border border-zinc-200 bg-zinc-50/50 p-6 transition-all duration-300 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 dark:border-zinc-800 dark:bg-zinc-900/50">
@@ -143,62 +174,23 @@ export default function Home() {
       </section>
 
       {/* Projects / Case Studies */}
-      <section id="case-studies" className="mb-20 sm:mb-32 scroll-mt-24">
+      <section id="case-studies" className="mb-20 sm:mb-32 scroll-mt-24 max-w-6xl mx-auto">
         <h3 className="text-2xl font-semibold mb-8 tracking-tight">Case Studies</h3>
-        <div className="grid gap-6">
-          {/* Project 1 */}
-          <Link href="/projects/email-campaign-system" className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50/50 p-8 transition-all duration-300 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-blue-500/50">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-              <div>
-                <h4 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">Email Campaign Management System</h4>
-                <p className="text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed">
-                  Built a multi‑step wizard with advanced validation and natural‑language scheduling. 
-                  Reduced setup friction and increased successful campaign launches.
-                </p>
-              </div>
-              <div className="shrink-0 p-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
-                <Layout className="h-6 w-6" />
-              </div>
-            </div>
-            
-            <div className="mt-6 flex items-center gap-4 text-sm font-medium text-zinc-500 dark:text-zinc-400">
-              <span className="flex items-center gap-1.5">
-                <span className="text-zinc-900 dark:text-zinc-100">Problem</span>
-                <ArrowRight className="h-3 w-3" />
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-zinc-900 dark:text-zinc-100">Solution</span>
-                <ArrowRight className="h-3 w-3" />
-              </span>
-              <span className="text-zinc-900 dark:text-zinc-100">Result</span>
-            </div>
-
-            <div className="mt-8 flex items-center text-sm font-medium text-zinc-900 dark:text-zinc-100">
-              Read Case Study 
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </div>
-          </Link>
-
-           {/* Project 2 */}
-           <Link href="/projects/blox-nxt-cms-rebuild" className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50/50 p-8 transition-all duration-300 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-purple-500/50">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-              <div>
-                <h4 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">BLOX NXT CMS Rebuild</h4>
-                <p className="text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed">
-                  Contributed to modular, pattern‑driven front‑end architecture. 
-                  Built data‑driven dashboards and real‑time authoring affordances to streamline editorial workflows.
-                </p>
-              </div>
-              <div className="shrink-0 p-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
-                <Database className="h-6 w-6" />
-              </div>
-            </div>
-            
-            <div className="mt-8 flex items-center text-sm font-medium text-zinc-900 dark:text-zinc-100">
-              Read Case Study 
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </div>
-          </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ProjectCard
+            title="Email Campaign Management System"
+            description="Built a multi‑step wizard with advanced validation and natural‑language scheduling. Reduced setup friction and increased successful campaign launches."
+            link="/projects/email-campaign-system"
+            icon={<Layout className="h-6 w-6 text-blue-500" />}
+            gradient="from-blue-500/20 to-cyan-500/20"
+          />
+          <ProjectCard
+            title="BLOX NXT CMS Rebuild"
+            description="Contributed to modular, pattern‑driven front‑end architecture. Built data‑driven dashboards and real‑time authoring affordances to streamline editorial workflows."
+            link="/projects/blox-nxt-cms-rebuild"
+            icon={<Database className="h-6 w-6 text-purple-500" />}
+            gradient="from-purple-500/20 to-pink-500/20"
+          />
         </div>
       </section>
 

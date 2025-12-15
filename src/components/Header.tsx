@@ -4,7 +4,7 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-background/80 backdrop-blur-md dark:border-zinc-800 dark:bg-background/80">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-200/50 bg-white/70 backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/70 supports-[backdrop-filter]:bg-white/60">
       <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-6">
         <Link href="/" className="text-lg font-bold tracking-tight">
           Cody Avila
@@ -15,6 +15,12 @@ export function Header() {
             className="hidden text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white sm:block"
           >
             About
+          </Link>
+          <Link
+            href="/#process"
+            className="hidden text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white sm:block"
+          >
+            Process
           </Link>
           <Link
             href="/#experience"
