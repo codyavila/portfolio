@@ -25,7 +25,7 @@ export function Footer() {
       <div 
         className="absolute top-0 left-0 right-0 h-px"
         style={{
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 80%, transparent)",
+          background: "linear-gradient(90deg, transparent, var(--glass-2-border) 20%, var(--glass-3-border) 50%, var(--glass-2-border) 80%, transparent)",
         }}
       />
 
@@ -54,7 +54,6 @@ export function Footer() {
               }}
               whileHover={{ 
                 scale: 1.1,
-                boxShadow: "0 0 20px rgba(0, 255, 153, 0.3)",
               }}
               whileTap={{ scale: 0.95 }}
             >
@@ -82,8 +81,7 @@ export function Footer() {
 
         {/* Subtle heartbeat indicator */}
         <motion.div 
-          className="w-1.5 h-1.5 rounded-full bg-[var(--neon-primary-end)] heartbeat"
-          style={{ boxShadow: "0 0 10px rgba(0, 255, 153, 0.5)" }}
+          className="w-1.5 h-1.5 rounded-full bg-[var(--neon-primary-end)]"
         />
       </div>
     </footer>

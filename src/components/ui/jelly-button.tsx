@@ -21,17 +21,17 @@ const gradientStyles: Record<GradientVariant, { gradient: string; glow: string; 
   "cyber-lime": {
     gradient: "linear-gradient(135deg, #CCFF00 0%, #00FF99 100%)",
     glow: "rgba(0, 255, 153, 0.6)",
-    textColor: "var(--lum-void-deep)",
+    textColor: "#0f0d12",
   },
   "cotton-candy": {
     gradient: "linear-gradient(135deg, #FF99CC 0%, #33CCFF 100%)",
     glow: "rgba(255, 153, 204, 0.6)",
-    textColor: "var(--lum-void-deep)",
+    textColor: "#0f0d12",
   },
   "solar-flare": {
     gradient: "linear-gradient(135deg, #FFCC00 0%, #FF3366 100%)",
     glow: "rgba(255, 51, 102, 0.6)",
-    textColor: "var(--lum-void-deep)",
+    textColor: "#0f0d12",
   },
 };
 
@@ -181,9 +181,9 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
         transition={{ type: "spring", stiffness: 400, damping: 15 }}
         className={cn(
           "relative inline-flex items-center justify-center rounded-full font-medium cursor-pointer",
-          "bg-transparent backdrop-blur-md",
-          "border border-white/20 hover:border-white/40",
-          "text-[var(--text-primary)] hover:bg-white/5",
+          "bg-[var(--glass-1-fill)] backdrop-blur-md",
+          "border border-[var(--glass-2-border)] hover:border-[var(--neon-primary-end)]",
+          "text-[var(--text-primary)]",
           "transition-colors duration-300",
           sizeStyles[size],
           className

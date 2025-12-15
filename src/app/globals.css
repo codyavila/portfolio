@@ -10,12 +10,12 @@
 
   /* ─────────────────────────────────────────────────────────────────────────────
      LAYER 0: THE VOID (Canvas/Background)
-     Deep violet-blacks, never pure black. Warm and magical.
+     Deep blacks for maximum contrast and readability.
      ───────────────────────────────────────────────────────────────────────────── */
-  --lum-void-deep: #08040C;
-  --lum-void-surface: #120E1A;
-  --lum-void-elevated: #1a1425;
-  --lum-void-accent: #241c32;
+  --lum-void-deep: #000000;
+  --lum-void-surface: #0a0a0c;
+  --lum-void-elevated: #121216;
+  --lum-void-accent: #1a1a1f;
 
   /* ─────────────────────────────────────────────────────────────────────────────
      PLAYFUL GRADIENTS (The Life) — Holographic/Bioluminescent
@@ -48,13 +48,14 @@
   --lum-cotton-candy: #ff99cc;
 
   /* ─────────────────────────────────────────────────────────────────────────────
-     TEXT SYSTEM — With Glass Legibility Shadow
+     TEXT SYSTEM — High contrast solid colors
+     WCAG AA compliant: 4.5:1 for normal text, 3:1 for large text
      ───────────────────────────────────────────────────────────────────────────── */
-  --text-primary: #f8f3ff;
-  --text-secondary: rgba(248, 243, 255, 0.78);
-  --text-tertiary: rgba(248, 243, 255, 0.55);
-  --text-disabled: rgba(248, 243, 255, 0.28);
-  --text-glass-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --text-primary: #ffffff;
+  --text-secondary: #e0dce6;
+  --text-tertiary: #b8b2c4;
+  --text-disabled: #8a849c;
+  --text-glass-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   --text-glow-primary: 0 0 20px rgba(204, 255, 0, 0.5), 0 0 40px rgba(0, 255, 153, 0.3);
   --text-glow-secondary: 0 0 20px rgba(255, 153, 204, 0.5), 0 0 40px rgba(51, 204, 255, 0.3);
 
@@ -64,15 +65,15 @@
      Layer 2 (Prism): Interactive cards — High refraction
      Layer 3 (Lume): Source — Emissive, modals, floating nav
      ───────────────────────────────────────────────────────────────────────────── */
-  --glass-ghost-fill: rgba(255, 255, 255, 0.02);
+  --glass-ghost-fill: rgba(255, 255, 255, 0.03);
   --glass-ghost-blur: 10px;
   --glass-ghost-noise: 0.02;
 
-  --glass-prism-fill: rgba(255, 255, 255, 0.05);
+  --glass-prism-fill: rgba(255, 255, 255, 0.06);
   --glass-prism-blur: 30px;
   --glass-prism-noise: 0.04;
 
-  --glass-lume-fill: rgba(255, 255, 255, 0.15);
+  --glass-lume-fill: rgba(255, 255, 255, 0.18);
   --glass-lume-blur: 50px;
   --glass-lume-noise: 0.05;
 
@@ -103,6 +104,22 @@
   --spring-snappy: cubic-bezier(0.2, 0.8, 0.3, 1.2);
   --spring-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+  /* ─────────────────────────────────────────────────────────────────────────────
+     CHIP/BADGE BACKGROUNDS — Accessible contrast in both modes
+     ───────────────────────────────────────────────────────────────────────────── */
+  --chip-primary-bg: rgba(0, 255, 153, 0.15);
+  --chip-primary-border: rgba(0, 255, 153, 0.3);
+  --chip-primary-text: #00ff99;
+  --chip-secondary-bg: rgba(255, 153, 204, 0.15);
+  --chip-secondary-border: rgba(255, 153, 204, 0.3);
+  --chip-secondary-text: #ff99cc;
+  --chip-blue-bg: rgba(51, 204, 255, 0.15);
+  --chip-blue-border: rgba(51, 204, 255, 0.3);
+  --chip-blue-text: #33ccff;
+  --chip-purple-bg: rgba(168, 85, 247, 0.15);
+  --chip-purple-border: rgba(168, 85, 247, 0.3);
+  --chip-purple-text: #a855f7;
+
   /* Base Variables for Theme Provider */
   --background: var(--lum-void-surface);
   --foreground: var(--text-primary);
@@ -119,55 +136,69 @@ html:not(.dark) {
   --lum-void-elevated: #f5f3f7;
   --lum-void-accent: #ebe8ef;
 
-  /* Adjusted neon colors for light mode - deeper, more visible */
-  --neon-primary-start: #65a30d;
-  --neon-primary-end: #047857;
-  --neon-secondary-start: #db2777;
-  --neon-secondary-end: #0284c7;
-  --neon-alert-start: #d97706;
-  --neon-alert-end: #dc2626;
-  --neon-cyan: #0891b2;
-  --neon-magenta: #c026d3;
-  --neon-lime: #65a30d;
+  /* Adjusted neon colors for light mode - WCAG AA compliant (4.5:1+ contrast) */
+  --neon-primary-start: #3d6b0a;
+  --neon-primary-end: #0f5132;
+  --neon-secondary-start: #9e1b4d;
+  --neon-secondary-end: #075985;
+  --neon-alert-start: #92400e;
+  --neon-alert-end: #991b1b;
+  --neon-cyan: #0c6478;
+  --neon-magenta: #86198f;
+  --neon-lime: #3d6b0a;
 
-  --lum-neon-blue: #0369a1;
-  --lum-neon-purple: #7c3aed;
-  --lum-neon-pink: #be185d;
-  --lum-neon-green: #047857;
-  --lum-neon-yellow: #b45309;
-  --lum-neon-cyan: #0e7490;
-  --lum-cotton-candy: #db2777;
+  --lum-neon-blue: #1e40af;
+  --lum-neon-purple: #5b21b6;
+  --lum-neon-pink: #9e1b4d;
+  --lum-neon-green: #0f5132;
+  --lum-neon-yellow: #854d0e;
+  --lum-neon-cyan: #0c6478;
+  --lum-cotton-candy: #9e1b4d;
 
-  /* Light mode gradients */
-  --lum-grad-cyber-lime: linear-gradient(135deg, #65a30d 0%, #047857 100%);
-  --lum-grad-cotton-candy: linear-gradient(135deg, #db2777 0%, #0284c7 100%);
-  --lum-grad-solar-flare: linear-gradient(135deg, #d97706 0%, #dc2626 100%);
+  /* Light mode gradients - WCAG compliant darker shades */
+  --lum-grad-cyber-lime: linear-gradient(135deg, #3d6b0a 0%, #0f5132 100%);
+  --lum-grad-cotton-candy: linear-gradient(135deg, #9e1b4d 0%, #075985 100%);
+  --lum-grad-solar-flare: linear-gradient(135deg, #92400e 0%, #991b1b 100%);
 
-  /* Text for light mode - darker for better readability */
-  --text-primary: #0f0d12;
-  --text-secondary: #3d3846;
-  --text-tertiary: #635c6d;
-  --text-disabled: #9a92a6;
+  /* Chip backgrounds for light mode - higher contrast */
+  --chip-primary-bg: rgba(15, 81, 50, 0.12);
+  --chip-primary-border: rgba(15, 81, 50, 0.25);
+  --chip-primary-text: #064e3b;
+  --chip-secondary-bg: rgba(158, 27, 77, 0.12);
+  --chip-secondary-border: rgba(158, 27, 77, 0.25);
+  --chip-secondary-text: #831843;
+  --chip-blue-bg: rgba(30, 64, 175, 0.12);
+  --chip-blue-border: rgba(30, 64, 175, 0.25);
+  --chip-blue-text: #1e3a8a;
+  --chip-purple-bg: rgba(91, 33, 182, 0.12);
+  --chip-purple-border: rgba(91, 33, 182, 0.25);
+  --chip-purple-text: #4c1d95;
+
+  /* Text for light mode - WCAG AA compliant contrast ratios */
+  --text-primary: #09070c;
+  --text-secondary: #2d2834;
+  --text-tertiary: #454050;
+  --text-disabled: #6b657a;
   --text-glass-shadow: none;
   --text-glow-primary: none;
   --text-glow-secondary: none;
 
-  /* Glass materials for light mode - visible cards with subtle shadows */
-  --glass-ghost-fill: rgba(255, 255, 255, 0.7);
+  /* Glass materials for light mode - more opaque for better text legibility */
+  --glass-ghost-fill: rgba(255, 255, 255, 0.94);
   --glass-ghost-blur: 8px;
-  --glass-prism-fill: rgba(255, 255, 255, 0.85);
+  --glass-prism-fill: rgba(255, 255, 255, 0.97);
   --glass-prism-blur: 12px;
-  --glass-lume-fill: rgba(255, 255, 255, 0.95);
+  --glass-lume-fill: rgba(255, 255, 255, 0.99);
   --glass-lume-blur: 16px;
 
-  --glass-1-fill: rgba(255, 255, 255, 0.7);
+  --glass-1-fill: rgba(255, 255, 255, 0.94);
   --glass-1-border: rgba(0, 0, 0, 0.08);
-  --glass-2-fill: rgba(255, 255, 255, 0.85);
-  --glass-2-border: rgba(0, 0, 0, 0.1);
-  --glass-3-fill: rgba(255, 255, 255, 0.9);
+  --glass-2-fill: rgba(255, 255, 255, 0.97);
+  --glass-2-border: rgba(0, 0, 0, 0.10);
+  --glass-3-fill: rgba(255, 255, 255, 0.98);
   --glass-3-border: rgba(0, 0, 0, 0.12);
-  --glass-4-fill: rgba(255, 255, 255, 0.95);
-  --glass-4-border: rgba(0, 0, 0, 0.15);
+  --glass-4-fill: rgba(255, 255, 255, 0.99);
+  --glass-4-border: rgba(0, 0, 0, 0.14);
 
   --background: #fafafa;
   --foreground: var(--text-primary);
@@ -266,10 +297,10 @@ body {
 /* Dark mode background - using .dark class on html */
 html.dark body,
 .dark body {
-  background: radial-gradient(ellipse at 20% 0%, rgba(28, 18, 48, 0.8) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(26, 15, 41, 0.6) 0%, transparent 40%),
-    radial-gradient(ellipse at 40% 80%, rgba(15, 10, 26, 0.7) 0%, transparent 50%),
-    #08040C !important;
+  background: radial-gradient(ellipse at 20% 0%, rgba(20, 15, 30, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(15, 10, 25, 0.4) 0%, transparent 40%),
+    radial-gradient(ellipse at 40% 80%, rgba(10, 8, 18, 0.5) 0%, transparent 50%),
+    #000000 !important;
 }
 
 /* High contrast backgrounds */
@@ -297,13 +328,13 @@ body::before {
   mix-blend-mode: overlay;
 }
 
-/* High Contrast Mode — Dark */
+/* High Contrast Mode — Dark (WCAG AAA: 7:1 contrast) */
 .dark[data-contrast="high"] {
   --background: #000000;
   --foreground: #ffffff;
   --text-primary: #ffffff;
-  --text-secondary: #e5e5e5;
-  --text-tertiary: #cccccc;
+  --text-secondary: #f0f0f0;
+  --text-tertiary: #d9d9d9;
   --lum-void-deep: #000000;
   --lum-void-surface: #0a0a0a;
   --glass-ghost-fill: #0a0a0a;
@@ -319,13 +350,13 @@ body::before {
   --glass-4-border: #00e5ff;
 }
 
-/* High Contrast Mode — Light */
+/* High Contrast Mode — Light (WCAG AAA: 7:1 contrast) */
 html:not(.dark)[data-contrast="high"] {
   --background: #ffffff;
   --foreground: #000000;
   --text-primary: #000000;
-  --text-secondary: #1a1a1a;
-  --text-tertiary: #333333;
+  --text-secondary: #171717;
+  --text-tertiary: #262626;
   --lum-void-deep: #ffffff;
   --lum-void-surface: #ffffff;
   --glass-ghost-fill: #ffffff;
@@ -429,8 +460,10 @@ p {
   border-radius: 24px;
   border: 1px solid var(--glass-2-border);
   
-  /* Shadow for depth */
-  box-shadow: 0 4px 24px -4px rgba(0,0,0,0.1);
+  /* Light mode: solid white with subtle shadow for depth */
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.08),
+    0 2px 4px -2px rgba(0, 0, 0, 0.05);
     
   transition: box-shadow 0.4s var(--spring-smooth), border-color 0.3s ease;
 }
@@ -450,7 +483,9 @@ html.dark .prism-card {
 /* Hover states */
 .prism-card:hover {
   border-color: var(--neon-primary-end);
-  box-shadow: 0 8px 32px -4px rgba(0,0,0,0.15);
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
 html.dark .prism-card:hover {
@@ -460,8 +495,8 @@ html.dark .prism-card:hover {
     0 0 30px -10px rgba(0, 255, 153, 0.15);
 }
 
-/* Glow variants based on category color */
-.prism-card.glow-cyber-lime:hover {
+/* Glow variants based on category color - dark mode only */
+html.dark .prism-card.glow-cyber-lime:hover {
   box-shadow: 
     inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
     inset 0 0 20px rgba(204, 255, 0, 0.1),
@@ -469,7 +504,7 @@ html.dark .prism-card:hover {
     0 0 50px -10px rgba(204, 255, 0, 0.4);
 }
 
-.prism-card.glow-cotton-candy:hover {
+html.dark .prism-card.glow-cotton-candy:hover {
   box-shadow: 
     inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
     inset 0 0 20px rgba(255, 153, 204, 0.1),
@@ -477,7 +512,7 @@ html.dark .prism-card:hover {
     0 0 50px -10px rgba(255, 153, 204, 0.4);
 }
 
-.prism-card.glow-solar-flare:hover {
+html.dark .prism-card.glow-solar-flare:hover {
   box-shadow: 
     inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
     inset 0 0 20px rgba(255, 204, 0, 0.1),
@@ -486,13 +521,13 @@ html.dark .prism-card:hover {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   SHIMMER BORDER — Subtle gradient border that glows on hover
+   SHIMMER BORDER — Subtle gradient border that glows on hover (dark mode only)
    ───────────────────────────────────────────────────────────────────────────── */
 .shimmer-border {
   position: relative;
 }
 
-.shimmer-border::before {
+html.dark .shimmer-border::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -517,7 +552,7 @@ html.dark .prism-card:hover {
   transition: opacity 0.4s var(--spring-smooth);
 }
 
-.shimmer-border:hover::before {
+html.dark .shimmer-border:hover::before {
   opacity: 1;
 }
 
@@ -671,14 +706,14 @@ html.dark .prism-card:hover {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   CHROMATIC ABERRATION — Subtle RGB split on glass edges
+   CHROMATIC ABERRATION — Subtle RGB split on glass edges (dark mode only)
    ───────────────────────────────────────────────────────────────────────────── */
 .chromatic-edge {
   position: relative;
 }
 
-.chromatic-edge::before,
-.chromatic-edge::after {
+html.dark .chromatic-edge::before,
+html.dark .chromatic-edge::after {
   content: "";
   position: absolute;
   inset: -1px;
@@ -688,29 +723,29 @@ html.dark .prism-card:hover {
   transition: opacity 0.4s var(--spring-smooth);
 }
 
-.chromatic-edge::before {
+html.dark .chromatic-edge::before {
   border: 1px solid rgba(255, 0, 0, 0.15);
   transform: translate(-1px, -1px);
 }
 
-.chromatic-edge::after {
+html.dark .chromatic-edge::after {
   border: 1px solid rgba(0, 100, 255, 0.15);
   transform: translate(1px, 1px);
 }
 
-.chromatic-edge:hover::before,
-.chromatic-edge:hover::after {
+html.dark .chromatic-edge:hover::before,
+html.dark .chromatic-edge:hover::after {
   opacity: 1;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   IRIDESCENCE — Oil-slick rainbow at glancing angles (Fresnel-like)
+   IRIDESCENCE — Oil-slick rainbow at glancing angles (dark mode only)
    ───────────────────────────────────────────────────────────────────────────── */
 .iridescent {
   position: relative;
 }
 
-.iridescent::before {
+html.dark .iridescent::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -730,7 +765,7 @@ html.dark .prism-card:hover {
   transition: opacity 0.5s var(--spring-smooth);
 }
 
-.iridescent:hover::before {
+html.dark .iridescent:hover::before {
   opacity: 1;
 }
 

@@ -121,8 +121,8 @@ const PortalCardComponent = ({
       <div 
         className="absolute inset-0 rounded-3xl"
         style={{
-          background: "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)",
-          backdropFilter: "blur(30px)",
+          background: "var(--glass-prism-fill)",
+          backdropFilter: "blur(var(--glass-prism-blur))",
         }}
       />
 
@@ -130,16 +130,9 @@ const PortalCardComponent = ({
       {enableShimmer && (
         <div 
           className={cn(
-            "absolute inset-0 rounded-3xl pointer-events-none z-10 transition-opacity duration-300",
-            isHovered ? "opacity-100" : "opacity-40"
+            "absolute inset-0 rounded-3xl pointer-events-none z-10 transition-opacity duration-300 border",
+            isHovered ? "opacity-100 border-[var(--neon-primary-end)]" : "opacity-100 border-[var(--glass-2-border)]"
           )}
-          style={{
-            background: "linear-gradient(135deg, rgba(204,255,0,0.3), rgba(0,255,153,0.2), rgba(51,204,255,0.3), rgba(255,153,204,0.2))",
-            padding: "1px",
-            WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-            WebkitMaskComposite: "xor",
-            maskComposite: "exclude",
-          }}
         />
       )}
 
@@ -149,9 +142,9 @@ const PortalCardComponent = ({
         style={{ background: glowStyle }}
       />
 
-      {/* Rim Light (Top Highlight) */}
+      {/* Rim Light (Top Highlight) - dark mode only */}
       <div 
-        className="absolute inset-0 rounded-3xl pointer-events-none"
+        className="absolute inset-0 rounded-3xl pointer-events-none dark:block hidden"
         style={{
           boxShadow: `
             inset 0 1px 0 0 rgba(255, 255, 255, ${isHovered ? 0.5 : 0.2}),
@@ -161,9 +154,9 @@ const PortalCardComponent = ({
         }}
       />
 
-      {/* Category Glow Shadow (behind card) */}
+      {/* Category Glow Shadow (behind card) - reduced in light mode */}
       <motion.div
-        className="absolute -inset-4 rounded-3xl -z-10"
+        className="absolute -inset-4 rounded-3xl -z-10 hidden dark:block"
         animate={{
           boxShadow: isHovered 
             ? `0 30px 60px -12px rgba(0,0,0,0.6), 0 0 60px -20px ${glowColors[glow]}`
@@ -185,9 +178,10 @@ export const PortalCardTitle = memo(({ children, className }: { children: React.
   return (
     <h4 
       className={cn(
-        "text-xl font-bold text-[var(--text-primary)] transition-all duration-300",
-        "group-hover:text-[var(--neon-primary-end)] group-hover:font-[850]",
-        "text-shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
+        "text-xl font-bold transition-all duration-300",
+        "text-[var(--text-primary)]",
+        "dark:drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]",
+        "group-hover:text-[var(--neon-primary-end)]",
         className
       )}
     >
@@ -202,9 +196,10 @@ export const PortalCardDescription = memo(({ children, className }: { children: 
   return (
     <p 
       className={cn(
-        "text-[var(--text-secondary)] transition-colors duration-300",
+        "transition-colors duration-300 leading-relaxed",
+        "text-[var(--text-secondary)]",
+        "dark:drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]",
         "group-hover:text-[var(--text-primary)]",
-        "text-shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
         className
       )}
     >

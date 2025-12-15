@@ -92,7 +92,7 @@ export const NanoCard = ({ children, className, onClick, delay = 0 }: NanoCardPr
       {/* Torch Effect (Border Reveal) - Only if in BentoGrid */}
       {mouseContext && (
           <motion.div 
-            className="absolute inset-0 border-2 border-transparent rounded-[24px] pointer-events-none z-20"
+            className="absolute inset-0 border-2 border-transparent rounded-[24px] pointer-events-none z-20 dark:block hidden"
             style={{ 
                 maskImage: borderMask,
                 WebkitMaskImage: borderMask,
@@ -111,7 +111,13 @@ export const NanoCard = ({ children, className, onClick, delay = 0 }: NanoCardPr
 
 export const NanoCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   return (
-    <h4 className={cn("text-title-m font-bold text-[var(--text-primary)] group-hover:text-[var(--neon-primary-end)] transition-colors on-glass", className)}>
+    <h4 className={cn(
+      "text-lg font-semibold transition-colors duration-300",
+      "text-[var(--text-primary)]",
+      "dark:drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]",
+      "group-hover:text-[var(--neon-primary-end)]",
+      className
+    )}>
       {children}
     </h4>
   );
@@ -119,7 +125,13 @@ export const NanoCardTitle = ({ children, className }: { children: React.ReactNo
 
 export const NanoCardDescription = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   return (
-    <p className={cn("text-body-m text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors on-glass", className)}>
+    <p className={cn(
+      "text-sm leading-relaxed transition-colors duration-300",
+      "text-[var(--text-secondary)]",
+      "dark:drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]",
+      "group-hover:text-[var(--text-primary)]",
+      className
+    )}>
       {children}
     </p>
   );

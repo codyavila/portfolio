@@ -5,6 +5,7 @@ import { useRef, useMemo, Suspense } from "react";
 import * as THREE from "three";
 import { useDynamicTheme } from "@/components/dynamic-theme-provider";
 import { useMouseStore } from "@/lib/mouse-store";
+import { useTheme } from "next-themes";
 
 // Simplified shader for better performance
 const GradientShaderMaterial = {
@@ -108,6 +109,13 @@ function GradientMesh() {
 }
 
 export function ShaderBackground() {
+  const { resolvedTheme } = useTheme();
+  
+  // Only render shader background in dark mode
+  if (resolvedTheme !== "dark") {
+    return null;
+  }
+  
   return (
     <div className="fixed inset-0 z-[-1] pointer-events-none">
       <Canvas 

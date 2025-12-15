@@ -78,16 +78,13 @@ export function Header() {
         className={cn(
           "relative rounded-full px-2 py-2 md:px-2 md:py-3",
           "flex md:flex-col items-center gap-1",
-          "backdrop-saturate-150 border border-[var(--glass-2-border)]"
+          "backdrop-saturate-150 border border-[var(--glass-2-border)]",
+          "shadow-lg dark:shadow-2xl"
         )}
         style={{ 
           filter: "url('#gooey')",
           background: "var(--glass-lume-fill)",
           backdropFilter: "blur(24px)",
-          boxShadow: `
-            0 20px 50px -18px rgba(0,0,0,0.25),
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.15)
-          `,
         }}
         onMouseMove={handleMove}
         onMouseLeave={resetMove}
@@ -128,14 +125,13 @@ export function Header() {
             transition={{ type: "spring", stiffness: 400, damping: 12 }}
             className={cn(
               "relative z-10 w-10 h-10 rounded-full flex items-center justify-center",
-              "text-[var(--lum-void-deep)] font-bold text-sm tracking-tight",
-              "transition-shadow duration-300 heartbeat"
+              "text-white font-bold text-sm tracking-tight",
+              "transition-shadow duration-300"
             )}
             style={{
               x: springX,
               y: springY,
               background: "var(--lum-grad-cyber-lime)",
-              boxShadow: "0 0 25px rgba(204, 255, 0, 0.7), 0 0 50px rgba(0, 255, 153, 0.3)",
             }}
           >
             CA

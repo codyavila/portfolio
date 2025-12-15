@@ -116,7 +116,7 @@ export function SettingsMenu() {
                         onClick={() => setTheme(option.value)}
                         className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all ${
                           theme === option.value
-                            ? 'bg-[var(--neon-primary-end)]/15 border-[var(--neon-primary-end)]/40 text-[var(--neon-primary-end)]'
+                            ? 'bg-[var(--chip-primary-bg)] border-[var(--chip-primary-border)] text-[var(--chip-primary-text)] font-semibold'
                             : 'bg-[var(--glass-1-fill)] border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--glass-2-border)]'
                         }`}
                       >
@@ -176,7 +176,7 @@ export function SettingsMenu() {
                         onClick={() => setTheme(option.value)}
                         className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border transition-all text-xs font-medium ${
                           theme === option.value
-                            ? 'bg-[var(--neon-primary-end)]/15 border-[var(--neon-primary-end)]/40 text-[var(--neon-primary-end)]'
+                            ? 'bg-[var(--chip-primary-bg)] border-[var(--chip-primary-border)] text-[var(--chip-primary-text)] font-semibold'
                             : 'bg-[var(--glass-1-fill)] border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--glass-2-border)]'
                         }`}
                       >

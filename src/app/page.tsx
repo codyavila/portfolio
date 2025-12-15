@@ -76,11 +76,11 @@ export default function Home() {
           </motion.h1>
           <motion.h2 
             variants={itemVariants}
-            className="text-2xl sm:text-4xl font-medium text-[var(--text-secondary)] flex flex-wrap items-center gap-4 tracking-tight"
+            className="text-2xl sm:text-4xl font-medium text-[var(--text-primary)] flex flex-wrap items-center gap-4 tracking-tight"
           >
             Frontend Engineer 
-            <ArrowRight className="h-6 w-6 text-[var(--text-tertiary)]" />
-            <span className="text-[var(--text-primary)]">Technical Product Manager</span>
+            <ArrowRight className="h-6 w-6 text-[var(--neon-primary-end)]" />
+            <span className="text-[var(--text-secondary)]">Technical Product Manager</span>
           </motion.h2>
           <motion.p 
             variants={itemVariants}
@@ -122,9 +122,9 @@ export default function Home() {
             >
               <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
                 <div className="flex-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--neon-primary-end)]/10 border border-[var(--neon-primary-end)]/20 mb-6">
-                    <Code2 className="w-4 h-4 text-[var(--neon-primary-end)]" />
-                    <span className="text-sm font-medium text-[var(--neon-primary-end)]">Engineer → PM</span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--chip-primary-bg)] border border-[var(--chip-primary-border)] mb-6">
+                    <Code2 className="w-4 h-4 text-[var(--chip-primary-text)]" />
+                    <span className="text-sm font-semibold text-[var(--chip-primary-text)]">Engineer → PM</span>
                   </div>
                   <PortalCardTitle className="text-2xl sm:text-3xl mb-4">
                     I speak both languages fluently
@@ -151,8 +151,8 @@ export default function Home() {
             {/* Stats/Highlights */}
             <NanoCard delay={0.2} className="p-6 sm:p-8">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-2xl bg-[var(--neon-primary-end)]/10">
-                  <Database className="w-6 h-6 text-[var(--neon-primary-end)]" />
+                <div className="p-3 rounded-2xl bg-[var(--chip-primary-bg)]">
+                  <Database className="w-6 h-6 text-[var(--chip-primary-text)]" />
                 </div>
                 <div>
                   <NanoCardTitle className="text-lg mb-2">Technical Due Diligence</NanoCardTitle>
@@ -165,8 +165,8 @@ export default function Home() {
 
             <NanoCard delay={0.3} className="p-6 sm:p-8">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-2xl bg-[var(--lum-cotton-candy)]/10">
-                  <Users className="w-6 h-6 text-[var(--lum-cotton-candy)]" />
+                <div className="p-3 rounded-2xl bg-[var(--chip-secondary-bg)]">
+                  <Users className="w-6 h-6 text-[var(--chip-secondary-text)]" />
                 </div>
                 <div>
                   <NanoCardTitle className="text-lg mb-2">Cross-Functional Trust</NanoCardTitle>
@@ -192,7 +192,7 @@ export default function Home() {
                 I start by understanding the 'why'. I analyze user data, interview stakeholders, and define success metrics before discussing solutions.
               </NanoCardDescription>
             </div>
-            <Users className="h-6 w-6 text-[var(--text-tertiary)] mt-6" />
+            <Users className="h-6 w-6 text-[var(--lum-neon-purple)] mt-6" />
           </NanoCard>
           
           <NanoCard delay={0.2} className="col-span-4 md:col-span-3 md:row-span-2 p-8 flex flex-col justify-between min-h-[400px]">
@@ -203,7 +203,7 @@ export default function Home() {
                 I evaluate architectural constraints early. I work with engineers to identify risks, dependencies, and trade-offs to ensure realistic roadmaps.
               </NanoCardDescription>
             </div>
-            <Code2 className="h-6 w-6 text-[var(--text-tertiary)] mt-6" />
+            <Code2 className="h-6 w-6 text-[var(--lum-neon-blue)] mt-6" />
           </NanoCard>
 
           <NanoCard delay={0.3} className="col-span-4 md:col-span-3 md:row-span-2 p-8 flex flex-col justify-between min-h-[400px]">
@@ -214,7 +214,7 @@ export default function Home() {
                 I prioritize iterative delivery. I use data from each release to refine the backlog, ensuring we're always building the highest-value features.
               </NanoCardDescription>
             </div>
-            <BarChart3 className="h-6 w-6 text-[var(--text-tertiary)] mt-6" />
+            <BarChart3 className="h-6 w-6 text-[var(--neon-primary-end)] mt-6" />
           </NanoCard>
         </BentoGrid>
       </section>
@@ -226,7 +226,7 @@ export default function Home() {
           <NanoCard delay={0.1} className="col-span-1 p-8 sm:p-12">
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-4">
               <h4 className="text-title-m font-bold text-[var(--text-primary)] hover-weight-shift">Frontend Software Engineer</h4>
-              <span className="text-label-s font-medium text-[var(--lum-neon-blue)] font-mono bg-[var(--lum-neon-blue)]/10 px-3 py-1 rounded-full border border-[var(--lum-neon-blue)]/20">Present</span>
+              <span className="text-label-s font-semibold text-[var(--chip-blue-text)] font-mono bg-[var(--chip-blue-bg)] px-3 py-1 rounded-full border border-[var(--chip-blue-border)]">Present</span>
             </div>
             <div className="text-body-l text-[var(--text-secondary)] mb-6 font-medium">BLOX Digital</div>
             <p className="text-[var(--text-secondary)] mb-8 leading-relaxed text-body-l">
@@ -259,7 +259,7 @@ export default function Home() {
         <BentoGrid className="grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <NanoCard delay={0.1} className="col-span-1 p-6 sm:p-10">
             <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
-              <div className="p-3 rounded-2xl bg-[var(--lum-neon-blue)]/10 text-[var(--lum-neon-blue)]">
+              <div className="p-3 rounded-2xl bg-[var(--chip-blue-bg)] text-[var(--chip-blue-text)]">
                 <Users className="h-6 w-6" />
               </div>
               <h4 className="text-title-m text-[var(--text-primary)]">Technical Product Management</h4>
@@ -274,7 +274,7 @@ export default function Home() {
                 "Stakeholder Management"
               ].map((skill) => (
                 <li key={skill} className="flex items-start sm:items-center gap-3 text-body-l text-[var(--text-secondary)]">
-                  <div className="h-2 w-2 rounded-full bg-[var(--lum-neon-blue)]/50 mt-2 sm:mt-0 shrink-0" />
+                  <div className="h-2 w-2 rounded-full bg-[var(--chip-blue-text)] mt-2 sm:mt-0 shrink-0" />
                   <span>{skill}</span>
                 </li>
               ))}
@@ -283,7 +283,7 @@ export default function Home() {
 
           <NanoCard delay={0.2} className="col-span-1 p-6 sm:p-10">
             <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
-              <div className="p-3 rounded-2xl bg-[var(--lum-neon-purple)]/10 text-[var(--lum-neon-purple)]">
+              <div className="p-3 rounded-2xl bg-[var(--chip-purple-bg)] text-[var(--chip-purple-text)]">
                 <Code2 className="h-6 w-6" />
               </div>
               <h4 className="text-title-m text-[var(--text-primary)]">Engineering</h4>
@@ -297,7 +297,7 @@ export default function Home() {
                 "Accessibility (WCAG)"
               ].map((skill) => (
                 <li key={skill} className="flex items-start sm:items-center gap-3 text-body-l text-[var(--text-secondary)]">
-                  <div className="h-2 w-2 rounded-full bg-[var(--lum-neon-purple)]/50 mt-2 sm:mt-0 shrink-0" />
+                  <div className="h-2 w-2 rounded-full bg-[var(--chip-purple-text)] mt-2 sm:mt-0 shrink-0" />
                   <span>{skill}</span>
                 </li>
               ))}
@@ -313,7 +313,7 @@ export default function Home() {
           <a href="/projects/email-campaign-system" className="block h-full">
             <PortalCard delay={0.1} glow="cyber-lime" className="h-full p-10 flex flex-col">
               <div className="flex items-start justify-between mb-8">
-                <div className="p-4 rounded-2xl bg-[var(--neon-primary-start)]/10 text-[var(--neon-primary-end)]">
+                <div className="p-4 rounded-2xl bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)]">
                   <Layout className="h-6 w-6" />
                 </div>
                 <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45 group-hover:rotate-0 transition-transform" />
@@ -328,7 +328,7 @@ export default function Home() {
           <a href="/projects/blox-nxt-cms-rebuild" className="block h-full">
             <PortalCard delay={0.2} glow="cotton-candy" className="h-full p-10 flex flex-col">
               <div className="flex items-start justify-between mb-8">
-                <div className="p-4 rounded-2xl bg-[var(--neon-secondary-start)]/10 text-[var(--neon-secondary-end)]">
+                <div className="p-4 rounded-2xl bg-[var(--chip-secondary-bg)] text-[var(--chip-secondary-text)]">
                   <Database className="h-6 w-6" />
                 </div>
                 <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45 group-hover:rotate-0 transition-transform" />
