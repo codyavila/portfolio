@@ -5,7 +5,7 @@ export default function BloxNxtCmsRebuild() {
   return (
     <main className="max-w-3xl mx-auto px-6 py-12 sm:py-20">
       <Link
-        href="/#case-studies"
+        href="/#projects"
         className="inline-flex items-center text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors mb-8"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />

@@ -1,55 +1,78 @@
-import Link from "next/link";
-import { ArrowRight, Code2, Layout, Users, BarChart3, Database, GitBranch, Terminal } from "lucide-react";
+"use client";
+
+import { motion } from "framer-motion";
+import { ArrowRight, Code2, Layout, Users, BarChart3, Database } from "lucide-react";
 import { Spotlight } from "@/components/ui/Spotlight";
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { ProjectCard } from "@/components/ui/project-card";
+import { BentoGrid } from "@/components/ui/bento-grid";
+import { NanoCard, NanoCardTitle, NanoCardDescription } from "@/components/ui/nano-card";
 import { DiscoverGraphic, FeasibilityGraphic, ExecuteGraphic } from "@/components/ui/process-graphics";
 
 export default function Home() {
   return (
-    <main className="relative max-w-7xl mx-auto px-6 py-12 sm:py-20">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-dot-pattern opacity-50" />
-      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+    <main className="relative max-w-7xl mx-auto px-6 py-16 sm:py-24 md:pl-32">
+      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="var(--color-neon-blue)" />
 
       {/* Hero Section */}
-      <section className="mb-20 sm:mb-32 relative max-w-4xl mx-auto">
-        <div className="flex flex-col gap-6">
-          <h1 className="text-4xl sm:text-7xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            <span className="bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 dark:from-neutral-50 dark:to-neutral-400">
-              Cody Avila
-            </span>
-          </h1>
-          <h2 className="text-xl sm:text-3xl font-medium text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+      <section className="mb-32 sm:mb-48 relative max-w-5xl mx-auto pt-16 sm:pt-24">
+        <div className="flex flex-col gap-10">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-5xl sm:text-8xl font-bold tracking-tighter text-[var(--text-primary)]"
+          >
+            <span className="text-glow">Cody Avila</span>
+          </motion.h1>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="text-2xl sm:text-4xl font-medium text-[var(--text-secondary)] flex flex-wrap items-center gap-4 tracking-tight"
+          >
             Frontend Engineer 
-            <ArrowRight className="h-5 w-5 text-blue-500" />
-            <span className="text-zinc-900 dark:text-zinc-100">Technical Product Manager</span>
-          </h2>
-          <p className="text-lg leading-relaxed max-w-2xl text-zinc-600 dark:text-zinc-400">
+            <ArrowRight className="h-6 w-6 text-[var(--text-tertiary)]" />
+            <span className="text-[var(--text-primary)]">Technical Product Manager</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            className="text-xl leading-relaxed max-w-2xl text-[var(--text-secondary)] font-normal"
+          >
             I bridge the gap between engineering reality and product vision. 
             With deep roots in frontend architecture, I translate complex technical constraints into viable product strategies.
-            I'm looking to leverage my engineering background to drive technical product roadmaps and build developer-centric tools.
-          </p>
-          <div className="flex gap-4 mt-4">
-            <a href="#contact" className="inline-flex items-center justify-center rounded-full bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-zinc-700 hover:scale-105 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200">
+          </motion.p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+            className="flex flex-wrap gap-5 mt-8"
+          >
+            <a 
+              href="#contact" 
+              className="inline-flex items-center justify-center rounded-full bg-[var(--color-neon-blue)] px-8 py-4 text-base font-medium text-white transition-all hover:bg-[var(--color-neon-blue)]/80 hover:shadow-[0_0_25px_var(--color-neon-blue)]"
+            >
               Get in Touch
             </a>
-            <a href="#case-studies" className="inline-flex items-center justify-center rounded-full border border-zinc-200 px-6 py-3 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-50 hover:scale-105 dark:border-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-900">
+            <a 
+              href="#projects" 
+              className="inline-flex items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass-base)] backdrop-blur-sm px-8 py-4 text-base font-medium text-[var(--text-primary)] transition-colors hover:bg-[var(--glass-elevated)] hover:border-[var(--glass-border-highlight)]"
+            >
               View Case Studies
             </a>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* About / Transition Story */}
-      <section id="about" className="mb-20 sm:mb-32 scroll-mt-24 max-w-4xl mx-auto">
-        <h3 className="text-2xl font-semibold mb-8 tracking-tight">The Technical Edge</h3>
-        <div className="prose prose-zinc dark:prose-invert max-w-none">
-          <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+      <section id="about" className="mb-24 sm:mb-40 scroll-mt-32 max-w-5xl mx-auto">
+        <h3 className="text-3xl font-bold mb-10 tracking-tight text-[var(--text-primary)]">The Technical Edge</h3>
+        <div className="prose prose-lg max-w-none text-[var(--text-secondary)]">
+          <p className="leading-relaxed">
             At BLOX Digital, I didn't just implement features; I owned the technical lifecycle of product initiatives. 
             I partnered with Product and Design to de-risk complex requirements early, identifying API limitations and architectural trade-offs before a single line of code was written.
           </p>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mt-4">
+          <p className="leading-relaxed mt-6">
             My background allows me to earn the trust of engineering teams immediately. I can dive into API specs, understand database schemas, 
             and make informed decisions about technical debt versus speed. I'm now applying this rigorous technical lens to product strategy, ensuring we build scalable solutions that deliver real value.
           </p>
@@ -57,81 +80,90 @@ export default function Home() {
       </section>
 
       {/* Process Section */}
-      <section id="process" className="mb-20 sm:mb-32 scroll-mt-24">
-        <h3 className="text-2xl font-semibold mb-8 tracking-tight max-w-4xl mx-auto">My Process</h3>
-        <BentoGrid className="max-w-4xl mx-auto">
-          <BentoGridItem
-            title="Discover & Define"
-            description="I start by understanding the 'why'. I analyze user data, interview stakeholders, and define success metrics before discussing solutions."
-            header={<DiscoverGraphic />}
-            icon={<Users className="h-4 w-4 text-neutral-500" />}
-            className="md:col-span-1"
-          />
-          <BentoGridItem
-            title="Technical Feasibility"
-            description="I evaluate architectural constraints early. I work with engineers to identify risks, dependencies, and trade-offs to ensure realistic roadmaps."
-            header={<FeasibilityGraphic />}
-            icon={<Code2 className="h-4 w-4 text-neutral-500" />}
-            className="md:col-span-1"
-          />
-          <BentoGridItem
-            title="Execute & Iterate"
-            description="I prioritize iterative delivery. I use data from each release to refine the backlog, ensuring we're always building the highest-value features."
-            header={<ExecuteGraphic />}
-            icon={<BarChart3 className="h-4 w-4 text-neutral-500" />}
-            className="md:col-span-1"
-          />
+      <section id="process" className="mb-24 sm:mb-40 scroll-mt-32">
+        <h3 className="text-3xl font-bold mb-12 tracking-tight max-w-5xl mx-auto text-[var(--text-primary)]">My Process</h3>
+        <BentoGrid className="max-w-5xl mx-auto gap-8">
+          <NanoCard className="md:col-span-1 p-8 flex flex-col justify-between">
+            <div>
+              <div className="mb-6"><DiscoverGraphic /></div>
+              <NanoCardTitle className="mb-3">Discover & Define</NanoCardTitle>
+              <NanoCardDescription>
+                I start by understanding the 'why'. I analyze user data, interview stakeholders, and define success metrics before discussing solutions.
+              </NanoCardDescription>
+            </div>
+            <Users className="h-6 w-6 text-[var(--text-tertiary)] mt-6" />
+          </NanoCard>
+          
+          <NanoCard className="md:col-span-1 p-8 flex flex-col justify-between">
+            <div>
+              <div className="mb-6"><FeasibilityGraphic /></div>
+              <NanoCardTitle className="mb-3">Technical Feasibility</NanoCardTitle>
+              <NanoCardDescription>
+                I evaluate architectural constraints early. I work with engineers to identify risks, dependencies, and trade-offs to ensure realistic roadmaps.
+              </NanoCardDescription>
+            </div>
+            <Code2 className="h-6 w-6 text-[var(--text-tertiary)] mt-6" />
+          </NanoCard>
+
+          <NanoCard className="md:col-span-1 p-8 flex flex-col justify-between">
+            <div>
+              <div className="mb-6"><ExecuteGraphic /></div>
+              <NanoCardTitle className="mb-3">Execute & Iterate</NanoCardTitle>
+              <NanoCardDescription>
+                I prioritize iterative delivery. I use data from each release to refine the backlog, ensuring we're always building the highest-value features.
+              </NanoCardDescription>
+            </div>
+            <BarChart3 className="h-6 w-6 text-[var(--text-tertiary)] mt-6" />
+          </NanoCard>
         </BentoGrid>
       </section>
 
       {/* Experience */}
-      <section id="experience" className="mb-20 sm:mb-32 scroll-mt-24 max-w-4xl mx-auto">
-        <h3 className="text-2xl font-semibold mb-8 tracking-tight">Experience</h3>
-        <div className="relative border-l border-zinc-200 dark:border-zinc-800 ml-3 space-y-12">
-          <div className="relative pl-8">
-            <div className="absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-zinc-200 ring-4 ring-white dark:bg-zinc-800 dark:ring-black" />
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-              <h4 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Frontend Software Engineer</h4>
-              <span className="text-sm text-zinc-500 font-mono">Present</span>
+      <section id="experience" className="mb-24 sm:mb-40 scroll-mt-32 max-w-5xl mx-auto">
+        <h3 className="text-3xl font-bold mb-12 tracking-tight text-[var(--text-primary)]">Experience</h3>
+        <div className="space-y-10">
+          <NanoCard className="p-8 sm:p-12">
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-4">
+              <h4 className="text-xl font-bold text-[var(--text-primary)]">Frontend Software Engineer</h4>
+              <span className="text-sm font-medium text-[var(--color-neon-blue)] font-mono bg-[var(--color-neon-blue)]/10 px-3 py-1 rounded-full border border-[var(--color-neon-blue)]/20">Present</span>
             </div>
-            <div className="text-zinc-600 dark:text-zinc-400 mb-4 font-medium">BLOX Digital</div>
-            <p className="text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed">
+            <div className="text-lg text-[var(--text-secondary)] mb-6 font-medium">BLOX Digital</div>
+            <p className="text-[var(--text-secondary)] mb-8 leading-relaxed text-lg">
               Led front‑end development on BLOX NXT CMS, shipping 20+ customer‑visible features across content authoring, audience, and analytics workflows.
             </p>
-            <ul className="list-disc list-inside space-y-2 text-zinc-600 dark:text-zinc-400 text-sm marker:text-zinc-300">
+            <ul className="list-disc list-inside space-y-4 text-[var(--text-secondary)] text-base marker:text-[var(--color-neon-blue)]">
               <li>Architected payment integrations supporting 2M+ paid subscribers.</li>
               <li>Established a reusable component library, accelerating feature delivery by ~30%.</li>
               <li>Improved perceived performance via render profiling and request batching.</li>
               <li>Mentored peers and advocated for accessibility (WCAG).</li>
             </ul>
-          </div>
+          </NanoCard>
           
-          <div className="relative pl-8">
-            <div className="absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-zinc-200 ring-4 ring-white dark:bg-zinc-800 dark:ring-black" />
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-              <h4 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Instructional Assistant</h4>
-              <span className="text-sm text-zinc-500 font-mono">Previous</span>
+          <NanoCard className="p-8 sm:p-12">
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-4">
+              <h4 className="text-xl font-bold text-[var(--text-primary)]">Instructional Assistant</h4>
+              <span className="text-sm font-medium text-[var(--text-tertiary)] font-mono bg-[var(--glass-base)] px-3 py-1 rounded-full border border-[var(--glass-border)]">Previous</span>
             </div>
-            <div className="text-zinc-600 dark:text-zinc-400 mb-4 font-medium">General Assembly</div>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <div className="text-lg text-[var(--text-secondary)] mb-6 font-medium">General Assembly</div>
+            <p className="text-[var(--text-secondary)] leading-relaxed text-lg">
               Supported a cohort of 60+ students in full‑stack fundamentals, providing code reviews and debugging sessions.
             </p>
-          </div>
+          </NanoCard>
         </div>
       </section>
 
       {/* Skills */}
-      <section className="mb-20 sm:mb-32 scroll-mt-24 max-w-4xl mx-auto">
-        <h3 className="text-2xl font-semibold mb-8 tracking-tight">Skills</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="group rounded-2xl border border-zinc-200 bg-zinc-50/50 p-6 transition-all duration-300 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 dark:border-zinc-800 dark:bg-zinc-900/50">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                <Users className="h-5 w-5" />
+      <section className="mb-24 sm:mb-40 scroll-mt-32 max-w-5xl mx-auto">
+        <h3 className="text-3xl font-bold mb-12 tracking-tight text-[var(--text-primary)]">Skills</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <NanoCard className="p-10">
+            <div className="flex items-center gap-5 mb-8">
+              <div className="p-3 rounded-2xl bg-[var(--color-neon-blue)]/10 text-[var(--color-neon-blue)]">
+                <Users className="h-6 w-6" />
               </div>
-              <h4 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Technical Product Management</h4>
+              <h4 className="text-xl font-bold text-[var(--text-primary)]">Technical Product Management</h4>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-5">
               {[
                 "Technical Feasibility Analysis",
                 "API Design & Strategy",
@@ -140,22 +172,22 @@ export default function Home() {
                 "Agile & Scrum Methodologies",
                 "Stakeholder Management"
               ].map((skill) => (
-                <li key={skill} className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 text-sm">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                <li key={skill} className="flex items-center gap-3 text-[var(--text-secondary)] text-base">
+                  <div className="h-2 w-2 rounded-full bg-[var(--color-neon-blue)]/50" />
                   {skill}
                 </li>
               ))}
             </ul>
-          </div>
+          </NanoCard>
 
-          <div className="group rounded-2xl border border-zinc-200 bg-zinc-50/50 p-6 transition-all duration-300 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10 dark:border-zinc-800 dark:bg-zinc-900/50">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
-                <Code2 className="h-5 w-5" />
+          <NanoCard className="p-10">
+            <div className="flex items-center gap-5 mb-8">
+              <div className="p-3 rounded-2xl bg-[var(--color-neon-violet)]/10 text-[var(--color-neon-violet)]">
+                <Code2 className="h-6 w-6" />
               </div>
-              <h4 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Engineering</h4>
+              <h4 className="text-xl font-bold text-[var(--text-primary)]">Engineering</h4>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-5">
               {[
                 "React, TypeScript, Next.js",
                 "Material UI (MUI)",
@@ -163,53 +195,68 @@ export default function Home() {
                 "Node.js & Express.js",
                 "Accessibility (WCAG)"
               ].map((skill) => (
-                <li key={skill} className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 text-sm">
-                  <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                <li key={skill} className="flex items-center gap-3 text-[var(--text-secondary)] text-base">
+                  <div className="h-2 w-2 rounded-full bg-[var(--color-neon-violet)]/50" />
                   {skill}
                 </li>
               ))}
             </ul>
-          </div>
+          </NanoCard>
         </div>
       </section>
 
       {/* Projects / Case Studies */}
-      <section id="case-studies" className="mb-20 sm:mb-32 scroll-mt-24 max-w-6xl mx-auto">
-        <h3 className="text-2xl font-semibold mb-8 tracking-tight">Case Studies</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ProjectCard
-            title="Email Campaign Management System"
-            description="Built a multi‑step wizard with advanced validation and natural‑language scheduling. Reduced setup friction and increased successful campaign launches."
-            link="/projects/email-campaign-system"
-            icon={<Layout className="h-6 w-6 text-blue-500" />}
-            gradient="from-blue-500/20 to-cyan-500/20"
-          />
-          <ProjectCard
-            title="BLOX NXT CMS Rebuild"
-            description="Contributed to modular, pattern‑driven front‑end architecture. Built data‑driven dashboards and real‑time authoring affordances to streamline editorial workflows."
-            link="/projects/blox-nxt-cms-rebuild"
-            icon={<Database className="h-6 w-6 text-purple-500" />}
-            gradient="from-purple-500/20 to-pink-500/20"
-          />
+      <section id="projects" className="mb-24 sm:mb-40 scroll-mt-32 max-w-6xl mx-auto">
+        <h3 className="text-3xl font-bold mb-12 tracking-tight text-[var(--text-primary)]">Case Studies</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <a href="/projects/email-campaign-system" className="block h-full">
+            <NanoCard className="h-full p-10 flex flex-col">
+              <div className="flex items-start justify-between mb-8">
+                <div className="p-4 rounded-2xl bg-[var(--color-neon-blue)]/10 text-[var(--color-neon-blue)]">
+                  <Layout className="h-6 w-6" />
+                </div>
+                <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45" />
+              </div>
+              <NanoCardTitle className="mb-4 text-2xl">Email Campaign Management System</NanoCardTitle>
+              <NanoCardDescription className="text-base">
+                Built a multi‑step wizard with advanced validation and natural‑language scheduling. Reduced setup friction and increased successful campaign launches.
+              </NanoCardDescription>
+            </NanoCard>
+          </a>
+          
+          <a href="/projects/blox-nxt-cms-rebuild" className="block h-full">
+            <NanoCard className="h-full p-10 flex flex-col">
+              <div className="flex items-start justify-between mb-8">
+                <div className="p-4 rounded-2xl bg-[var(--color-neon-violet)]/10 text-[var(--color-neon-violet)]">
+                  <Database className="h-6 w-6" />
+                </div>
+                <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] -rotate-45" />
+              </div>
+              <NanoCardTitle className="mb-4 text-2xl">BLOX NXT CMS Rebuild</NanoCardTitle>
+              <NanoCardDescription className="text-base">
+                Contributed to modular, pattern‑driven front‑end architecture. Built data‑driven dashboards and real‑time authoring affordances to streamline editorial workflows.
+              </NanoCardDescription>
+            </NanoCard>
+          </a>
         </div>
       </section>
 
       {/* Contact */}
-      <section id="contact" className="scroll-mt-24">
-        <div className="rounded-3xl bg-zinc-900 px-6 py-12 text-center dark:bg-zinc-50/5 sm:px-12">
-          <h3 className="text-2xl font-semibold text-white mb-4">Ready to Connect?</h3>
-          <p className="text-zinc-400 mb-8 max-w-lg mx-auto">
+      <section id="contact" className="scroll-mt-32 pb-24">
+        <NanoCard className="px-6 py-16 text-center sm:px-16 bg-gradient-to-br from-[var(--glass-elevated)] to-transparent">
+          <h3 className="text-2xl font-semibold text-[var(--text-primary)] mb-6">Ready to Connect?</h3>
+          <p className="text-[var(--text-secondary)] mb-10 max-w-lg mx-auto">
             I'm currently open to Product Management roles where I can leverage my engineering background to build better products.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="mailto:your.email@example.com" className="w-full sm:w-auto px-6 py-3 rounded-full bg-white text-zinc-900 font-medium hover:bg-zinc-100 transition-colors">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+            <a href="mailto:your.email@example.com" className="w-full sm:w-auto px-8 py-4 rounded-full bg-[var(--text-primary)] text-[var(--color-midnight)] font-medium hover:bg-[var(--text-primary)]/90 transition-colors">
               Send me an email
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 rounded-full border border-zinc-700 text-white font-medium hover:bg-zinc-800 transition-colors">
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-8 py-4 rounded-full border border-[var(--glass-border-highlight)] text-[var(--text-primary)] font-medium hover:bg-[var(--glass-elevated)] transition-colors">
               Connect on LinkedIn
             </a>
           </div>
-        </div>
+        </NanoCard>
       </section>
     </main>
   );
