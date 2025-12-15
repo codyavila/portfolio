@@ -203,7 +203,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     };
 
     const sharedClassName = cn(
-      "group relative inline-flex items-center justify-center rounded-full font-semibold tracking-wide cursor-pointer overflow-hidden",
+      "group relative inline-flex items-center justify-center rounded-[28px] font-semibold tracking-wide cursor-pointer overflow-hidden",
       "transition-shadow duration-300",
       !isHighContrast && "chromatic-edge",
       sizeStyles[size],
@@ -233,7 +233,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
         {/* Animated gradient overlay - visible on hover, follows mouse (disabled in high contrast) */}
         {!isHighContrast && (
           <motion.div
-            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-70 transition-opacity duration-300"
+            className="absolute inset-0 rounded-[28px] opacity-0 group-hover:opacity-70 transition-opacity duration-300"
             style={{ background: animatedGradient }}
           />
         )}
@@ -241,7 +241,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
         {/* Shine/glare effect on hover (disabled in high contrast) */}
         {!isHighContrast && (
           <motion.div
-            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 pointer-events-none"
+            className="absolute inset-0 rounded-[28px] opacity-0 group-hover:opacity-100 pointer-events-none"
             style={{
               background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 55%, transparent 60%)",
               backgroundSize: "200% 100%",

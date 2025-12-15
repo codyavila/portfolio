@@ -380,15 +380,13 @@ export function Header() {
           "backdrop-saturate-150",
           "border border-[var(--glass-2-border)]",
           "overflow-hidden",
-          "flex md:flex-row"
+          "flex md:flex-row",
+          "rounded-[28px]"
         )}
-        style={{
-          borderRadius: 28,
+        transition={{
+          ...liquidSpring,
+          borderRadius: { duration: 0 },
         }}
-        animate={{
-          borderRadius: settingsOpen ? 24 : 28,
-        }}
-        transition={liquidSpring}
         onMouseMove={handleMove}
         onMouseLeave={resetMove}
         onMouseEnter={handleEnter}
@@ -558,17 +556,23 @@ export function Header() {
             <motion.div
               data-settings-panel
               key="desktop-panel"
-              initial={{ width: 0, opacity: 0, scaleX: 0.8 }}
-              animate={{ width: "auto", opacity: 1, scaleX: 1 }}
-              exit={{ width: 0, opacity: 0, scaleX: 0.8 }}
-              transition={jellySpring}
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: "auto", opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{
+                width: { type: "spring", stiffness: 500, damping: 35 },
+                opacity: { duration: 0.15 },
+              }}
               className="hidden md:block overflow-hidden origin-left"
             >
               <motion.div
-                initial={{ opacity: 0, x: -15, scale: 0.95 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -15, scale: 0.95 }}
-                transition={{ ...jellySpring, delay: 0.03 }}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ 
+                  duration: 0.2,
+                  delay: 0.05,
+                }}
                 className="py-3 px-4 min-w-[170px] border-l border-[var(--glass-2-border)]"
               >
                 {/* Theme Section */}

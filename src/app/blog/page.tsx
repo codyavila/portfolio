@@ -25,7 +25,7 @@ export default function BlogPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Featured Design System Post */}
         <Link href="/blog/design-system">
-          <GlassCard className="h-full p-6 hover:scale-[1.02] transition-transform duration-300 relative overflow-hidden" glow="cyber-lime">
+          <GlassCard className="h-full p-6 hover:scale-[1.02] transition-transform duration-150 ease-[var(--spring-snappy)] relative overflow-hidden" glow="cyber-lime">
             <div className="absolute top-0 right-0 p-2">
               <span className="bg-indigo-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Featured</span>
             </div>
@@ -57,7 +57,7 @@ export default function BlogPage() {
 
         {posts.map((post) => (
           <Link key={post.slug} href={`/blog/${post.slug}`}>
-            <GlassCard className="h-full p-6 hover:scale-[1.02] transition-transform duration-300" glow="aurora">
+            <GlassCard className="h-full p-6 hover:scale-[1.02] transition-transform duration-150 ease-[var(--spring-snappy)]" glow="aurora">
               <div className="flex flex-col h-full">
                 <div className="mb-4">
                   <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-2">

@@ -42,25 +42,22 @@ const HERO_ANIMATED_KEY = 'hero-has-animated';
 
 export default function Home() {
   // Track if this is the initial page load to prevent re-animation on hash navigation
-  const [hasAnimated, setHasAnimated] = useState(() => {
-    // Check sessionStorage on initial render (client-side only)
-    if (typeof window !== 'undefined') {
-      return sessionStorage.getItem(HERO_ANIMATED_KEY) === 'true';
-    }
-    return false;
-  });
+  // Start with null to indicate we haven't checked yet, avoiding hydration mismatch
+  const [animationState, setAnimationState] = useState<'pending' | 'animate' | 'skip'>('pending');
   
   useEffect(() => {
-    // Mark as animated after initial render
-    if (!hasAnimated) {
-      // Small delay to ensure animation has started
+    // Check sessionStorage after mount to avoid hydration mismatch
+    const alreadyAnimated = sessionStorage.getItem(HERO_ANIMATED_KEY) === 'true';
+    setAnimationState(alreadyAnimated ? 'skip' : 'animate');
+    
+    // Mark as animated after a delay
+    if (!alreadyAnimated) {
       const timer = setTimeout(() => {
         sessionStorage.setItem(HERO_ANIMATED_KEY, 'true');
-        setHasAnimated(true);
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [hasAnimated]);
+  }, []);
 
   return (
     <main className="relative max-w-7xl mx-auto px-6 py-16 sm:py-24 md:pl-32">
@@ -72,7 +69,7 @@ export default function Home() {
       <motion.section 
         className="mb-24 sm:mb-32 relative z-10 max-w-5xl mx-auto pt-16 sm:pt-24"
         variants={containerVariants}
-        initial={hasAnimated ? "visible" : "hidden"}
+        initial={animationState === 'animate' ? "hidden" : false}
         animate="visible"
       >
         <div className="flex flex-col gap-8 sm:gap-10">
