@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { useState, useEffect, RefObject } from "react";
 
 interface MouseState {
   x: number;
@@ -15,7 +16,7 @@ interface MouseState {
 let lastUpdateTime = 0;
 const THROTTLE_MS = 16; // ~60fps
 
-export const useMouseStore = create<MouseState>((set, get) => ({
+export const useMouseStore = create<MouseState>((set) => ({
   x: 0,
   y: 0,
   normalizedX: 0,
@@ -46,27 +47,52 @@ export const useMouseStore = create<MouseState>((set, get) => ({
   },
 }));
 
-// Magnetic effect utility
+// Magnetic effect utility - computes values synchronously to avoid effect issues
 export function useMagneticEffect(
-  elementRef: React.RefObject<HTMLElement | null>,
+  elementRef: RefObject<HTMLElement | null>,
   options: { strength?: number; radius?: number } = {}
 ) {
   const { strength = 0.3, radius = 100 } = options;
   const { x, y } = useMouseStore();
+  const [magneticState, setMagneticState] = useState({ magnetX: 0, magnetY: 0, isNear: false });
 
-  if (!elementRef.current) return { magnetX: 0, magnetY: 0, isNear: false };
+  // Use requestAnimationFrame to batch updates and avoid synchronous setState warnings
+  useEffect(() => {
+    const updateMagneticState = () => {
+      if (!elementRef.current) {
+        setMagneticState(prev => 
+          prev.magnetX === 0 && prev.magnetY === 0 && !prev.isNear 
+            ? prev 
+            : { magnetX: 0, magnetY: 0, isNear: false }
+        );
+        return;
+      }
 
-  const rect = elementRef.current.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
+      const rect = elementRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-  const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-  const isNear = distance < radius;
+      const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+      const isNear = distance < radius;
 
-  if (!isNear) return { magnetX: 0, magnetY: 0, isNear: false };
+      if (!isNear) {
+        setMagneticState(prev => 
+          prev.magnetX === 0 && prev.magnetY === 0 && !prev.isNear 
+            ? prev 
+            : { magnetX: 0, magnetY: 0, isNear: false }
+        );
+        return;
+      }
 
-  const magnetX = (x - centerX) * strength;
-  const magnetY = (y - centerY) * strength;
+      const magnetX = (x - centerX) * strength;
+      const magnetY = (y - centerY) * strength;
 
-  return { magnetX, magnetY, isNear };
+      setMagneticState({ magnetX, magnetY, isNear });
+    };
+    
+    const rafId = requestAnimationFrame(updateMagneticState);
+    return () => cancelAnimationFrame(rafId);
+  }, [x, y, elementRef, strength, radius]);
+
+  return magneticState;
 }

@@ -1,4 +1,4 @@
-import { useScroll, useVelocity, useSpring, useTransform } from "framer-motion";
+import { useScroll, useVelocity, useSpring } from "framer-motion";
 
 export function useScrollVelocity() {
   const { scrollY } = useScroll();

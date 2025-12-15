@@ -24,7 +24,7 @@ function Section({ title, id, children }: { title: string; id?: string; children
   );
 }
 
-function CodeBlock({ title, code, language = 'typescript' }: { title: string; code: string; language?: string }) {
+function CodeBlock({ title, code }: { title: string; code: string }) {
   return (
     <div className="my-8 rounded-xl overflow-hidden border border-zinc-200 dark:border-white/10 bg-zinc-950 shadow-2xl">
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/5">
@@ -100,7 +100,7 @@ export default function DesignSystemPage() {
             <KineticText>Project Luminous</KineticText>
           </h1>
           <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            The web has become flat. We've optimized the soul out of our interfaces in the name of "clean design." 
+            The web has become flat. We&apos;ve optimized the soul out of our interfaces in the name of &quot;clean design.&quot; 
             I wanted to build something that felt <span className="text-indigo-500 font-semibold">alive</span>.
           </p>
         </header>

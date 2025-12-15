@@ -75,7 +75,7 @@ export function useSoundSystem() {
     // Initialize AudioContext on user interaction to comply with browser policies
     const initAudio = () => {
       if (!audioContextRef.current) {
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const AudioContextClass = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
         if (AudioContextClass) {
             audioContextRef.current = new AudioContextClass();
             
@@ -197,7 +197,7 @@ export function useSoundSystem() {
     const { osc: osc2, gain: gain2 } = createWarmOsc(ctx, note, 3);
     
     // Soft attack, smooth decay
-    [gain1, gain2].forEach((g, i) => {
+    [gain1, gain2].forEach((g) => {
       g.gain.setValueAtTime(0, ctx.currentTime);
       g.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 0.03);
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
@@ -599,7 +599,7 @@ export function useSoundSystem() {
     
     const notes = [261.63, 329.63, 392.00]; // C major triad
     
-    notes.forEach((freq, i) => {
+    notes.forEach((freq) => {
       const { osc, filter, gain } = createWarmOsc(ctx, freq, (Math.random() - 0.5) * 6);
       
       filter.frequency.setValueAtTime(1200, ctx.currentTime);

@@ -41,17 +41,9 @@ export function DynamicVignette() {
   // Determine vignette color based on time and theme
   const isDark = theme === "dark" || resolvedTheme === "dark";
   
-  let vignetteColor = "rgba(5, 5, 8, 0.6)"; // Default Dark
-  
-  if (mounted && isDark) {
-    if (phase === "night") {
-      vignetteColor = "rgba(20, 10, 5, 0.7)";
-    } else {
-      vignetteColor = "rgba(5, 5, 15, 0.6)";
-    }
-  } else if (mounted) {
-    vignetteColor = "rgba(255, 255, 255, 0.1)"; // Light mode - much more subtle
-  }
+  // Keep vignetteColor logic for potential future phase-based adjustments
+  // Currently using dynamicBackground directly instead
+  void phase; // Silence unused warning - reserved for phase-based color adjustments
 
   // Static background for SSR to prevent hydration mismatch
   const staticBackground = "radial-gradient(circle at 0px 0px, transparent 150px, rgba(5, 5, 8, 0.6) 100%)";

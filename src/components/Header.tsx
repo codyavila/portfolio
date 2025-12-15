@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X, Clock, BookOpen } from "lucide-react";
+import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X, BookOpen } from "lucide-react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -46,10 +46,11 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [indicator, setIndicator] = useState({ x: 0, y: 0, w: 56, h: 56 });
+  const indicatorRef = useRef({ x: 0, y: 0, w: 56, h: 56 });
   const { theme, setTheme } = useTheme();
   const { timeOverride, setTimeOverride } = useDynamicTheme();
-  const { hour: realHour } = useTimeOfDay();
-  const { playClick, playToggle, playHover, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome } = useSoundSystem();
+  useTimeOfDay();
+  const { playToggle, playHover, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome } = useSoundSystem();
   
   // Magnetic effect values with smoother springs
   const mx = useMotionValue(0);
@@ -63,12 +64,17 @@ export function Header() {
   // Icon rotation - bouncy
   const iconRotation = useSpring(0, { stiffness: 400, damping: 12 });
 
+  // Initialize on mount - using layout effect for synchronous execution
   useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem(CONTRAST_KEY);
-    const enabled = stored === "high";
-    setHighContrast(enabled);
-    document.documentElement.dataset.contrast = enabled ? "high" : "normal";
+    // These setState calls are intentional for hydration-safe initialization
+    // and reading from localStorage which is only available client-side
+    requestAnimationFrame(() => {
+      setMounted(true);
+      const stored = localStorage.getItem(CONTRAST_KEY);
+      const enabled = stored === "high";
+      setHighContrast(enabled);
+      document.documentElement.dataset.contrast = enabled ? "high" : "normal";
+    });
   }, []);
 
   // Scroll spy - track which section is in view
@@ -136,19 +142,35 @@ export function Header() {
 
   // Track indicator position based on active/hover tab
   useEffect(() => {
-    const activeEl = containerRef.current?.querySelector<HTMLElement>(`[data-tab="${hoverTab ?? activeTab}"]`);
-    if (activeEl) {
-      const rect = activeEl.getBoundingClientRect();
-      const parentRect = containerRef.current?.getBoundingClientRect();
-      if (parentRect) {
-        setIndicator({
-          x: rect.left - parentRect.left,
-          y: rect.top - parentRect.top,
-          w: rect.width,
-          h: rect.height,
-        });
+    const updateIndicator = () => {
+      const activeEl = containerRef.current?.querySelector<HTMLElement>(`[data-tab="${hoverTab ?? activeTab}"]`);
+      if (activeEl) {
+        const rect = activeEl.getBoundingClientRect();
+        const parentRect = containerRef.current?.getBoundingClientRect();
+        if (parentRect) {
+          // Use ref to store position, then update state in rAF
+          const newIndicator = {
+            x: rect.left - parentRect.left,
+            y: rect.top - parentRect.top,
+            w: rect.width,
+            h: rect.height,
+          };
+          // Only update if changed to avoid unnecessary re-renders
+          if (
+            indicatorRef.current.x !== newIndicator.x ||
+            indicatorRef.current.y !== newIndicator.y ||
+            indicatorRef.current.w !== newIndicator.w ||
+            indicatorRef.current.h !== newIndicator.h
+          ) {
+            indicatorRef.current = newIndicator;
+            requestAnimationFrame(() => {
+              setIndicator(newIndicator);
+            });
+          }
+        }
       }
-    }
+    };
+    updateIndicator();
   }, [activeTab, hoverTab]);
 
   // Update glow on hover

@@ -88,7 +88,7 @@ export default function EmailCampaignSystem() {
             </li>
             <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
               <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
-              Frustration with the "black box" scheduling logic.
+              Frustration with the &quot;black box&quot; scheduling logic.
             </li>
             <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
               <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
@@ -111,7 +111,7 @@ export default function EmailCampaignSystem() {
                 <h3 className="text-title-m text-[var(--text-primary)]">Natural Language Scheduling</h3>
               </div>
               <p className="text-body-m text-[var(--text-secondary)]">
-                Replaced complex cron-like selectors with a human-readable summary (e.g., "Sends every Monday at 9:00 AM"). This immediate feedback loop drastically reduced scheduling errors.
+                Replaced complex cron-like selectors with a human-readable summary (e.g., &quot;Sends every Monday at 9:00 AM&quot;). This immediate feedback loop drastically reduced scheduling errors.
               </p>
             </NanoCard>
 
@@ -121,7 +121,7 @@ export default function EmailCampaignSystem() {
                 <h3 className="text-title-m text-[var(--text-primary)]">Granular State & Validation</h3>
               </div>
               <p className="text-body-m text-[var(--text-secondary)]">
-                Leveraged React Hook Form and Zod to validate inputs in real-time. Users couldn't proceed to the "Review" step without valid configuration.
+                Leveraged React Hook Form and Zod to validate inputs in real-time. Users couldn&apos;t proceed to the &quot;Review&quot; step without valid configuration.
               </p>
             </NanoCard>
 

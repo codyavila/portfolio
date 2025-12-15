@@ -62,7 +62,12 @@ export default function ShaderBackground() {
   useEffect(() => {
     // Check for battery status API
     if (typeof navigator !== 'undefined' && 'getBattery' in navigator) {
-      (navigator as any).getBattery().then((battery: any) => {
+      interface BatteryManager {
+        level: number;
+        charging: boolean;
+        addEventListener: (event: string, callback: () => void) => void;
+      }
+      (navigator as Navigator & { getBattery: () => Promise<BatteryManager> }).getBattery().then((battery) => {
         const checkPower = () => {
           setLowPower(battery.level < 0.2 && !battery.charging);
         };

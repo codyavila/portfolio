@@ -1,12 +1,12 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform, useVelocity, useSpring } from "framer-motion";
+import { motion, MotionValue, useMotionTemplate, useMotionValue, useScroll, useTransform, useVelocity, useSpring } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 
 // Context to share mouse position
 export const MouseContext = React.createContext<{
-  mouseX: any;
-  mouseY: any;
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
 } | null>(null);
 
 export const BentoGrid = ({
@@ -112,11 +112,13 @@ export const BentoGridItem = ({
   // localX = mouseX - position.left
   // But mouseX is a MotionValue.
   
-  const maskImage = useMotionTemplate`radial-gradient(
+  // Note: maskImage kept for potential future use with glow effects
+  const _maskImage = useMotionTemplate`radial-gradient(
     300px circle at calc(${mouseX}px - ${position.left}px) calc(${mouseY}px - ${position.top}px),
     var(--neon-primary-start),
     transparent
   )`;
+  void _maskImage; // Silence unused warning - reserved for future glow effect
   
   const borderMask = useMotionTemplate`radial-gradient(
     150px circle at calc(${mouseX}px - ${position.left}px) calc(${mouseY}px - ${position.top}px),

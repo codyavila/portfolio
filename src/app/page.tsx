@@ -164,7 +164,7 @@ export default function Home() {
                     I speak both languages fluently
                   </PortalCardTitle>
                   <PortalCardDescription className="text-base sm:text-lg leading-relaxed">
-                    At BLOX Digital, I didn't just implement features—I owned the technical lifecycle of product initiatives. 
+                    At BLOX Digital, I didn&apos;t just implement features—I owned the technical lifecycle of product initiatives. 
                     I partnered with Product and Design to de-risk complex requirements early, identifying API limitations 
                     and architectural trade-offs before a single line of code was written.
                   </PortalCardDescription>
@@ -175,7 +175,7 @@ export default function Home() {
                     understand database schemas, and make informed decisions about technical debt versus speed.
                   </PortalCardDescription>
                   <p className="mt-6 text-[var(--text-primary)] font-medium text-lg">
-                    I'm now applying this rigorous technical lens to product strategy, ensuring we build scalable solutions 
+                    I&apos;m now applying this rigorous technical lens to product strategy, ensuring we build scalable solutions 
                     that deliver real value.
                   </p>
                 </div>
@@ -205,7 +205,7 @@ export default function Home() {
                 <div>
                   <NanoCardTitle className="text-lg mb-2">Cross-Functional Trust</NanoCardTitle>
                   <NanoCardDescription>
-                    Engineering teams trust me because I've been in their shoes. I bridge the gap between vision and reality.
+                    Engineering teams trust me because I&apos;ve been in their shoes. I bridge the gap between vision and reality.
                   </NanoCardDescription>
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function Home() {
               <div className="mb-6"><DiscoverGraphic /></div>
               <NanoCardTitle className="mb-3">Discover & Define</NanoCardTitle>
               <NanoCardDescription>
-                I start by understanding the 'why'. I analyze user data, interview stakeholders, and define success metrics before discussing solutions.
+                I start by understanding the &apos;why&apos;. I analyze user data, interview stakeholders, and define success metrics before discussing solutions.
               </NanoCardDescription>
             </div>
             <Users className="h-6 w-6 text-[var(--lum-neon-purple)] mt-6" />
@@ -256,7 +256,7 @@ export default function Home() {
               <div className="mb-6"><ExecuteGraphic /></div>
               <NanoCardTitle className="mb-3">Execute & Iterate</NanoCardTitle>
               <NanoCardDescription>
-                I prioritize iterative delivery. I use data from each release to refine the backlog, ensuring we're always building the highest-value features.
+                I prioritize iterative delivery. I use data from each release to refine the backlog, ensuring we&apos;re always building the highest-value features.
               </NanoCardDescription>
             </div>
             <BarChart3 className="h-6 w-6 text-[var(--neon-primary-end)] mt-6" />
@@ -571,7 +571,7 @@ export default function Home() {
               </motion.div>
               
               <p className="text-body-l text-[var(--text-secondary)] mb-10 max-w-lg mx-auto on-glass leading-relaxed">
-                I'm currently open to Product Management roles where I can leverage my engineering background to build better products.
+                I&apos;m currently open to Product Management roles where I can leverage my engineering background to build better products.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-5">

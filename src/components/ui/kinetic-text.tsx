@@ -3,14 +3,27 @@
 import { motion, useTransform, MotionProps } from "framer-motion";
 import { useScrollVelocity } from "@/hooks/useScrollVelocity";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useMemo } from "react";
 
 interface KineticTextProps extends MotionProps {
   children: React.ReactNode;
   className?: string;
-  as?: React.ElementType;
+  as?: "div" | "span" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   velocityFactor?: number; // Adjust how much it skews
 }
+
+// Map of motion components to avoid creating during render
+const motionComponents = {
+  div: motion.div,
+  span: motion.span,
+  p: motion.p,
+  h1: motion.h1,
+  h2: motion.h2,
+  h3: motion.h3,
+  h4: motion.h4,
+  h5: motion.h5,
+  h6: motion.h6,
+} as const;
 
 export function KineticText({
   children,
@@ -36,11 +49,8 @@ export function KineticText({
     [-10 * velocityFactor, 10 * velocityFactor]
   );
 
-  // We need to cast Component to "any" or use motion(Component) if it's a custom component,
-  // but for standard HTML tags, motion.div, motion.h1 etc work.
-  // Since we want to support dynamic tags, we can use motion.create(Component) or just switch.
-  
-  const MotionComponent = motion(Component as any);
+  // Get the motion component from our pre-defined map
+  const MotionComponent = useMemo(() => motionComponents[Component], [Component]);
 
   return (
     <MotionComponent

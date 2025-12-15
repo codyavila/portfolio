@@ -2,7 +2,6 @@ import {
   argbFromHex,
   themeFromSourceColor,
   hexFromArgb,
-  Theme,
 } from "@material/material-color-utilities";
 
 export interface MaterialThemeColors {
@@ -109,12 +108,3 @@ export const applyThemeToDom = (theme: MaterialThemeColors) => {
   // Glass System - Use white-based transparency for Luminous glass materials
   // We keep the Luminous glass system intact rather than using surface colors
 };
-
-function hexToRgb(hex: string) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
-}

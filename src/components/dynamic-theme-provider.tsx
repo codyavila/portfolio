@@ -63,7 +63,7 @@ export function useDynamicTheme() {
 export function DynamicThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme, resolvedTheme } = useTheme();
   const [sourceColor, setSourceColor] = useState("#5E60CE"); // Default Aurora Blue
-  const { phase: realPhase, hour: realHour } = useTimeOfDay();
+  const { hour: realHour } = useTimeOfDay();
   const [timeOverride, setTimeOverride] = useState<number | null>(null);
 
   useEffect(() => {
