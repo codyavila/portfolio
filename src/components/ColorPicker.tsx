@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useDynamicTheme } from "@/components/dynamic-theme-provider";
+import { useSoundSystem } from "@/hooks/useSoundSystem";
 import { cn } from "@/lib/utils";
 
 const PRESETS = [
@@ -17,6 +18,12 @@ const PRESETS = [
 
 export function ColorPicker() {
   const { sourceColor, setSourceColor } = useDynamicTheme();
+  const { playSelect, playHover } = useSoundSystem();
+
+  const handlePresetClick = (color: string) => {
+    playSelect();
+    setSourceColor(color);
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -25,7 +32,8 @@ export function ColorPicker() {
         {PRESETS.map((preset) => (
           <button
             key={preset.color}
-            onClick={() => setSourceColor(preset.color)}
+            onClick={() => handlePresetClick(preset.color)}
+            onMouseEnter={playHover}
             className={cn(
               "w-6 h-6 rounded-full border border-white/10 transition-transform hover:scale-110",
               sourceColor === preset.color && "ring-2 ring-white ring-offset-2 ring-offset-black"
@@ -39,7 +47,10 @@ export function ColorPicker() {
            <input
             type="color"
             value={sourceColor}
-            onChange={(e) => setSourceColor(e.target.value)}
+            onChange={(e) => {
+              playSelect();
+              setSourceColor(e.target.value);
+            }}
             className="absolute inset-0 w-[150%] h-[150%] -top-1/4 -left-1/4 cursor-pointer p-0 border-0 opacity-0"
           />
           <div 

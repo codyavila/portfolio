@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DynamicThemeProvider } from "@/components/dynamic-theme-provider";
 import { MouseTracker } from "@/components/MouseTracker";
+import ShaderBackground from "@/components/background/ShaderBackground";
+import { DynamicVignette } from "@/components/ui/dynamic-vignette";
 import "./globals.css";
 
 const interTight = Inter_Tight({
@@ -25,6 +27,14 @@ export const metadata: Metadata = {
   description: "Bridging the gap between engineering and product strategy.",
 };
 
+// Viewport configuration for iOS Safari - extends content to cover safe areas
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover', // This is critical for iOS to allow content behind the notch/status bar
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -41,6 +51,10 @@ export default function RootLayout({
           enableSystem={false}
         >
           <DynamicThemeProvider>
+            <div className="lum-background" />
+            <ShaderBackground />
+            <div className="noise-overlay" />
+            <DynamicVignette />
             <MouseTracker />
             <Header />
             {children}

@@ -3,10 +3,12 @@
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useSoundSystem } from "@/hooks/useSoundSystem";
 
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
+  const { playToggle } = useSoundSystem();
 
   React.useEffect(() => {
     setMounted(true);
@@ -21,9 +23,14 @@ export function ThemeToggle() {
     );
   }
 
+  const handleToggle = () => {
+    playToggle();
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={handleToggle}
       className="p-2 rounded-full hover:bg-white/5 transition-colors text-slate-400 hover:text-white"
       aria-label="Toggle theme"
     >

@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame, MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import React, { useRef, useState, useCallback, memo, useEffect } from "react";
+import { useSoundSystem } from "@/hooks/useSoundSystem";
 
 type GlowVariant = "cyber-lime" | "cotton-candy" | "solar-flare" | "aurora" | "none";
 type CardSize = "sm" | "md" | "lg";
@@ -66,6 +67,7 @@ const GlassCardComponent = ({
   const ref = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { playThud } = useSoundSystem();
 
   useEffect(() => {
     // Disable hover effects on touch devices to prevent sticky hover states
@@ -154,7 +156,13 @@ const GlassCardComponent = ({
       glowY.set(percentY);
     }
     setIsHovered(true);
+    // Note: Removed hover sound - can get annoying on cards
   }, [enableSpotlight, glowX, glowY, isMobile]);
+
+  const handleClick = useCallback(() => {
+    playThud();
+    onClick?.();
+  }, [playThud, onClick]);
 
   return (
     <motion.div
@@ -174,7 +182,7 @@ const GlassCardComponent = ({
         delay: delay,
       }}
       {...motionProps}
-      onClick={onClick}
+      onClick={handleClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}

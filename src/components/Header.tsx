@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X } from "lucide-react";
+import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X, Clock, BookOpen } from "lucide-react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useTheme } from "next-themes";
+import { useDynamicTheme } from "@/components/dynamic-theme-provider";
+import { useTimeOfDay } from "@/hooks/useTimeOfDay";
+import { useSoundSystem } from "@/hooks/useSoundSystem";
 
 const navItems = [
   { name: "Home", href: "/", icon: Home, sectionId: null },
@@ -13,6 +16,7 @@ const navItems = [
   { name: "Process", href: "/#process", icon: Layers, sectionId: "process" },
   { name: "Experience", href: "/#experience", icon: Briefcase, sectionId: "experience" },
   { name: "Projects", href: "/#projects", icon: FolderGit2, sectionId: "projects" },
+  { name: "Blog", href: "/blog", icon: BookOpen, sectionId: null },
 ];
 
 const CONTRAST_KEY = "lum-contrast";
@@ -43,6 +47,9 @@ export function Header() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [indicator, setIndicator] = useState({ x: 0, y: 0, w: 56, h: 56 });
   const { theme, setTheme } = useTheme();
+  const { timeOverride, setTimeOverride } = useDynamicTheme();
+  const { hour: realHour } = useTimeOfDay();
+  const { playClick, playToggle, playHover, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome } = useSoundSystem();
   
   // Magnetic effect values with smoother springs
   const mx = useMotionValue(0);
@@ -203,14 +210,48 @@ export function Header() {
 
   const handleEnter = useCallback(() => {
     setIsHovered(true);
-  }, []);
+    playHover();
+  }, [playHover]);
 
   const toggleContrast = () => {
+    playToggle();
     const next = !highContrast;
     setHighContrast(next);
     document.documentElement.dataset.contrast = next ? "high" : "normal";
     localStorage.setItem(CONTRAST_KEY, next ? "high" : "normal");
   };
+
+  const handleNavClick = useCallback((tabName: string, index: number) => {
+    if (tabName === 'Home') {
+      playHome();
+    } else {
+      playNavNote(index);
+    }
+    setActiveTab(tabName);
+  }, [playNavNote, playHome]);
+
+  const handleSettingsToggle = useCallback(() => {
+    if (settingsOpen) {
+      playClose();
+    } else {
+      playOpen();
+    }
+    setSettingsOpen(!settingsOpen);
+  }, [playOpen, playClose, settingsOpen]);
+
+  const handleThemeChange = useCallback((newTheme: string) => {
+    if (newTheme === 'light') {
+      playLightMode();
+    } else {
+      playDarkMode();
+    }
+    setTheme(newTheme);
+  }, [playLightMode, playDarkMode, setTheme]);
+
+  const handleTimeSliderChange = useCallback((value: number, min: number, max: number) => {
+    playTick(value, min, max);
+    setTimeOverride(value < 0 ? null : value);
+  }, [playTick, setTimeOverride]);
   
   return (
     <motion.header
@@ -255,16 +296,37 @@ export function Header() {
                       icon={Sun}
                       label="Light"
                       isActive={theme === 'light'}
-                      onClick={() => setTheme('light')}
+                      onClick={() => handleThemeChange('light')}
                     />
                     <MobileOption
                       icon={Moon}
                       label="Dark"
                       isActive={theme === 'dark'}
-                      onClick={() => setTheme('dark')}
+                      onClick={() => handleThemeChange('dark')}
                     />
                   </>
                 )}
+                <div className="w-px h-8 bg-[var(--glass-2-border)] mx-1" />
+                
+                {/* Mobile Time Slider */}
+                <div className="flex flex-col justify-center w-24 px-1">
+                   <span className="text-[9px] font-mono text-[var(--text-secondary)] text-center mb-1">
+                      {timeOverride !== null ? `${timeOverride}:00` : "Auto"}
+                   </span>
+                   <input
+                      type="range"
+                      min="-1"
+                      max="23"
+                      step="1"
+                      value={timeOverride ?? -1}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value);
+                        handleTimeSliderChange(val, -1, 23);
+                      }}
+                      className="w-full h-1.5 bg-[var(--glass-2-border)] rounded-full appearance-none cursor-pointer accent-[var(--chip-primary-text)]"
+                    />
+                </div>
+
                 <div className="w-px h-8 bg-[var(--glass-2-border)] mx-1" />
                 <MobileOption
                   icon={Sparkles}
@@ -335,7 +397,7 @@ export function Header() {
             data-tab="Home"
             onMouseEnter={() => setHoverTab("Home")}
             onMouseLeave={() => setHoverTab(null)}
-            onClick={() => setActiveTab("Home")}
+            onClick={() => handleNavClick("Home", 0)}
             className="relative p-2 rounded-full group"
           >
             <motion.div
@@ -380,14 +442,14 @@ export function Header() {
 
           {/* Nav Items */}
           <div className="flex md:flex-col items-center gap-0.5">
-            {navItems.slice(1).map((item) => (
+            {navItems.slice(1).map((item, index) => (
               <Link
                 key={item.name}
                 href={item.href}
                 data-tab={item.name}
                 onMouseEnter={() => setHoverTab(item.name)}
                 onMouseLeave={() => setHoverTab(null)}
-                onClick={() => setActiveTab(item.name)}
+                onClick={() => handleNavClick(item.name, index + 1)}
                 className="relative p-2.5 rounded-full group"
                 title={item.name}
               >
@@ -438,7 +500,7 @@ export function Header() {
           {/* Settings Button */}
           <motion.button
             layout
-            onClick={() => setSettingsOpen(!settingsOpen)}
+            onClick={handleSettingsToggle}
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
             className={cn(
@@ -491,18 +553,54 @@ export function Header() {
                         icon={Sun}
                         label="Light"
                         isActive={theme === 'light'}
-                        onClick={() => setTheme('light')}
+                        onClick={() => handleThemeChange('light')}
                       />
                       <SettingsOption
                         icon={Moon}
                         label="Dark"
                         isActive={theme === 'dark'}
-                        onClick={() => setTheme('dark')}
+                        onClick={() => handleThemeChange('dark')}
                       />
                     </div>
                   )}
                 </div>
                 
+                <div className="h-px bg-[var(--glass-2-border)] my-2" />
+                
+                {/* Time Travel Section */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">
+                      Time Travel
+                    </span>
+                    <span className="text-[10px] font-mono text-[var(--text-secondary)]">
+                      {timeOverride !== null 
+                        ? `${Math.floor(timeOverride).toString().padStart(2, '0')}:${Math.floor((timeOverride % 1) * 60).toString().padStart(2, '0')}` 
+                        : "Auto"}
+                    </span>
+                  </div>
+                  
+                  <div className="px-1">
+                    <input
+                      type="range"
+                      min="-1"
+                      max="23.9"
+                      step="0.1"
+                      value={timeOverride ?? -1}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value);
+                        handleTimeSliderChange(val, -1, 23.9);
+                      }}
+                      className="w-full h-1.5 bg-[var(--glass-2-border)] rounded-full appearance-none cursor-pointer accent-[var(--chip-primary-text)]"
+                    />
+                    <div className="flex justify-between text-[8px] text-[var(--text-tertiary)] mt-1 font-mono">
+                      <span>Auto</span>
+                      <span>12PM</span>
+                      <span>11PM</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="h-px bg-[var(--glass-2-border)] my-2" />
                 
                 {/* Accessibility Section */}

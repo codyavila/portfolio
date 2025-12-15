@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useSoundSystem } from "@/hooks/useSoundSystem";
 
 type GradientVariant = "cyber-lime" | "cotton-candy" | "solar-flare" | "primary" | "secondary" | "accent";
 
@@ -151,6 +152,8 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     const breatheOpacity = useMotionValue(1);
     const breatheScale = useMotionValue(1);
     
+    const { playHover, playClick } = useSoundSystem();
+
     useAnimationFrame((time) => {
       // Disable breathing in high contrast mode
       if (breathing && !disabled && !isHighContrast) {
@@ -170,7 +173,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
       (opacity) => isHighContrast ? "none" : `0 0 ${20 * glowIntensity * opacity}px ${styles.glow}`
     );
 
-    const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseMove = (event: React.MouseEvent<HTMLElement>) => {
       const rect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -184,55 +187,49 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
       gradientRotation.set(angle + 90);
     };
 
+    const handleMouseEnter = () => {
+      playHover();
+    };
+
     const handleMouseLeave = () => {
       mx.set(0);
       my.set(0);
       gradientRotation.set(135);
     };
 
-    const buttonContent = (
-      <motion.button
-        ref={ref}
-        // The Squish — scale(0.95, 0.9) on click (wider and shorter) per Luminous spec
-        whileHover={{ 
-          scale: 1.05, 
-          rotate: 1,
-        }}
-        whileTap={{ 
-          // Squash and stretch: wider (1.1x) and shorter (0.9y)
-          scale: 0.9, 
-          scaleX: 1.1, 
-          scaleY: 0.85,
-          rotate: -0.5,
-        }}
-        transition={{ 
-          type: "spring", 
-          stiffness: 400, 
-          damping: 10 
-        }}
-        className={cn(
-          "group relative inline-flex items-center justify-center rounded-full font-semibold tracking-wide cursor-pointer overflow-hidden",
-          "transition-shadow duration-300",
-          !isHighContrast && "chromatic-edge",
-          sizeStyles[size],
-          disabled && "opacity-50 cursor-not-allowed",
-          className
-        )}
-        style={{
-          x: isHighContrast ? 0 : springX,
-          y: isHighContrast ? 0 : springY,
-          scale: breatheScale,
-          opacity: breatheOpacity,
-          background: isHighContrast ? highContrast.background : styles.gradient,
-          color: isHighContrast ? highContrast.textColor : styles.textColor,
-          boxShadow: animatedGlow,
-          border: isHighContrast ? `2px solid ${highContrast.border}` : undefined,
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onClick={onClick}
-        disabled={disabled}
-      >
+    const handleClick = () => {
+      playClick();
+      onClick?.();
+    };
+
+    const sharedClassName = cn(
+      "group relative inline-flex items-center justify-center rounded-full font-semibold tracking-wide cursor-pointer overflow-hidden",
+      "transition-shadow duration-300",
+      !isHighContrast && "chromatic-edge",
+      sizeStyles[size],
+      disabled && "opacity-50 cursor-not-allowed",
+      className
+    );
+
+    const sharedStyle = {
+      x: isHighContrast ? 0 : springX,
+      y: isHighContrast ? 0 : springY,
+      scale: breatheScale,
+      opacity: breatheOpacity,
+      background: isHighContrast ? highContrast.background : styles.gradient,
+      color: isHighContrast ? highContrast.textColor : styles.textColor,
+      boxShadow: animatedGlow,
+      border: isHighContrast ? `2px solid ${highContrast.border}` : undefined,
+    };
+
+    const sharedMotionProps = {
+      whileHover: { scale: 1.05, rotate: 1 },
+      whileTap: { scale: 0.9, scaleX: 1.1, scaleY: 0.85, rotate: -0.5 },
+      transition: { type: "spring" as const, stiffness: 400, damping: 10 },
+    };
+
+    const innerContent = (
+      <>
         {/* Animated gradient overlay - visible on hover, follows mouse (disabled in high contrast) */}
         {!isHighContrast && (
           <motion.div
@@ -257,18 +254,41 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
         
         {/* Content */}
         <span className="relative z-10">{children}</span>
-      </motion.button>
+      </>
     );
 
     if (href) {
       return (
-        <a href={href} className="no-underline inline-block">
-          {buttonContent}
-        </a>
+        <motion.a
+          href={href}
+          className={cn(sharedClassName, "no-underline")}
+          style={sharedStyle}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
+          {...sharedMotionProps}
+        >
+          {innerContent}
+        </motion.a>
       );
     }
 
-    return buttonContent;
+    return (
+      <motion.button
+        ref={ref}
+        className={sharedClassName}
+        style={sharedStyle}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+        disabled={disabled}
+        {...sharedMotionProps}
+      >
+        {innerContent}
+      </motion.button>
+    );
   }
 );
 
@@ -293,6 +313,7 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
     const my = useMotionValue(0);
     const springX = useSpring(mx, { stiffness: 400, damping: 25 });
     const springY = useSpring(my, { stiffness: 400, damping: 25 });
+    const { playHover, playClick } = useSoundSystem();
 
     // Subtle breathing for ghost buttons when enabled (disabled in high contrast)
     const breatheOpacity = useMotionValue(1);
@@ -306,7 +327,7 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
       }
     });
 
-    const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseMove = (event: React.MouseEvent<HTMLElement>) => {
       if (isHighContrast) return;
       const rect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - rect.left;
@@ -315,57 +336,82 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
       my.set(((y / rect.height) - 0.5) * 12);
     };
 
+    const handleMouseEnter = () => {
+      playHover();
+    };
+
     const handleMouseLeave = () => {
       mx.set(0);
       my.set(0);
     };
 
+    const handleClick = () => {
+      playClick();
+      onClick?.();
+    };
+
     const accentStyles = accentColor ? gradientStyles[accentColor] : null;
 
-    const buttonContent = (
+    const sharedClassName = cn(
+      "relative inline-flex items-center justify-center rounded-full font-medium cursor-pointer",
+      "bg-[var(--glass-1-fill)]",
+      !isHighContrast && "backdrop-blur-md",
+      "border-2 border-[var(--glass-2-border)] hover:border-[var(--hover-accent)]",
+      "text-[var(--text-primary)]",
+      "transition-colors duration-300",
+      !isHighContrast && "shimmer-border iridescent",
+      disabled && "opacity-50 cursor-not-allowed",
+      sizeStyles[size],
+      className
+    );
+
+    const sharedStyle = {
+      x: isHighContrast ? 0 : springX,
+      y: isHighContrast ? 0 : springY,
+      opacity: breatheOpacity,
+      boxShadow: (accentStyles && !isHighContrast)
+        ? `0 0 20px ${accentStyles.glow.replace("0.6", "0.2")}` 
+        : undefined,
+    };
+
+    const sharedMotionProps = {
+      whileHover: { scale: isHighContrast ? 1 : 1.03 },
+      whileTap: { scale: isHighContrast ? 1 : 0.97 },
+      transition: { type: "spring" as const, stiffness: 400, damping: 15 },
+    };
+
+    if (href) {
+      return (
+        <motion.a
+          href={href}
+          className={cn(sharedClassName, "no-underline")}
+          style={sharedStyle}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
+          {...sharedMotionProps}
+        >
+          <span className="relative z-10">{children}</span>
+        </motion.a>
+      );
+    }
+
+    return (
       <motion.button
         ref={ref}
-        whileHover={{ scale: isHighContrast ? 1 : 1.03 }}
-        whileTap={{ scale: isHighContrast ? 1 : 0.97 }}
-        transition={{ type: "spring", stiffness: 400, damping: 15 }}
-        className={cn(
-          "relative inline-flex items-center justify-center rounded-full font-medium cursor-pointer",
-          "bg-[var(--glass-1-fill)]",
-          !isHighContrast && "backdrop-blur-md",
-          "border-2 border-[var(--glass-2-border)] hover:border-[var(--hover-accent)]",
-          "text-[var(--text-primary)]",
-          "transition-colors duration-300",
-          !isHighContrast && "shimmer-border iridescent",
-          disabled && "opacity-50 cursor-not-allowed",
-          sizeStyles[size],
-          className
-        )}
-        style={{
-          x: isHighContrast ? 0 : springX,
-          y: isHighContrast ? 0 : springY,
-          opacity: breatheOpacity,
-          boxShadow: (accentStyles && !isHighContrast)
-            ? `0 0 20px ${accentStyles.glow.replace("0.6", "0.2")}` 
-            : undefined,
-        }}
+        className={sharedClassName}
+        style={sharedStyle}
         onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={onClick}
+        onClick={handleClick}
         disabled={disabled}
+        {...sharedMotionProps}
       >
         <span className="relative z-10">{children}</span>
       </motion.button>
     );
-
-    if (href) {
-      return (
-        <a href={href} className="no-underline inline-block">
-          {buttonContent}
-        </a>
-      );
-    }
-
-    return buttonContent;
   }
 );
 

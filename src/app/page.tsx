@@ -9,6 +9,7 @@ import { PortalCard, PortalCardTitle, PortalCardDescription } from "@/components
 import { DiscoverGraphic, FeasibilityGraphic, ExecuteGraphic } from "@/components/ui/process-graphics";
 import { JellyButton, GhostButton } from "@/components/ui/jelly-button";
 import { SectionDivider } from "@/components/ui/section-divider";
+import { KineticText } from "@/components/ui/kinetic-text";
 
 // Staggered animation variants for the Entry Sequence
 const containerVariants: Variants = {
@@ -50,11 +51,13 @@ export default function Home() {
         animate="visible"
       >
         <div className="flex flex-col gap-8 sm:gap-10">
-          <motion.h1 
+          <KineticText 
+            as="h1"
             variants={itemVariants}
             className="text-display-xl font-bold tracking-tighter text-[var(--text-primary)] heartbeat"
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            velocityFactor={1.5}
           >
             <span 
               className="text-glow inline-block"
@@ -66,15 +69,17 @@ export default function Home() {
                 backgroundClip: "text",
               }}
             >Cody Avila</span>
-          </motion.h1>
-          <motion.h2 
+          </KineticText>
+          <KineticText 
+            as="h2"
             variants={itemVariants}
             className="text-2xl sm:text-4xl font-medium text-[var(--text-primary)] flex flex-wrap items-center gap-4 tracking-tight"
+            velocityFactor={1}
           >
             Frontend Engineer 
             <ArrowRight className="h-6 w-6 text-[var(--neon-primary-end)]" />
             <span className="text-[var(--text-secondary)]">Technical Product Manager</span>
-          </motion.h2>
+          </KineticText>
           <motion.p 
             variants={itemVariants}
             className="text-body-l leading-relaxed max-w-2xl text-[var(--text-secondary)] font-normal"
