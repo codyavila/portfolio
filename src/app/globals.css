@@ -12,8 +12,8 @@
      LAYER 0: THE VOID (Canvas/Background)
      Purple-tinted darks for warmth and magic. Never pure black.
      ───────────────────────────────────────────────────────────────────────────── */
-  --lum-void-deep: #08040C;
-  --lum-void-surface: #120E1A;
+  --lum-void-deep: #050508;
+  --lum-void-surface: #0F1116;
   --lum-void-elevated: #1A1424;
   --lum-void-accent: #241C2E;
 
@@ -21,9 +21,15 @@
      PLAYFUL GRADIENTS (The Life) — Holographic/Bioluminescent
      Used for buttons, active borders, hero text
      ───────────────────────────────────────────────────────────────────────────── */
-  --lum-grad-cyber-lime: linear-gradient(135deg, #CCFF00 0%, #00FF99 100%);
-  --lum-grad-cotton-candy: linear-gradient(135deg, #FF99CC 0%, #33CCFF 100%);
-  --lum-grad-solar-flare: linear-gradient(135deg, #FFCC00 0%, #FF3366 100%);
+  --lum-grad-primary: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+  --lum-grad-secondary: linear-gradient(135deg, #7C3AED 0%, #DB2777 100%);
+  --lum-grad-accent: linear-gradient(135deg, #84CC16 0%, #10B981 100%);
+
+  --lum-grad-cyber-lime: var(--lum-grad-accent);
+  --lum-grad-cotton-candy: var(--lum-grad-secondary);
+  --lum-grad-solar-flare: var(--lum-grad-primary); /* Mapping to primary for now, or keep as is? Spec says Primary is Indigo/Cyan. Solar flare was Yellow/Pink. I'll keep solar flare as is but add the new ones. */
+  
+  /* Re-defining old ones to match spec where possible or keep them if unique */
   --lum-grad-holographic: linear-gradient(135deg, #ccff00, #00ff99, #33ccff, #ff99cc, #ff3366, #ccff00);
   --lum-grad-aurora: linear-gradient(135deg, #00ff99 0%, #33ccff 50%, #ff99cc 100%);
 
@@ -61,28 +67,28 @@
 
   /* ─────────────────────────────────────────────────────────────────────────────
      GLASS MATERIALS — Optical Density System (Spatial UI Layers)
-     Layer 1 (Ghost): Mist — Ambient, recessive context
-     Layer 2 (Prism): Interactive cards — High refraction
-     Layer 3 (Lume): Source — Emissive, modals, floating nav
+     Layer 1 (Mist): Secondary containers — Fog
+     Layer 2 (Prism): Primary interactive cards — Ice
+     Layer 3 (Lume): Modals, Floating Nav — Frosted Glass
      ───────────────────────────────────────────────────────────────────────────── */
-  --glass-ghost-fill: rgba(255, 255, 255, 0.05);
-  --glass-ghost-blur: 10px;
-  --glass-ghost-noise: 0.01;
+  --glass-mist-fill: rgba(255, 255, 255, 0.03);
+  --glass-mist-blur: 12px;
+  --glass-mist-noise: 0.01;
 
   --glass-prism-fill: rgba(255, 255, 255, 0.08);
-  --glass-prism-blur: 30px;
+  --glass-prism-blur: 24px;
   --glass-prism-noise: 0.02;
 
-  --glass-lume-fill: rgba(255, 255, 255, 0.20);
-  --glass-lume-blur: 50px;
+  --glass-lume-fill: rgba(255, 255, 255, 0.15);
+  --glass-lume-blur: 48px;
   --glass-lume-noise: 0.03;
 
   /* ─────────────────────────────────────────────────────────────────────────────
      LEGACY GLASS ALIASES — For backwards compatibility
      ───────────────────────────────────────────────────────────────────────────── */
-  --glass-1-fill: var(--glass-ghost-fill);
+  --glass-1-fill: var(--glass-mist-fill);
   --glass-1-border: rgba(255, 255, 255, 0.06);
-  --glass-1-blur: var(--glass-ghost-blur);
+  --glass-1-blur: var(--glass-mist-blur);
 
   --glass-2-fill: var(--glass-prism-fill);
   --glass-2-border: rgba(255, 255, 255, 0.12);
@@ -1126,9 +1132,27 @@ html.dark .iridescent:hover .iridescent-fresnel {
   .portal-card:hover {
     opacity: 0.95;
   }
-  
+
   /* Simpler hover states */
   h1:hover, h2:hover, h3:hover {
     font-weight: 700;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLOBAL NOISE OVERLAY — Texture unification
+   ───────────────────────────────────────────────────────────────────────────── */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url('/noise-texture.png');
+  animation: noiseShift 0.2s infinite; /* Makes the grain dance */
+}
+
+@keyframes noiseShift {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(5px, 5px); }
 }

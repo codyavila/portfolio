@@ -4,7 +4,7 @@ import * as React from "react";
 import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-type GradientVariant = "cyber-lime" | "cotton-candy" | "solar-flare";
+type GradientVariant = "cyber-lime" | "cotton-candy" | "solar-flare" | "primary" | "secondary" | "accent";
 
 interface JellyButtonProps {
   children: React.ReactNode;
@@ -40,21 +40,39 @@ const useHighContrast = () => {
 
 const gradientStyles: Record<GradientVariant, { gradient: string; colors: string[]; glow: string; textColor: string }> = {
   "cyber-lime": {
-    gradient: "linear-gradient(135deg, #CCFF00 0%, #00FF99 100%)",
-    colors: ["#CCFF00", "#00FF99"],
-    glow: "rgba(0, 255, 153, 0.6)",
+    gradient: "linear-gradient(135deg, #84CC16 0%, #10B981 100%)", // Accent: Lime to Emerald
+    colors: ["#84CC16", "#10B981"],
+    glow: "rgba(132, 204, 22, 0.6)",
     textColor: "#0f0d12",
   },
   "cotton-candy": {
-    gradient: "linear-gradient(135deg, #FF99CC 0%, #33CCFF 100%)",
-    colors: ["#FF99CC", "#33CCFF"],
-    glow: "rgba(255, 153, 204, 0.6)",
-    textColor: "#0f0d12",
+    gradient: "linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)", // Secondary: Violet to Pink
+    colors: ["#7C3AED", "#DB2777"],
+    glow: "rgba(124, 58, 237, 0.6)",
+    textColor: "#ffffff",
   },
   "solar-flare": {
-    gradient: "linear-gradient(135deg, #FFCC00 0%, #FF3366 100%)",
-    colors: ["#FFCC00", "#FF3366"],
-    glow: "rgba(255, 51, 102, 0.6)",
+    gradient: "linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)", // Primary: Indigo to Cyan
+    colors: ["#4F46E5", "#06B6D4"],
+    glow: "rgba(79, 70, 229, 0.6)",
+    textColor: "#ffffff",
+  },
+  "primary": {
+    gradient: "linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)",
+    colors: ["#4F46E5", "#06B6D4"],
+    glow: "rgba(79, 70, 229, 0.6)",
+    textColor: "#ffffff",
+  },
+  "secondary": {
+    gradient: "linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)",
+    colors: ["#7C3AED", "#DB2777"],
+    glow: "rgba(124, 58, 237, 0.6)",
+    textColor: "#ffffff",
+  },
+  "accent": {
+    gradient: "linear-gradient(135deg, #84CC16 0%, #10B981 100%)",
+    colors: ["#84CC16", "#10B981"],
+    glow: "rgba(132, 204, 22, 0.6)",
     textColor: "#0f0d12",
   },
 };
@@ -73,6 +91,21 @@ const highContrastStyles: Record<GradientVariant, { background: string; textColo
   },
   "solar-flare": {
     background: "#ffff00",
+    textColor: "#000000",
+    border: "#000000",
+  },
+  "primary": {
+    background: "#0000ff",
+    textColor: "#ffffff",
+    border: "#ffffff",
+  },
+  "secondary": {
+    background: "#ff00ff",
+    textColor: "#ffffff",
+    border: "#ffffff",
+  },
+  "accent": {
+    background: "#00ff00",
     textColor: "#000000",
     border: "#000000",
   },
@@ -103,8 +136,8 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     // Magnetic effect — button follows cursor slightly
     const mx = useMotionValue(0);
     const my = useMotionValue(0);
-    const springX = useSpring(mx, { stiffness: 400, damping: 25 });
-    const springY = useSpring(my, { stiffness: 400, damping: 25 });
+    const springX = useSpring(mx, { stiffness: 500, damping: 30, mass: 1 });
+    const springY = useSpring(my, { stiffness: 500, damping: 30, mass: 1 });
 
     // Gradient rotation on hover (Luminous spec: gradient rotates on hover)
     const gradientRotation = useMotionValue(135);

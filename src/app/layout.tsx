@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -7,7 +7,7 @@ import { DynamicThemeProvider } from "@/components/dynamic-theme-provider";
 import { MouseTracker } from "@/components/MouseTracker";
 import "./globals.css";
 
-const inter = Inter({
+const interTight = Inter_Tight({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${interTight.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"

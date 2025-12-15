@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame, MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
-import React, { useRef, useState, useCallback, memo } from "react";
+import React, { useRef, useState, useCallback, memo, useEffect } from "react";
 
 type GlowVariant = "cyber-lime" | "cotton-candy" | "solar-flare" | "aurora" | "none";
 type CardSize = "sm" | "md" | "lg";
@@ -65,21 +65,32 @@ const GlassCardComponent = ({
 }: GlassCardProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Disable hover effects on touch devices to prevent sticky hover states
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(hover: none)").matches);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Calculate border radius
   const radius = customRadius ?? sizeToRadius[size];
   
   // 3D Tilt effect with spring physics (max 5 degrees)
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
-  const springConfig = { stiffness: 400, damping: 25, mass: 0.5 };
+  const springConfig = { stiffness: 500, damping: 30, mass: 1 };
   const springTiltX = useSpring(tiltX, springConfig);
   const springTiltY = useSpring(tiltY, springConfig);
   
   // Spotlight glow position
   const glowX = useMotionValue(50);
   const glowY = useMotionValue(50);
-  const springGlowConfig = { stiffness: 500, damping: 30 };
+  const springGlowConfig = { stiffness: 500, damping: 30, mass: 1 };
   const springGlowX = useSpring(glowX, springGlowConfig);
   const springGlowY = useSpring(glowY, springGlowConfig);
 
@@ -99,7 +110,7 @@ const GlassCardComponent = ({
   );
 
   const handleMouseMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (!ref.current || isMobile) return;
     
     const rect = ref.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -119,16 +130,18 @@ const GlassCardComponent = ({
       glowX.set(percentX);
       glowY.set(percentY);
     }
-  }, [enableTilt, enableSpotlight, tiltX, tiltY, glowX, glowY]);
+  }, [enableTilt, enableSpotlight, tiltX, tiltY, glowX, glowY, isMobile]);
 
   const handleMouseLeave = useCallback(() => {
+    if (isMobile) return;
     tiltX.set(0);
     tiltY.set(0);
     // Don't reset glow position - let it fade out where cursor last was
     setIsHovered(false);
-  }, [tiltX, tiltY]);
+  }, [tiltX, tiltY, isMobile]);
 
   const handleMouseEnter = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return;
     // Set glow position immediately where cursor enters (no spring animation on entry)
     if (ref.current && enableSpotlight) {
       const rect = ref.current.getBoundingClientRect();
@@ -141,7 +154,7 @@ const GlassCardComponent = ({
       glowY.set(percentY);
     }
     setIsHovered(true);
-  }, [enableSpotlight, glowX, glowY]);
+  }, [enableSpotlight, glowX, glowY, isMobile]);
 
   return (
     <motion.div
@@ -149,10 +162,10 @@ const GlassCardComponent = ({
       initial={{ opacity: 0, y: 30, filter: "blur(0px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-50px" }}
-      whileHover={{ 
+      whileHover={!isMobile ? { 
         y: -8,
         transition: { type: "spring", stiffness: 300, damping: 15 }
-      }}
+      } : {}}
       whileTap={{ scale: 0.98 }}
       transition={{ 
         type: "spring", 
@@ -174,8 +187,8 @@ const GlassCardComponent = ({
       style={{ 
         ["--card-radius" as string]: `${radius}px`,
         borderRadius: `${radius}px`,
-        rotateX: enableTilt ? springTiltX : 0, 
-        rotateY: enableTilt ? springTiltY : 0, 
+        rotateX: enableTilt && !isMobile ? springTiltX : 0, 
+        rotateY: enableTilt && !isMobile ? springTiltY : 0, 
         transformStyle: "preserve-3d",
         perspective: "1000px",
         willChange: "transform, opacity",
@@ -184,7 +197,10 @@ const GlassCardComponent = ({
     >
       {/* Glass Background */}
       <div 
-        className="absolute inset-0 border border-[var(--glass-2-border)] group-hover:border-[var(--neon-primary-end)]"
+        className={cn(
+          "absolute inset-0 border border-[var(--glass-2-border)]",
+          !isMobile && "group-hover:border-[var(--neon-primary-end)]"
+        )}
         style={{
           borderRadius: `${radius}px`,
           background: "var(--glass-prism-fill)",
@@ -236,14 +252,10 @@ const GlassCardComponent = ({
 
       {/* Rim Light (Top Highlight) */}
       <div 
-        className="absolute inset-0 pointer-events-none dark:block hidden"
+        className="absolute top-0 left-0 right-0 h-[1px] pointer-events-none dark:block hidden"
         style={{
-          borderRadius: `${radius}px`,
-          boxShadow: `
-            inset 0 1px 0 0 rgba(255, 255, 255, ${isHovered ? 0.6 : 0.25}),
-            inset 0 0 0 1px rgba(255, 255, 255, 0.05)
-          `,
-          transition: "box-shadow 0.4s ease",
+          background: `linear-gradient(90deg, transparent, rgba(255,255,255,${isHovered ? 0.8 : 0.6}), transparent)`,
+          transition: "opacity 0.4s ease",
         }}
       />
 
