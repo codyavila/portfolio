@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FBF9F5;
+  --foreground: #3E3C38;
 }
 
 @theme inline {
@@ -10,17 +12,63 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Override Zinc with Stone (Warm Grey) */
+  --color-zinc-50: #fafaf9;
+  --color-zinc-100: #f5f5f4;
+  --color-zinc-200: #e7e5e4;
+  --color-zinc-300: #d6d3d1;
+  --color-zinc-400: #a8a29e;
+  --color-zinc-500: #78716c;
+  --color-zinc-600: #57534e;
+  --color-zinc-700: #44403c;
+  --color-zinc-800: #292524;
+  --color-zinc-900: #1c1917;
+  --color-zinc-950: #0c0a09;
+
+  /* Override Blue with Terracotta/Clay */
+  --color-blue-50: #fdf8f6;
+  --color-blue-100: #f2e8e5;
+  --color-blue-200: #eaddd7;
+  --color-blue-300: #e0cec7;
+  --color-blue-400: #d2bab0;
+  --color-blue-500: #d97757;
+  --color-blue-600: #c66b54;
+  --color-blue-700: #b05d48;
+  --color-blue-800: #8f4b3a;
+  --color-blue-900: #733d30;
+  --color-blue-950: #4a261e;
+
+  /* Override Purple with Sage/Moss */
+  --color-purple-50: #f4f7f4;
+  --color-purple-100: #e9f0e9;
+  --color-purple-200: #d3e0d3;
+  --color-purple-300: #aebfae;
+  --color-purple-400: #8a9f8a;
+  --color-purple-500: #6b8f71;
+  --color-purple-600: #55725a;
+  --color-purple-700: #435a47;
+  --color-purple-800: #364739;
+  --color-purple-900: #2d3a30;
+  --color-purple-950: #1a231c;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #1C1B1A;
+  --foreground: #E6E4E0;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, var(--color-zinc-200) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .bg-dot-pattern {
+  background-image: radial-gradient(circle, var(--color-zinc-800) 1px, transparent 1px);
 }
