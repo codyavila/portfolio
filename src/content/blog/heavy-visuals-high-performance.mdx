@@ -1,0 +1,35 @@
+---
+title: "Heavy Visuals, High Performance"
+publishedAt: "2025-12-20"
+summary: "Optimizing WebGL shaders and glassmorphism effects to maintain 60fps without sacrificing visual fidelity."
+tags: ["Performance", "WebGL", "Design"]
+---
+
+# The Cost of Beauty
+
+I love rich, immersive web experiences. Shaders, blurs, particles—I want it all. But I also hate slow websites.
+
+When building this portfolio, I faced a dilemma: How do I include heavy visual effects like the `ShaderBackground` and `HyperGlassCard` without making the site feel sluggish, especially on mobile devices?
+
+## The Bottlenecks
+
+1.  **Backdrop Filter:** The glassmorphism effect (`backdrop-filter: blur()`) is notoriously expensive. It forces the browser to repaint the area every time the content behind it changes.
+2.  **WebGL Contexts:** Running complex fragment shaders can eat up GPU resources.
+3.  **React Renders:** Animate too many state variables, and the JS thread locks up.
+
+## Optimization Strategies
+
+### 1. Static Layers
+For the glass cards, I used a trick. Instead of blurring everything in real-time, I sometimes use pre-blurred assets or limit the blur radius on mobile devices.
+
+### 2. Shader LOD (Level of Detail)
+The background shader looks complex, but I scale down the resolution on high-DPI screens. Rendering a shader at native 4K resolution is overkill. Rendering it at 0.5x or 0.75x pixel density looks almost identical but saves massive GPU power.
+
+### 3. Will-Change
+Using the CSS `will-change` property sparingly tells the browser to promote elements to their own compositor layer. This is crucial for the floating elements in the `BentoGrid`.
+
+## Measuring Success
+
+I use the Chrome Performance tab religiously. My rule is simple: if it drops below 60fps on my mid-tier laptop, it gets cut or optimized.
+
+Performance is a feature. No amount of visual flair is worth a janky scroll experience.

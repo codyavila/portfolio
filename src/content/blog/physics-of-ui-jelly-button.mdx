@@ -1,0 +1,43 @@
+---
+title: "The Physics of UI: Building the Jelly Button"
+publishedAt: "2025-12-16"
+summary: "Using spring physics to create interfaces that feel organic, responsive, and alive."
+tags: ["UI/UX", "Animation", "Framer Motion"]
+---
+
+# Why Does Software Feel Stiff?
+
+Most software moves linearly. You click a button, it changes color instantly. You open a modal, it slides in at a constant speed. But nothing in the real world moves like that.
+
+In the real world, things have mass. They have friction. They have tension. When you push something, it resists. When you let go, it might bounce back.
+
+## Enter Spring Physics
+
+The `JellyButton` component in my design system is an attempt to bring that organic feel to the web. Instead of defining a duration (e.g., "animate for 0.3s"), we define physical properties:
+
+*   **Stiffness:** How rigid is the spring?
+*   **Damping:** How quickly does the energy dissipate?
+*   **Mass:** How heavy is the object?
+
+## The Jelly Effect
+
+To achieve the "jelly" look, we're not just scaling the button. We're distorting it.
+
+When the mouse presses down, we squash the button on the Y-axis and stretch it on the X-axis. When the mouse releases, the spring physics take over, causing it to wobble back to its original shape.
+
+```tsx
+<motion.button
+  whileTap={{ scale: 0.9, rotate: -2 }}
+  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+>
+  Click Me
+</motion.button>
+```
+
+## Why "Feel" Matters
+
+This might seem like a trivial detail. Who cares if a button wobbles?
+
+But these micro-interactions accumulate. They tell the user that the interface is responsive, that it's "listening." It creates a sense of playfulness and polish that distinguishes a good app from a great one.
+
+It turns a tool into a toy, in the best possible way.

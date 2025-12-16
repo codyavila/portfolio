@@ -1,0 +1,45 @@
+---
+title: "Building a Design System for One"
+publishedAt: "2025-12-21"
+summary: "Why I treated my personal portfolio like a product and built a scalable design system from day one."
+tags: ["Design Systems", "Architecture", "Workflow"]
+---
+
+# Over-Engineering or Future-Proofing?
+
+Is it overkill to build a full design system for a personal website? Probably.
+Did I do it anyway? Absolutely.
+
+## The "Why"
+
+I treat my portfolio as a playground, but also as a product. I want to be able to spin up a new project page or a new blog post in minutes, not hours. I don't want to be hard-coding hex values or fiddling with margins every time I have an idea.
+
+## The Core Tokens
+
+It started with the basics:
+*   **Colors:** Semantic naming (`bg-primary`, `text-muted`) rather than descriptive (`blue-500`, `gray-200`). This made implementing Dark Mode trivial.
+*   **Typography:** A fluid type scale that adapts to viewport width.
+*   **Spacing:** A strict 4px grid.
+
+## Component Composition
+
+I adopted a "Compound Component" pattern for things like the `BlogCard` and `ProjectCard`.
+
+```tsx
+<Card>
+  <Card.Header>
+    <Card.Title>My Project</Card.Title>
+  </Card.Header>
+  <Card.Content>
+    ...
+  </Card.Content>
+</Card>
+```
+
+This gives me flexibility. If I want a card without a header, I just don't render it. The styles are encapsulated, but the layout is composable.
+
+## The Payoff
+
+Now, when I want to add a new section, it feels like playing with LEGOs. I grab a `SectionDivider`, drop in a `BentoGrid`, fill it with `GlassCards`, and I'm done.
+
+It required more upfront effort, but the velocity it gives me now is worth every second.

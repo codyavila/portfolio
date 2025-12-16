@@ -1,0 +1,42 @@
+---
+title: "Deconstructing Kinetic Typography"
+publishedAt: "2025-12-15"
+summary: "A deep dive into the math and logic behind fluid text movements and how to implement them in React."
+tags: ["Engineering", "Animation", "React"]
+---
+
+# Moving Beyond Static Text
+
+Text on the web has traditionally been static. We read it, we scroll past it. But in the era of modern web design, typography can be an actor on the stage, not just the script.
+
+In this post, I want to break down the `KineticText` component I built for this portfolio. It's not just about moving pixels; it's about understanding the coordinate systems, interpolation, and the subtle art of easing.
+
+## The Math of Movement
+
+At its core, kinetic typography is about mapping user input (usually scroll position or mouse coordinates) to CSS transform properties.
+
+```typescript
+// Simplified concept
+const x = useMotionValue(0);
+const y = useMotionValue(0);
+
+const transform = useTransform(x, [0, 100], [0, 50]);
+```
+
+We use libraries like Framer Motion to handle the heavy lifting of the physics loop, but the logic of *how* things move is pure geometry.
+
+## Breaking it Down
+
+1.  **The Trigger:** What causes the movement? Is it the scroll progress? The mouse position?
+2.  **The Interpolation:** How do we map that input range to an output range?
+3.  **The Dampening:** Raw input is jittery. We need to smooth it out using springs or lerp (linear interpolation) functions.
+
+## Implementation Details
+
+I used a combination of `useScroll` and `useTransform` to create the parallax effects you see on the headers. The key is to move different layers at different speeds to create depth.
+
+*(Code snippets and detailed breakdown of the `KineticText` component would go here)*
+
+## Why It Matters
+
+Kinetic typography grabs attention. It guides the eye. It turns reading into an experience. But it must be used sparingly. Too much movement causes motion sickness and reduces readability. It's a spice, not the main course.
