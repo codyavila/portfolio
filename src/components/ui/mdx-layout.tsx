@@ -29,12 +29,12 @@ export function Callout({
   };
 
   const styles = {
-    default: "bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100",
-    info: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100",
-    warning: "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-100",
-    danger: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-900 dark:text-red-100",
-    success: "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-100",
-    insight: "bg-violet-50 dark:bg-violet-950/30 border-violet-200 dark:border-violet-800 text-violet-900 dark:text-violet-100",
+    default: "bg-[var(--glass-1-fill)] border-[var(--glass-1-border)] text-[var(--text-secondary)]",
+    info: "bg-[color-mix(in_srgb,var(--neon-primary-start),transparent_90%)] border-[color-mix(in_srgb,var(--neon-primary-start),transparent_70%)] text-[color-mix(in_srgb,var(--neon-primary-start),var(--text-primary)_40%)]",
+    warning: "bg-[color-mix(in_srgb,var(--neon-accent-start),transparent_90%)] border-[color-mix(in_srgb,var(--neon-accent-start),transparent_70%)] text-[color-mix(in_srgb,var(--neon-accent-start),var(--text-primary)_40%)]",
+    danger: "bg-[color-mix(in_srgb,var(--neon-secondary-end),transparent_90%)] border-[color-mix(in_srgb,var(--neon-secondary-end),transparent_70%)] text-[color-mix(in_srgb,var(--neon-secondary-end),var(--text-primary)_40%)]",
+    success: "bg-[color-mix(in_srgb,var(--neon-accent-end),transparent_90%)] border-[color-mix(in_srgb,var(--neon-accent-end),transparent_70%)] text-[color-mix(in_srgb,var(--neon-accent-end),var(--text-primary)_40%)]",
+    insight: "bg-[color-mix(in_srgb,var(--neon-secondary-start),transparent_90%)] border-[color-mix(in_srgb,var(--neon-secondary-start),transparent_70%)] text-[color-mix(in_srgb,var(--neon-secondary-start),var(--text-primary)_40%)]",
   };
 
   const Icon = icons[type] || icons.default;
@@ -90,13 +90,13 @@ export function Steps({ children }: { children: React.ReactNode }) {
 export function Step({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="relative mb-8 last:mb-0 group">
-      <div className="absolute -left-[41px] top-1 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-mono font-medium text-zinc-500 group-hover:border-[var(--neon-primary-end)] group-hover:text-[var(--neon-primary-end)] transition-colors duration-300 shadow-[0_0_0_1px_transparent] group-hover:shadow-[0_0_10px_var(--neon-primary-end)]">
+      <div className="absolute -left-[41px] top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--lum-void-elevated)] border border-[var(--glass-2-border)] text-xs font-mono font-medium text-[var(--text-tertiary)] group-hover:border-[var(--neon-primary-end)] group-hover:text-[var(--neon-primary-end)] transition-colors duration-300 shadow-[0_0_0_1px_transparent] group-hover:shadow-[0_0_10px_var(--neon-primary-end)]">
         <span className="sr-only">Step</span>
       </div>
-      <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2 mt-0.5 text-base group-hover:text-[var(--neon-primary-end)] transition-colors duration-300">
+      <h3 className="font-semibold text-[var(--text-primary)] mb-2 mt-0.5 text-base group-hover:text-[var(--neon-primary-end)] transition-colors duration-300">
         {title}
       </h3>
-      <div className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+      <div className="text-[var(--text-secondary)] text-sm leading-relaxed">
         {children}
       </div>
     </div>

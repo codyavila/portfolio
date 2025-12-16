@@ -11,6 +11,7 @@ import { JellyButton, GhostButton } from "@/components/ui/jelly-button";
 import { SectionDivider } from "@/components/ui/section-divider";
 import { KineticText } from "@/components/ui/kinetic-text";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 // Staggered animation variants for the Entry Sequence
 const containerVariants: Variants = {
@@ -40,6 +41,23 @@ const itemVariants: Variants = {
 // Key for sessionStorage to track if hero animation has played
 const HERO_ANIMATED_KEY = 'hero-has-animated';
 
+const FEATURED_POSTS = [
+  {
+    slug: "building-portfolio",
+    title: "Behind the Build: A Portfolio Journey",
+    summary: "The messy, iterative, coffee-fueled story of how this portfolio came together—failures, breakthroughs, and lessons learned.",
+    date: "2025-12-15",
+    tags: ["Process", "Web Development"]
+  },
+  {
+    slug: "glassmorphism-done-right",
+    title: "Glassmorphism Done Right",
+    summary: "How to use glass effects without sacrificing readability, performance, or accessibility.",
+    date: "2025-12-12",
+    tags: ["Design", "UI"]
+  }
+];
+
 export default function Home() {
   // Track if this is the initial page load to prevent re-animation on hash navigation
   // Start with null to indicate we haven't checked yet, avoiding hydration mismatch
@@ -60,73 +78,159 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative max-w-7xl mx-auto px-6 py-16 sm:py-24 md:pl-32">
-      <div className="absolute top-0 left-0 w-full h-screen overflow-hidden pointer-events-none">
+    <div className="relative min-h-screen w-full overflow-x-hidden">
+      <div className="absolute top-0 left-0 w-full h-screen pointer-events-none z-0">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="var(--neon-primary-end)" />
       </div>
+      
+      {/* Secondary Spotlight for lower sections */}
+      <div className="absolute top-[40%] right-0 w-full h-screen pointer-events-none z-0">
+        <Spotlight className="-top-40 right-0 md:right-60 md:-top-20" fill="var(--neon-secondary-end)" />
+      </div>
 
-      {/* Hero Section — Entry Sequence with stagger */}
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-16 sm:py-24 md:pl-32">
+        {/* Global Connecting Line - The "System Bus" */}
+        <div className="absolute left-6 md:left-12 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-[var(--neon-primary-end)] to-transparent opacity-20 hidden md:block" />
+
+        {/* Hero Section — Entry Sequence with stagger */}
       <motion.section 
-        className="mb-24 sm:mb-32 relative z-10 max-w-5xl mx-auto pt-16 sm:pt-24"
+        className="mb-24 sm:mb-32 relative z-10 max-w-6xl mx-auto pt-16 sm:pt-24"
         variants={containerVariants}
         initial={animationState === 'animate' ? "hidden" : false}
         animate="visible"
       >
-        <div className="flex flex-col gap-8 sm:gap-10">
-          <KineticText 
-            as="h1"
-            variants={itemVariants}
-            className="text-display-xl font-bold tracking-tighter text-[var(--text-primary)] heartbeat"
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            velocityFactor={1.5}
-          >
-            <span 
-              className="text-glow inline-block"
-              style={{
-                background: "linear-gradient(135deg, var(--text-primary) 0%, var(--neon-primary-end) 50%, var(--text-primary) 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >Cody Avila</span>
-          </KineticText>
-          <KineticText 
-            as="h2"
-            variants={itemVariants}
-            className="text-2xl sm:text-4xl font-medium text-[var(--text-primary)] flex flex-wrap items-center gap-4 tracking-tight"
-            velocityFactor={1}
-          >
-            Frontend Engineer 
-            <ArrowRight className="h-6 w-6 text-[var(--neon-primary-end)]" />
-            <span className="text-[var(--text-secondary)]">Technical Product Manager</span>
-          </KineticText>
-          <motion.p 
-            variants={itemVariants}
-            className="text-body-l leading-relaxed max-w-2xl text-[var(--text-secondary)] font-normal"
-          >
-            I bridge the gap between engineering reality and product vision. 
-            With deep roots in frontend architecture, I translate complex technical constraints into viable product strategies.
-          </motion.p>
-          <motion.div 
-            variants={itemVariants}
-            className="flex flex-wrap gap-5 mt-8"
-          >
-            <JellyButton href="#contact" variant="cyber-lime">
-              Get in Touch
-            </JellyButton>
-            <GhostButton href="#projects" accentColor="cotton-candy">
-              View Case Studies
-            </GhostButton>
-          </motion.div>
+        <div className="grid lg:grid-cols-[1fr_auto] gap-12 items-center">
+          <div className="flex flex-col gap-8 sm:gap-10">
+            <KineticText 
+              as="h1"
+              variants={itemVariants}
+              className="text-display-xl font-bold tracking-tighter text-[var(--text-primary)] heartbeat"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              velocityFactor={1.5}
+            >
+              <span 
+                className="text-glow inline-block"
+                style={{
+                  background: "linear-gradient(135deg, var(--text-primary) 0%, var(--neon-primary-end) 50%, var(--text-primary) 100%)",
+                  backgroundSize: "200% auto",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >Cody Avila</span>
+            </KineticText>
+            <KineticText 
+              as="h2"
+              variants={itemVariants}
+              className="text-2xl sm:text-4xl font-medium text-[var(--text-primary)] flex flex-wrap items-center gap-4 tracking-tight"
+              velocityFactor={1}
+            >
+              Frontend Engineer 
+              <ArrowRight className="h-6 w-6 text-[var(--neon-primary-end)]" />
+              <span className="text-[var(--text-secondary)]">Technical Product Manager</span>
+            </KineticText>
+            <motion.p 
+              variants={itemVariants}
+              className="text-body-l leading-relaxed max-w-2xl text-[var(--text-secondary)] font-normal"
+            >
+              I bridge the gap between engineering reality and product vision. 
+              With deep roots in frontend architecture, I translate complex technical constraints into viable product strategies.
+            </motion.p>
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-wrap gap-5 mt-8"
+            >
+              <JellyButton href="#contact" variant="cyber-lime">
+                Get in Touch
+              </JellyButton>
+              <GhostButton href="#projects" accentColor="cotton-candy">
+                View Case Studies
+              </GhostButton>
+            </motion.div>
+          </div>
         </div>
       </motion.section>
 
       <SectionDivider variant="glow" />
 
+      {/* Featured Projects Section - New Addition */}
+      <section id="projects" className="mb-20 sm:mb-32 scroll-mt-32 max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="mb-12"
+        >
+          <h3 className="text-display-l font-bold tracking-tight text-[var(--text-primary)] relative inline-block mb-4">
+            Featured Work
+            <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--neon-accent-start)] to-[var(--neon-accent-end)] opacity-70" />
+          </h3>
+          <p className="text-body-l text-[var(--text-secondary)] max-w-2xl">
+            A selection of projects where I&apos;ve applied my technical background to solve complex product challenges.
+          </p>
+        </motion.div>
+
+        <BentoGrid className="grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Project 1 */}
+          <Link href="/projects/blox-nxt-cms-rebuild" className="group">
+            <PortalCard className="h-full p-8 transition-all duration-300 group-hover:border-[var(--neon-primary-start)]" glow="solar-flare">
+              <div className="flex flex-col h-full justify-between gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)] border border-[var(--chip-primary-border)]">
+                      CMS Architecture
+                    </span>
+                    <span className="text-xs text-[var(--text-tertiary)]">2024</span>
+                  </div>
+                  <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-primary-end)] transition-colors">
+                    BLOX NXT CMS Rebuild
+                  </PortalCardTitle>
+                  <PortalCardDescription>
+                    Leading the architectural overhaul of a legacy CMS serving 2,000+ media sites. 
+                    Migrating from Angular.js to a modern React/Next.js ecosystem.
+                  </PortalCardDescription>
+                </div>
+                <div className="flex items-center text-[var(--neon-primary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
+                  View Case Study <ArrowRight className="ml-2 w-4 h-4" />
+                </div>
+              </div>
+            </PortalCard>
+          </Link>
+
+          {/* Project 2 */}
+          <Link href="/projects/email-campaign-system" className="group">
+            <PortalCard className="h-full p-8 transition-all duration-300 group-hover:border-[var(--neon-secondary-start)]" glow="cotton-candy">
+              <div className="flex flex-col h-full justify-between gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-secondary-bg)] text-[var(--chip-secondary-text)] border border-[var(--chip-secondary-border)]">
+                      System Design
+                    </span>
+                    <span className="text-xs text-[var(--text-tertiary)]">2023</span>
+                  </div>
+                  <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-secondary-end)] transition-colors">
+                    Email Campaign System
+                  </PortalCardTitle>
+                  <PortalCardDescription>
+                    Designing a high-throughput email delivery system capable of sending 50M+ emails daily. 
+                    Focused on deliverability, analytics, and template flexibility.
+                  </PortalCardDescription>
+                </div>
+                <div className="flex items-center text-[var(--neon-secondary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
+                  View Case Study <ArrowRight className="ml-2 w-4 h-4" />
+                </div>
+              </div>
+            </PortalCard>
+          </Link>
+        </BentoGrid>
+      </section>
+
+      <SectionDivider variant="gradient" />
+
       {/* About / Transition Story — The Technical Edge */}
-      <section id="about" className="mb-20 sm:mb-32 scroll-mt-32 max-w-5xl mx-auto">
+      <section id="about" className="mb-20 sm:mb-32 scroll-mt-32 max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -211,57 +315,122 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <SectionDivider variant="gradient" />
+      <SectionDivider variant="glow" />
 
-      {/* Process Section */}
+      {/* Process Section - The Build Protocol */}
       <section id="process" className="mb-20 sm:mb-32 scroll-mt-32">
         <motion.div 
-          className="max-w-5xl mx-auto mb-8 sm:mb-12"
+          className="max-w-5xl mx-auto mb-12 sm:mb-16"
           animate={{ opacity: [0.95, 1, 0.95] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
         >
           <h3 className="text-display-l font-bold tracking-tight text-[var(--text-primary)] relative inline-block">
-            My Process
+            The Build Protocol
             <span className="absolute -bottom-2 left-0 w-1/4 h-1 rounded-full bg-gradient-to-r from-[var(--lum-neon-blue)] to-[var(--lum-neon-purple)] opacity-70" />
           </h3>
+          <p className="mt-4 text-body-l text-[var(--text-secondary)] max-w-2xl">
+            A rigorous, engineering-driven methodology for shipping high-impact products.
+          </p>
         </motion.div>
-        <BentoGrid className="max-w-5xl mx-auto">
-          <NanoCard delay={0.1} className="col-span-4 md:col-span-6 md:row-span-2 p-8 flex flex-col justify-between min-h-[400px]">
-            <div>
-              <div className="mb-6"><DiscoverGraphic /></div>
-              <NanoCardTitle className="mb-3">Discover & Define</NanoCardTitle>
-              <NanoCardDescription>
-                I start by understanding the &apos;why&apos;. I analyze user data, interview stakeholders, and define success metrics before discussing solutions.
-              </NanoCardDescription>
+        
+        <div className="max-w-5xl mx-auto flex flex-col gap-6">
+          {/* Phase 1: Deconstruction */}
+          <PortalCard glow="cotton-candy" className="p-0 overflow-hidden group">
+            <div className="grid md:grid-cols-[240px_1fr] h-full">
+              <div className="bg-[var(--glass-2-fill)] p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[var(--glass-1-border)] relative overflow-hidden">
+                <div className="relative z-10">
+                  <span className="text-xs font-mono text-[var(--lum-neon-purple)] uppercase tracking-wider mb-2 block">Phase 01</span>
+                  <h4 className="text-2xl font-bold text-[var(--text-primary)]">Deconstruct</h4>
+                </div>
+                <div className="mt-8 relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-[var(--chip-purple-bg)] flex items-center justify-center text-[var(--chip-purple-text)]">
+                    <Users className="w-6 h-6" />
+                  </div>
+                </div>
+                {/* Decorative background graphic */}
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--lum-neon-purple)] opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity duration-500" />
+              </div>
+              <div className="p-8 md:p-10 flex flex-col justify-center">
+                <h5 className="text-xl font-semibold text-[var(--text-primary)] mb-3">Discovery & Technical Definition</h5>
+                <p className="text-body-l text-[var(--text-secondary)] leading-relaxed mb-6">
+                  I don&apos;t just gather requirements; I deconstruct them. I analyze user data and stakeholder needs, then immediately map them to technical realities—identifying API constraints, data models, and potential blockers before a roadmap is even drafted.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {["User Analysis", "Tech Spec Definition", "Success Metrics"].map((tag) => (
+                    <span key={tag} className="text-xs font-mono px-3 py-1 rounded-full border border-[var(--glass-2-border)] text-[var(--text-tertiary)] bg-[var(--glass-ghost-fill)]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <Users className="h-6 w-6 text-[var(--lum-neon-purple)] mt-6" />
-          </NanoCard>
-          
-          <NanoCard delay={0.2} className="col-span-4 md:col-span-3 md:row-span-2 p-8 flex flex-col justify-between min-h-[400px]">
-            <div>
-              <div className="mb-6"><FeasibilityGraphic /></div>
-              <NanoCardTitle className="mb-3">Technical Feasibility</NanoCardTitle>
-              <NanoCardDescription>
-                I evaluate architectural constraints early. I work with engineers to identify risks, dependencies, and trade-offs to ensure realistic roadmaps.
-              </NanoCardDescription>
-            </div>
-            <Code2 className="h-6 w-6 text-[var(--lum-neon-blue)] mt-6" />
-          </NanoCard>
+          </PortalCard>
 
-          <NanoCard delay={0.3} className="col-span-4 md:col-span-3 md:row-span-2 p-8 flex flex-col justify-between min-h-[400px]">
-            <div>
-              <div className="mb-6"><ExecuteGraphic /></div>
-              <NanoCardTitle className="mb-3">Execute & Iterate</NanoCardTitle>
-              <NanoCardDescription>
-                I prioritize iterative delivery. I use data from each release to refine the backlog, ensuring we&apos;re always building the highest-value features.
-              </NanoCardDescription>
+          {/* Phase 2: Architecture */}
+          <PortalCard glow="cyber-lime" className="p-0 overflow-hidden group">
+            <div className="grid md:grid-cols-[240px_1fr] h-full">
+              <div className="bg-[var(--glass-2-fill)] p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[var(--glass-1-border)] relative overflow-hidden">
+                <div className="relative z-10">
+                  <span className="text-xs font-mono text-[var(--lum-neon-blue)] uppercase tracking-wider mb-2 block">Phase 02</span>
+                  <h4 className="text-2xl font-bold text-[var(--text-primary)]">Architect</h4>
+                </div>
+                <div className="mt-8 relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-[var(--chip-blue-bg)] flex items-center justify-center text-[var(--chip-blue-text)]">
+                    <Code2 className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--lum-neon-blue)] opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity duration-500" />
+              </div>
+              <div className="p-8 md:p-10 flex flex-col justify-center">
+                <h5 className="text-xl font-semibold text-[var(--text-primary)] mb-3">System Design & Feasibility</h5>
+                <p className="text-body-l text-[var(--text-secondary)] leading-relaxed mb-6">
+                  This is where engineering meets strategy. I work with the dev team to design scalable architectures, choosing the right tools for the job. We define the &quot;Happy Path&quot; and the edge cases, ensuring the solution is robust, secure, and maintainable.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {["System Architecture", "API Design", "Risk Assessment"].map((tag) => (
+                    <span key={tag} className="text-xs font-mono px-3 py-1 rounded-full border border-[var(--glass-2-border)] text-[var(--text-tertiary)] bg-[var(--glass-ghost-fill)]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <BarChart3 className="h-6 w-6 text-[var(--neon-primary-end)] mt-6" />
-          </NanoCard>
-        </BentoGrid>
+          </PortalCard>
+
+          {/* Phase 3: Execution */}
+          <PortalCard glow="solar-flare" className="p-0 overflow-hidden group">
+            <div className="grid md:grid-cols-[240px_1fr] h-full">
+              <div className="bg-[var(--glass-2-fill)] p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[var(--glass-1-border)] relative overflow-hidden">
+                <div className="relative z-10">
+                  <span className="text-xs font-mono text-[var(--neon-primary-end)] uppercase tracking-wider mb-2 block">Phase 03</span>
+                  <h4 className="text-2xl font-bold text-[var(--text-primary)]">Execute</h4>
+                </div>
+                <div className="mt-8 relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-[var(--chip-primary-bg)] flex items-center justify-center text-[var(--chip-primary-text)]">
+                    <BarChart3 className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--neon-primary-end)] opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity duration-500" />
+              </div>
+              <div className="p-8 md:p-10 flex flex-col justify-center">
+                <h5 className="text-xl font-semibold text-[var(--text-primary)] mb-3">Iterative Delivery & Optimization</h5>
+                <p className="text-body-l text-[var(--text-secondary)] leading-relaxed mb-6">
+                  Shipping is just the beginning. I prioritize iterative releases to gather real-world data. We monitor performance, track user behavior, and refine the backlog based on evidence, not assumptions. It&apos;s a continuous loop of improvement.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {["Agile Delivery", "Performance Monitoring", "Data-Driven Iteration"].map((tag) => (
+                    <span key={tag} className="text-xs font-mono px-3 py-1 rounded-full border border-[var(--glass-2-border)] text-[var(--text-tertiary)] bg-[var(--glass-ghost-fill)]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </PortalCard>
+        </div>
       </section>
 
-      <SectionDivider variant="dots" />
+      <SectionDivider variant="gradient" />
 
       {/* Experience */}
       <section id="experience" className="mb-20 sm:mb-32 scroll-mt-32 max-w-5xl mx-auto">
@@ -275,21 +444,29 @@ export default function Home() {
             <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--neon-secondary-start)] to-[var(--neon-secondary-end)] opacity-70" />
           </h3>
         </motion.div>
-        <BentoGrid className="grid-cols-1 md:grid-cols-1 gap-4 md:gap-6">
-          <NanoCard delay={0.1} className="col-span-1 p-8 sm:p-12 group">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
-              <div className="flex items-center gap-4">
+        
+        <div className="flex flex-col gap-8">
+          {/* Current Role - Highlighted */}
+          <PortalCard glow="cyber-lime" className="p-8 sm:p-10">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-8 gap-4">
+              <div className="flex items-start gap-5">
                 <motion.div 
-                  className="p-3 rounded-2xl bg-gradient-to-br from-[var(--chip-blue-bg)] to-transparent border border-[var(--chip-blue-border)]"
+                  className="p-4 rounded-2xl bg-gradient-to-br from-[var(--chip-blue-bg)] to-transparent border border-[var(--chip-blue-border)]"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <Code2 className="h-5 w-5 text-[var(--chip-blue-text)]" />
+                  <Code2 className="h-6 w-6 text-[var(--chip-blue-text)]" />
                 </motion.div>
-                <h4 className="text-title-m font-bold text-[var(--text-primary)] hover-weight-shift">Frontend Software Engineer</h4>
+                <div>
+                  <h4 className="text-title-l font-bold text-[var(--text-primary)] mb-1">Frontend Software Engineer</h4>
+                  <div className="text-body-l text-[var(--text-secondary)] font-medium flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-[var(--chip-blue-text)] animate-pulse" />
+                    BLOX Digital
+                  </div>
+                </div>
               </div>
               <motion.span 
-                className="text-label-s font-semibold text-[var(--chip-primary-text)] font-mono px-4 py-1.5 rounded-full border relative overflow-hidden"
+                className="self-start text-label-s font-semibold text-[var(--chip-primary-text)] font-mono px-4 py-1.5 rounded-full border relative overflow-hidden"
                 style={{
                   background: 'linear-gradient(135deg, var(--chip-primary-bg), transparent)',
                   borderColor: 'var(--chip-primary-border)',
@@ -300,65 +477,62 @@ export default function Home() {
                 <span className="relative z-10">Current Role</span>
               </motion.span>
             </div>
-            <div className="text-body-l text-[var(--text-secondary)] mb-6 font-medium flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--chip-blue-text)]" />
-              BLOX Digital
-            </div>
-            <p className="text-[var(--text-secondary)] mb-8 leading-relaxed text-body-l">
+            
+            <p className="text-[var(--text-secondary)] mb-8 leading-relaxed text-body-l max-w-3xl">
               Led front‑end development on BLOX NXT CMS, shipping 20+ customer‑visible features across content authoring, audience, and analytics workflows.
             </p>
-            <ul className="space-y-4 text-[var(--text-secondary)] text-body-l">
+            
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
               {[
                 { text: "Architected payment integrations supporting 2M+ paid subscribers.", color: "var(--lum-neon-blue)" },
                 { text: "Established a reusable component library, accelerating feature delivery by ~30%.", color: "var(--lum-neon-purple)" },
                 { text: "Improved perceived performance via render profiling and request batching.", color: "var(--lum-neon-green)" },
                 { text: "Mentored peers and advocated for accessibility (WCAG).", color: "var(--lum-cotton-candy)" },
               ].map((item, i) => (
-                <motion.li 
+                <motion.div 
                   key={i}
-                  className="flex items-start gap-3 group/item"
+                  className="flex items-start gap-4 group/item"
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 * i, type: "spring", stiffness: 200 }}
                 >
-                  <span 
-                    className="h-2 w-2 rounded-full mt-2 shrink-0 transition-all duration-300 group-hover/item:scale-150"
-                    style={{ 
-                      backgroundColor: item.color,
-                      boxShadow: `0 0 8px ${item.color}`,
-                    }} 
-                  />
-                  <span className="group-hover/item:text-[var(--text-primary)] transition-colors duration-300">{item.text}</span>
-                </motion.li>
+                  <div className="relative mt-1.5">
+                    <div className="absolute inset-0 rounded-full blur-sm opacity-50" style={{ backgroundColor: item.color }} />
+                    <div className="relative h-2.5 w-2.5 rounded-full border border-[var(--glass-1-border)]" style={{ backgroundColor: item.color }} />
+                  </div>
+                  <span className="text-body-m text-[var(--text-secondary)] group-hover/item:text-[var(--text-primary)] transition-colors duration-300">
+                    {item.text}
+                  </span>
+                </motion.div>
               ))}
-            </ul>
-          </NanoCard>
+            </div>
+          </PortalCard>
           
-          <NanoCard delay={0.2} className="col-span-1 p-8 sm:p-12 group">
+          {/* Previous Role - Secondary */}
+          <NanoCard className="p-8 sm:p-10 opacity-90 hover:opacity-100 transition-opacity">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
               <div className="flex items-center gap-4">
                 <div className="p-3 rounded-2xl bg-gradient-to-br from-[var(--glass-ghost-fill)] to-transparent border border-[var(--glass-2-border)]">
                   <Users className="h-5 w-5 text-[var(--text-tertiary)]" />
                 </div>
-                <h4 className="text-title-m font-bold text-[var(--text-primary)] hover-weight-shift">Instructional Assistant</h4>
+                <div>
+                  <h4 className="text-title-m font-bold text-[var(--text-primary)]">Instructional Assistant</h4>
+                  <div className="text-body-m text-[var(--text-tertiary)] font-medium">General Assembly</div>
+                </div>
               </div>
               <span className="text-label-s font-medium text-[var(--text-tertiary)] font-mono px-4 py-1.5 rounded-full border border-[var(--glass-2-border)] bg-[var(--glass-ghost-fill)]">
                 Previous
               </span>
             </div>
-            <div className="text-body-l text-[var(--text-secondary)] mb-6 font-medium flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--text-tertiary)]" />
-              General Assembly
-            </div>
             <p className="text-[var(--text-secondary)] leading-relaxed text-body-l">
               Supported a cohort of 60+ students in full‑stack fundamentals, providing code reviews and debugging sessions.
             </p>
           </NanoCard>
-        </BentoGrid>
+        </div>
       </section>
 
-      <SectionDivider variant="gradient" />
+      <SectionDivider variant="glow" />
 
       {/* Skills */}
       <section className="mb-20 sm:mb-32 scroll-mt-32 max-w-5xl mx-auto">
@@ -372,168 +546,155 @@ export default function Home() {
             <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--chip-blue-text)] to-[var(--chip-purple-text)] opacity-70" />
           </h3>
         </motion.div>
-        <BentoGrid className="grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          <NanoCard delay={0.1} className="col-span-1 p-6 sm:p-10 group">
-            <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
-              <motion.div 
-                className="p-3 rounded-2xl bg-gradient-to-br from-[var(--chip-blue-bg)] to-transparent border border-[var(--chip-blue-border)] text-[var(--chip-blue-text)]"
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Product Skills */}
+          <PortalCard glow="cotton-candy" className="p-8 h-full">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 rounded-2xl bg-[var(--chip-blue-bg)] text-[var(--chip-blue-text)]">
                 <Users className="h-6 w-6" />
-              </motion.div>
+              </div>
               <h4 className="text-title-m text-[var(--text-primary)] font-bold">Technical Product Management</h4>
             </div>
-            <ul className="space-y-4 sm:space-y-5">
+            
+            <div className="flex flex-wrap gap-3">
               {[
-                { skill: "Technical Feasibility Analysis", delay: 0 },
-                { skill: "API Design & Strategy", delay: 0.05 },
-                { skill: "System Architecture Review", delay: 0.1 },
-                { skill: "Data-Driven Roadmapping", delay: 0.15 },
-                { skill: "Agile & Scrum Methodologies", delay: 0.2 },
-                { skill: "Stakeholder Management", delay: 0.25 },
-              ].map(({ skill, delay }) => (
-                <motion.li 
-                  key={skill} 
-                  className="flex items-start sm:items-center gap-3 text-body-l text-[var(--text-secondary)] group/skill"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                "Technical Feasibility Analysis",
+                "API Design & Strategy",
+                "System Architecture Review",
+                "Data-Driven Roadmapping",
+                "Agile & Scrum Methodologies",
+                "Stakeholder Management"
+              ].map((skill, i) => (
+                <motion.div
+                  key={skill}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay, type: "spring", stiffness: 200 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="px-4 py-2 rounded-full text-sm font-medium bg-[var(--glass-2-fill)] border border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--chip-blue-border)] hover:bg-[var(--chip-blue-bg)] transition-all duration-300 cursor-default"
                 >
-                  <motion.div 
-                    className="h-2 w-2 rounded-full bg-[var(--chip-blue-text)] mt-2 sm:mt-0 shrink-0 transition-all duration-300 group-hover/skill:scale-150"
-                    style={{ boxShadow: '0 0 6px var(--chip-blue-text)' }}
-                    whileHover={{ scale: 1.5 }}
-                  />
-                  <span className="group-hover/skill:text-[var(--text-primary)] transition-colors duration-300">{skill}</span>
-                </motion.li>
+                  {skill}
+                </motion.div>
               ))}
-            </ul>
-          </NanoCard>
+            </div>
+          </PortalCard>
 
-          <NanoCard delay={0.2} className="col-span-1 p-6 sm:p-10 group">
-            <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
-              <motion.div 
-                className="p-3 rounded-2xl bg-gradient-to-br from-[var(--chip-purple-bg)] to-transparent border border-[var(--chip-purple-border)] text-[var(--chip-purple-text)]"
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              >
+          {/* Engineering Skills */}
+          <PortalCard glow="cyber-lime" className="p-8 h-full">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 rounded-2xl bg-[var(--chip-purple-bg)] text-[var(--chip-purple-text)]">
                 <Code2 className="h-6 w-6" />
-              </motion.div>
+              </div>
               <h4 className="text-title-m text-[var(--text-primary)] font-bold">Engineering</h4>
             </div>
-            <ul className="space-y-4 sm:space-y-5">
+            
+            <div className="flex flex-wrap gap-3">
               {[
-                { skill: "React, TypeScript, Next.js", delay: 0 },
-                { skill: "Material UI (MUI)", delay: 0.05 },
-                { skill: "React Query & Hook Form", delay: 0.1 },
-                { skill: "Node.js & Express.js", delay: 0.15 },
-                { skill: "Accessibility (WCAG)", delay: 0.2 },
-              ].map(({ skill, delay }) => (
-                <motion.li 
-                  key={skill} 
-                  className="flex items-start sm:items-center gap-3 text-body-l text-[var(--text-secondary)] group/skill"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                "React", "TypeScript", "Next.js",
+                "Material UI (MUI)", "Tailwind CSS",
+                "React Query", "React Hook Form",
+                "Node.js", "Express.js",
+                "Accessibility (WCAG)", "Performance Optimization"
+              ].map((skill, i) => (
+                <motion.div
+                  key={skill}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay, type: "spring", stiffness: 200 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="px-4 py-2 rounded-full text-sm font-medium bg-[var(--glass-2-fill)] border border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--chip-purple-border)] hover:bg-[var(--chip-purple-bg)] transition-all duration-300 cursor-default"
                 >
-                  <motion.div 
-                    className="h-2 w-2 rounded-full bg-[var(--chip-purple-text)] mt-2 sm:mt-0 shrink-0 transition-all duration-300 group-hover/skill:scale-150"
-                    style={{ boxShadow: '0 0 6px var(--chip-purple-text)' }}
-                    whileHover={{ scale: 1.5 }}
-                  />
-                  <span className="group-hover/skill:text-[var(--text-primary)] transition-colors duration-300">{skill}</span>
-                </motion.li>
+                  {skill}
+                </motion.div>
               ))}
-            </ul>
-          </NanoCard>
-        </BentoGrid>
-      </section>
-
-      <SectionDivider variant="glow" />
-
-      {/* Projects / Case Studies — Using Portal Cards */}
-      <section id="projects" className="mb-20 sm:mb-32 scroll-mt-32 max-w-5xl mx-auto">
-        <motion.div 
-          className="mb-8 sm:mb-12"
-          animate={{ opacity: [0.95, 1, 0.95] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <h3 className="text-display-l font-bold tracking-tight text-[var(--text-primary)] relative inline-block">
-            Case Studies
-            <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--neon-primary-start)] via-[var(--lum-neon-cyan)] to-[var(--neon-secondary-start)] opacity-70" />
-          </h3>
-        </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <a href="/projects/email-campaign-system" className="block h-full group/card">
-            <PortalCard delay={0.1} glow="cyber-lime" className="h-full p-10 flex flex-col">
-              <div className="flex items-start justify-between mb-8">
-                <motion.div 
-                  className="p-4 rounded-2xl bg-gradient-to-br from-[var(--chip-primary-bg)] to-transparent border border-[var(--chip-primary-border)] text-[var(--chip-primary-text)]"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <Layout className="h-6 w-6" />
-                </motion.div>
-                <motion.div
-                  initial={{ rotate: -45 }}
-                  whileHover={{ rotate: 0 }}
-                  className="transition-transform duration-300"
-                >
-                  <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] group-hover/card:text-[var(--chip-primary-text)] transition-colors" />
-                </motion.div>
-              </div>
-              <PortalCardTitle className="mb-4 text-title-l group-hover/card:text-[var(--chip-primary-text)] transition-colors duration-300">
-                Email Campaign Management System
-              </PortalCardTitle>
-              <PortalCardDescription className="text-body-l flex-1">
-                Built a multi‑step wizard with advanced validation and natural‑language scheduling. Reduced setup friction and increased successful campaign launches.
-              </PortalCardDescription>
-              <div className="mt-6 pt-6 border-t border-[var(--glass-2-border)]">
-                <span className="text-sm font-medium text-[var(--chip-primary-text)] opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
-                  View Case Study →
-                </span>
-              </div>
-            </PortalCard>
-          </a>
-          
-          <a href="/projects/blox-nxt-cms-rebuild" className="block h-full group/card">
-            <PortalCard delay={0.2} glow="cotton-candy" className="h-full p-10 flex flex-col">
-              <div className="flex items-start justify-between mb-8">
-                <motion.div 
-                  className="p-4 rounded-2xl bg-gradient-to-br from-[var(--chip-secondary-bg)] to-transparent border border-[var(--chip-secondary-border)] text-[var(--chip-secondary-text)]"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                >
-                  <Database className="h-6 w-6" />
-                </motion.div>
-                <motion.div
-                  initial={{ rotate: -45 }}
-                  whileHover={{ rotate: 0 }}
-                  className="transition-transform duration-300"
-                >
-                  <ArrowRight className="w-6 h-6 text-[var(--text-tertiary)] group-hover/card:text-[var(--chip-secondary-text)] transition-colors" />
-                </motion.div>
-              </div>
-              <PortalCardTitle className="mb-4 text-title-l group-hover/card:text-[var(--chip-secondary-text)] transition-colors duration-300">
-                BLOX NXT CMS Rebuild
-              </PortalCardTitle>
-              <PortalCardDescription className="text-body-l flex-1">
-                Contributed to modular, pattern‑driven front‑end architecture. Built data‑driven dashboards and real‑time authoring affordances to streamline editorial workflows.
-              </PortalCardDescription>
-              <div className="mt-6 pt-6 border-t border-[var(--glass-2-border)]">
-                <span className="text-sm font-medium text-[var(--chip-secondary-text)] opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
-                  View Case Study →
-                </span>
-              </div>
-            </PortalCard>
-          </a>
+            </div>
+          </PortalCard>
         </div>
       </section>
 
-      <SectionDivider variant="dots" />
+      <SectionDivider variant="gradient" />
+
+      {/* Latest Insights / Blog */}
+      <section id="blog" className="mb-20 sm:mb-32 scroll-mt-32 max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3 className="text-display-l font-bold tracking-tight text-[var(--text-primary)] relative inline-block mb-4">
+              Latest Insights
+              <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--lum-neon-green)] to-[var(--lum-neon-cyan)] opacity-70" />
+            </h3>
+            <p className="text-body-l text-[var(--text-secondary)] max-w-xl">
+              Thoughts on engineering, product strategy, and the intersection of both.
+            </p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Link 
+              href="/blog" 
+              className="group inline-flex items-center gap-2 text-[var(--text-primary)] font-medium hover:text-[var(--neon-primary-end)] transition-colors"
+            >
+              View all posts
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {FEATURED_POSTS.map((post, i) => (
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="group h-full">
+              <PortalCard 
+                className="h-full p-8 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-lg" 
+                glow={i === 0 ? "cyber-lime" : "cotton-candy"}
+                delay={i * 0.1}
+              >
+                <div className="flex flex-col h-full justify-between gap-6">
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-xs font-mono text-[var(--text-tertiary)]">
+                        {new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </span>
+                      <div className="h-px w-4 bg-[var(--glass-2-border)]" />
+                      <div className="flex gap-2">
+                        {post.tags.map(tag => (
+                          <span key={tag} className="text-xs font-medium text-[var(--text-secondary)] bg-[var(--glass-2-fill)] px-2 py-0.5 rounded-full border border-[var(--glass-1-border)]">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <h4 className="text-2xl font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--neon-primary-end)] transition-colors">
+                      {post.title}
+                    </h4>
+                    
+                    <p className="text-body-m text-[var(--text-secondary)] leading-relaxed line-clamp-3">
+                      {post.summary}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center text-sm font-medium text-[var(--text-tertiary)] group-hover:text-[var(--text-primary)] transition-colors">
+                    Read Article <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </PortalCard>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <SectionDivider variant="gradient" />
 
       {/* Contact — Glass-Lume material with aurora effect */}
       <section id="contact" className="scroll-mt-32 pb-24 max-w-5xl mx-auto">
@@ -601,6 +762,7 @@ export default function Home() {
           </PortalCard>
         </motion.div>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }

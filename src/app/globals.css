@@ -3,6 +3,11 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 :root {
   /* ═══════════════════════════════════════════════════════════════════════════
      PROJECT LUMINOUS — Design System Tokens v1.0

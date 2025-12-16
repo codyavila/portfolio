@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, User, Briefcase, FolderGit2, Layers, Settings, Sun, Moon, Sparkles, X, BookOpen, Volume2, VolumeX } from "lucide-react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -12,10 +13,10 @@ import { useSoundSystem } from "@/hooks/useSoundSystem";
 
 const navItems = [
   { name: "Home", href: "/", icon: Home, sectionId: null },
+  { name: "Projects", href: "/#projects", icon: FolderGit2, sectionId: "projects" },
   { name: "About", href: "/#about", icon: User, sectionId: "about" },
   { name: "Process", href: "/#process", icon: Layers, sectionId: "process" },
   { name: "Experience", href: "/#experience", icon: Briefcase, sectionId: "experience" },
-  { name: "Projects", href: "/#projects", icon: FolderGit2, sectionId: "projects" },
   { name: "Blog", href: "/blog", icon: BookOpen, sectionId: null },
 ];
 
@@ -49,6 +50,7 @@ export function Header() {
   const indicatorRef = useRef({ x: 0, y: 0, w: 56, h: 56 });
   const { theme, setTheme } = useTheme();
   const { timeOverride, setTimeOverride } = useDynamicTheme();
+  const pathname = usePathname();
   useTimeOfDay();
   const { playToggle, playHover, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome, isMuted, toggleMute } = useSoundSystem();
   
@@ -79,6 +81,11 @@ export function Header() {
 
   // Scroll spy - track which section is in view
   useEffect(() => {
+    if (pathname?.startsWith('/blog')) {
+      setActiveTab("Blog");
+      return;
+    }
+
     const sectionIds = navItems
       .filter(item => item.sectionId)
       .map(item => item.sectionId as string);
@@ -134,7 +141,7 @@ export function Header() {
       observer.disconnect();
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     iconRotation.set(settingsOpen ? 180 : 0);
@@ -379,7 +386,6 @@ export function Header() {
           "shadow-lg dark:shadow-2xl",
           "backdrop-saturate-150",
           "border border-[var(--glass-2-border)]",
-          "overflow-hidden",
           "flex md:flex-row",
           "rounded-[28px]"
         )}
@@ -454,7 +460,12 @@ export function Header() {
             {/* Tooltip */}
             <motion.div
               initial={{ opacity: 0, x: -10, scale: 0.9 }}
-              whileHover={{ opacity: 1, x: 0, scale: 1 }}
+              animate={{ 
+                opacity: hoverTab === "Home" ? 1 : 0,
+                x: hoverTab === "Home" ? 0 : -10,
+                scale: hoverTab === "Home" ? 1 : 0.9
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
               className="hidden md:block absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg glass-2 text-xs font-medium text-[var(--text-primary)] whitespace-nowrap pointer-events-none"
             >
               Home
@@ -506,7 +517,11 @@ export function Header() {
                 {/* Tooltip */}
                 <motion.div
                   initial={{ opacity: 0, x: -10, scale: 0.9 }}
-                  whileHover={{ opacity: 1, x: 0, scale: 1 }}
+                  animate={{ 
+                    opacity: hoverTab === item.name ? 1 : 0,
+                    x: hoverTab === item.name ? 0 : -10,
+                    scale: hoverTab === item.name ? 1 : 0.9
+                  }}
                   transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   className="hidden md:block absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg glass-2 text-xs font-medium text-[var(--text-primary)] whitespace-nowrap pointer-events-none z-50"
                 >
@@ -563,7 +578,7 @@ export function Header() {
                 width: { type: "spring", stiffness: 500, damping: 35 },
                 opacity: { duration: 0.15 },
               }}
-              className="hidden md:block overflow-hidden origin-left"
+              className="hidden md:block overflow-hidden origin-left rounded-r-[28px]"
             >
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
