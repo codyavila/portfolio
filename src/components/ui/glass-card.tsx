@@ -30,6 +30,8 @@ interface GlassCardProps {
   enableNoise?: boolean;
   /** Custom border radius in pixels (overrides size) */
   borderRadius?: number;
+  /** Whether the card should react to hover/tap interactions (scale, lift). Default: true */
+  interactive?: boolean;
   /** Additional motion props for the card */
   motionProps?: Omit<MotionProps, 'ref' | 'className' | 'style' | 'onClick'>;
 }
@@ -62,6 +64,7 @@ const GlassCardComponent = ({
   enableChromatic = false,
   enableNoise = false,
   borderRadius: customRadius,
+  interactive = true,
   motionProps = {},
 }: GlassCardProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -112,7 +115,7 @@ const GlassCardComponent = ({
   );
 
   const handleMouseMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current || isMobile) return;
+    if (!ref.current || isMobile || !interactive) return;
     
     const rect = ref.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -135,7 +138,7 @@ const GlassCardComponent = ({
   }, [enableTilt, enableSpotlight, tiltX, tiltY, glowX, glowY, isMobile]);
 
   const handleMouseLeave = useCallback(() => {
-    if (isMobile) return;
+    if (isMobile || !interactive) return;
     tiltX.set(0);
     tiltY.set(0);
     // Don't reset glow position - let it fade out where cursor last was
@@ -143,7 +146,7 @@ const GlassCardComponent = ({
   }, [tiltX, tiltY, isMobile]);
 
   const handleMouseEnter = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (isMobile) return;
+    if (isMobile || !interactive) return;
     // Set glow position immediately where cursor enters (no spring animation on entry)
     if (ref.current && enableSpotlight) {
       const rect = ref.current.getBoundingClientRect();
@@ -170,11 +173,11 @@ const GlassCardComponent = ({
       initial={{ opacity: 0, y: 30, filter: "blur(0px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-50px" }}
-      whileHover={!isMobile ? { 
+      whileHover={interactive && !isMobile ? { 
         y: -8,
         transition: { type: "spring", stiffness: 300, damping: 15 }
       } : {}}
-      whileTap={{ scale: 0.98 }}
+      whileTap={interactive ? { scale: 0.98 } : {}}
       transition={{ 
         type: "spring", 
         stiffness: 200, 
@@ -187,7 +190,8 @@ const GlassCardComponent = ({
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
       className={cn(
-        "glass-card group relative cursor-pointer",
+        "glass-card group relative",
+        interactive && "cursor-pointer",
         enableChromatic && "chromatic-edge",
         enableNoise && "glass-noise glass-noise-prism",
         className

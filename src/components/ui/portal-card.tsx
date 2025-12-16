@@ -18,6 +18,8 @@ interface PortalCardProps {
   enableNoise?: boolean;
   /** Enable iridescent coating effect */
   enableIridescence?: boolean;
+  /** Whether the card should react to hover/tap interactions. Default: true */
+  interactive?: boolean;
 }
 
 const PortalCardComponent = ({ 
@@ -30,6 +32,7 @@ const PortalCardComponent = ({
   enableShimmer = true,
   enableNoise = true,
   enableIridescence = true,
+  interactive = true,
 }: PortalCardProps) => {
   return (
     <GlassCard
@@ -42,6 +45,7 @@ const PortalCardComponent = ({
       enableNoise={enableNoise}
       enableIridescence={enableIridescence}
       enableChromatic={true}
+      interactive={interactive}
       className={cn("overflow-hidden", className)}
     >
       {children}
