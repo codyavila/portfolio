@@ -1,12 +1,14 @@
 "use client";
 
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PortalCard, PortalCardTitle, PortalCardDescription } from '@/components/ui/portal-card';
 import { KineticText } from '@/components/ui/kinetic-text';
-import { motion } from 'framer-motion';
-import { ArrowRight, Calendar } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Calendar, Search, X } from 'lucide-react';
 import { BlogPost } from '@/lib/mdx';
+import { cn } from '@/lib/utils';
 
 // Animation variants
 const containerVariants = {
@@ -37,13 +39,56 @@ interface BlogListProps {
 }
 
 export function BlogList({ posts }: BlogListProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  // Extract all unique tags
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    posts.forEach(post => {
+      post.metadata.tags?.forEach(tag => tags.add(tag));
+    });
+    return Array.from(tags).sort();
+  }, [posts]);
+
+  // Filter posts based on search and tags
+  const filteredPosts = useMemo(() => {
+    return posts.filter(post => {
+      const matchesSearch = (
+        post.metadata.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.metadata.summary.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      
+      const matchesTags = selectedTags.length === 0 || (
+        post.metadata.tags?.some(tag => selectedTags.includes(tag)) ?? false
+      );
+
+      return matchesSearch && matchesTags;
+    });
+  }, [posts, searchQuery, selectedTags]);
+
+  const isFiltering = searchQuery.length > 0 || selectedTags.length > 0;
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedTags([]);
+  };
+
   const featuredPost = posts[0];
   const remainingPosts = posts.slice(1);
 
   return (
     <main className="container mx-auto px-6 py-24 md:py-32 max-w-7xl">
       {/* Header Section */}
-      <div className="mb-20 md:mb-24 max-w-4xl">
+      <div className="mb-12 md:mb-16 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -65,6 +110,160 @@ export function BlogList({ posts }: BlogListProps) {
         </motion.div>
       </div>
 
+      {/* Search and Filter Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-16 space-y-6"
+      >
+        {/* Search Bar */}
+        <div className="relative max-w-xl">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-[var(--text-tertiary)]" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search articles..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[var(--glass-1-fill)] border border-[var(--glass-1-border)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--lum-neon-blue)] focus:border-transparent transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2">
+          {allTags.map(tag => {
+            const isSelected = selectedTags.includes(tag);
+            return (
+              <button
+                key={tag}
+                onClick={() => toggleTag(tag)}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border",
+                  isSelected 
+                    ? "bg-[var(--lum-neon-blue)]/10 border-[var(--lum-neon-blue)] text-[var(--lum-neon-blue)] shadow-[0_0_10px_rgba(0,240,255,0.2)]" 
+                    : "bg-[var(--glass-1-fill)] border-[var(--glass-1-border)] text-[var(--text-secondary)] hover:border-[var(--text-secondary)] hover:bg-[var(--glass-2-fill)]"
+                )}
+              >
+                {tag}
+              </button>
+            );
+          })}
+          {selectedTags.length > 0 && (
+            <button
+              onClick={() => setSelectedTags([])}
+              className="px-3 py-1.5 text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1"
+            >
+              <X className="h-3 w-3" />
+              Clear tags
+            </button>
+          )}
+        </div>
+      </motion.div>
+
+      <AnimatePresence mode="wait">
+        {isFiltering ? (
+          /* Filtered Results View */
+          <motion.div
+            key="filtered"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-title-l font-bold text-[var(--text-primary)]">
+                {filteredPosts.length} Result{filteredPosts.length !== 1 ? 's' : ''}
+              </h2>
+              <button 
+                onClick={clearFilters}
+                className="text-sm text-[var(--lum-neon-purple)] hover:underline"
+              >
+                Clear all filters
+              </button>
+            </div>
+
+            {filteredPosts.length > 0 ? (
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {filteredPosts.map((post) => (
+                  <motion.div key={post.slug} variants={itemVariants}>
+                    <Link href={`/blog/${post.slug}`} className="group block h-full">
+                      <PortalCard className="h-full p-8 flex flex-col group-hover:shadow-xl transition-all duration-300">
+                        <div className="flex flex-col h-full">
+                          <div className="flex items-center gap-3 text-xs text-[var(--text-tertiary)] mb-4 font-mono">
+                            <Calendar className="w-3 h-3" />
+                            <time dateTime={post.metadata.publishedAt}>
+                              {new Date(post.metadata.publishedAt).toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })}
+                            </time>
+                          </div>
+                          
+                          <PortalCardTitle className="mb-3 group-hover:text-[var(--lum-neon-blue)] transition-colors">
+                            {post.metadata.title}
+                          </PortalCardTitle>
+                          
+                          <PortalCardDescription className="line-clamp-3 mb-6 flex-grow">
+                            {post.metadata.summary}
+                          </PortalCardDescription>
+
+                          <div className="flex items-center justify-between mt-auto pt-4 border-t border-[var(--glass-1-border)]">
+                            <div className="flex gap-2">
+                              {post.metadata.tags?.slice(0, 2).map(tag => (
+                                <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--glass-2-fill)] text-[var(--text-secondary)] border border-[var(--glass-1-border)]">
+                                  {tag}
+                                </span>
+                              ))}
+                              {(post.metadata.tags?.length || 0) > 2 && (
+                                <span className="text-[10px] px-2 py-0.5 text-[var(--text-tertiary)]">
+                                  +{post.metadata.tags!.length - 2}
+                                </span>
+                              )}
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[var(--lum-neon-blue)] group-hover:translate-x-1 transition-all" />
+                          </div>
+                        </div>
+                      </PortalCard>
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <div className="text-center py-24 border border-dashed border-[var(--glass-2-border)] rounded-3xl bg-[var(--glass-1-fill)]">
+                <p className="text-[var(--text-secondary)] text-lg mb-2">No articles found</p>
+                <p className="text-[var(--text-tertiary)]">Try adjusting your search or filters</p>
+                <button 
+                  onClick={clearFilters}
+                  className="mt-6 px-6 py-2 rounded-full bg-[var(--lum-neon-blue)]/10 text-[var(--lum-neon-blue)] hover:bg-[var(--lum-neon-blue)]/20 transition-colors"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            )}
+          </motion.div>
+        ) : (
+          /* Default View (Featured + Grid) */
+          <motion.div
+            key="default"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
       {/* Featured Post */}
       {featuredPost && (
         <motion.section
@@ -195,6 +394,9 @@ export function BlogList({ posts }: BlogListProps) {
           ))}
         </div>
       </motion.section>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
