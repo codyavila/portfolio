@@ -341,10 +341,11 @@ body {
 /* Dark mode background - using .dark class on html */
 html.dark .lum-background,
 .dark .lum-background {
-  background: radial-gradient(ellipse at 20% 0%, rgba(18, 10, 26, 0.4) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(12, 8, 18, 0.3) 0%, transparent 40%),
-    radial-gradient(ellipse at 40% 80%, rgba(10, 6, 14, 0.35) 0%, transparent 50%),
-    #08040C !important;
+  background: radial-gradient(ellipse at 20% 0%, var(--bg-surface) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, var(--bg-surface) 0%, transparent 40%),
+    radial-gradient(ellipse at 40% 80%, var(--bg-surface) 0%, transparent 50%),
+    var(--bg-deep) !important;
+  transition: background 1s ease-in-out;
 }
 
 /* Prevent backdrop-filter flash during animations */

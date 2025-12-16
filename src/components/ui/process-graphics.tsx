@@ -37,7 +37,7 @@ export const DiscoverGraphic = () => {
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: `linear-gradient(var(--lum-neon-blue) 1px, transparent 1px), linear-gradient(90deg, var(--lum-neon-blue) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(var(--neon-primary-start) 1px, transparent 1px), linear-gradient(90deg, var(--neon-primary-start) 1px, transparent 1px)`,
             backgroundSize: '24px 24px',
             maskImage: 'radial-gradient(ellipse at center, white 30%, transparent 70%)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, white 30%, transparent 70%)',
@@ -49,7 +49,7 @@ export const DiscoverGraphic = () => {
       <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
         <motion.line 
           x1="35%" y1="50%" x2="50%" y2="65%" 
-          stroke="var(--lum-neon-pink)" 
+          stroke="var(--neon-secondary-start)" 
           strokeWidth="1" 
           strokeDasharray="4 4"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -58,7 +58,7 @@ export const DiscoverGraphic = () => {
         />
         <motion.line 
           x1="50%" y1="65%" x2="65%" y2="50%" 
-          stroke="var(--lum-neon-cyan)" 
+          stroke="var(--neon-accent-start)" 
           strokeWidth="1" 
           strokeDasharray="4 4"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -81,14 +81,14 @@ export const DiscoverGraphic = () => {
           custom={0}
         >
           <motion.div 
-            className="absolute inset-0 rounded-full bg-[var(--lum-neon-blue)]"
+            className="absolute inset-0 rounded-full bg-[var(--neon-primary-start)]"
             variants={pulseVariants}
             animate="animate"
             custom={0}
             style={{ filter: 'blur(12px)' }}
           />
-          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[var(--lum-neon-blue)]/30 to-[var(--lum-neon-blue)]/10 border border-[var(--lum-neon-blue)] flex items-center justify-center backdrop-blur-sm relative">
-            <div className="h-3 w-3 rounded-full bg-[var(--lum-neon-blue)] shadow-[0_0_10px_var(--lum-neon-blue)]" />
+          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[var(--neon-primary-start)]/30 to-[var(--neon-primary-start)]/10 border border-[var(--neon-primary-start)] flex items-center justify-center backdrop-blur-sm relative">
+            <div className="h-3 w-3 rounded-full bg-[var(--neon-primary-start)] shadow-[0_0_10px_var(--neon-primary-start)]" />
           </div>
         </motion.div>
 

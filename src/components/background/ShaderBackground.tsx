@@ -4,12 +4,14 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { useTheme } from "next-themes";
+import { useDynamicTheme } from "@/components/dynamic-theme-provider";
 import { vertexShader } from "@/shaders/background/vertex";
 import { fragmentShader } from "@/shaders/background/fragment";
 
 const WaveMesh = () => {
   const mesh = useRef<THREE.Mesh>(null);
   const { theme, resolvedTheme } = useTheme();
+  const { bgDeep, bgSurface } = useDynamicTheme();
   
   const uniforms = useMemo(
     () => ({
@@ -22,18 +24,10 @@ const WaveMesh = () => {
 
   // Update colors based on theme
   useEffect(() => {
-    const isDark = theme === "dark" || resolvedTheme === "dark";
-    
-    if (isDark) {
-      // Dark Mode: Deep Violet/Black
-      uniforms.uColorDeep.value.set("#050508");
-      uniforms.uColorSurface.value.set("#1A1424");
-    } else {
-      // Light Mode: White/Subtle Cool Gray
-      uniforms.uColorDeep.value.set("#ffffff");
-      uniforms.uColorSurface.value.set("#e0f2fe"); // Light sky blue tint
-    }
-  }, [theme, resolvedTheme, uniforms]);
+    // Use Dynamic Time-of-Day Colors for both modes
+    uniforms.uColorDeep.value.set(bgDeep);
+    uniforms.uColorSurface.value.set(bgSurface);
+  }, [theme, resolvedTheme, uniforms, bgDeep, bgSurface]);
 
   useFrame((state) => {
     const { clock } = state;

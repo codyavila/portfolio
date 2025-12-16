@@ -39,42 +39,42 @@ const useHighContrast = () => {
   return isHighContrast;
 };
 
-const gradientStyles: Record<GradientVariant, { gradient: string; colors: string[]; glow: string; textColor: string }> = {
+const variantVars: Record<GradientVariant, { start: string; end: string; glow: string; textColor: string }> = {
   "cyber-lime": {
-    gradient: "linear-gradient(135deg, #84CC16 0%, #10B981 100%)", // Accent: Lime to Emerald
-    colors: ["#84CC16", "#10B981"],
-    glow: "rgba(132, 204, 22, 0.6)",
-    textColor: "#0f0d12",
+    start: "var(--neon-accent-start)",
+    end: "var(--neon-accent-end)",
+    glow: "var(--neon-accent-start)",
+    textColor: "var(--on-accent)",
   },
   "cotton-candy": {
-    gradient: "linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)", // Secondary: Violet to Pink
-    colors: ["#7C3AED", "#DB2777"],
-    glow: "rgba(124, 58, 237, 0.6)",
-    textColor: "#ffffff",
+    start: "var(--neon-secondary-start)",
+    end: "var(--neon-secondary-end)",
+    glow: "var(--neon-secondary-start)",
+    textColor: "var(--on-secondary)",
   },
   "solar-flare": {
-    gradient: "linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)", // Primary: Indigo to Cyan
-    colors: ["#4F46E5", "#06B6D4"],
-    glow: "rgba(79, 70, 229, 0.6)",
-    textColor: "#ffffff",
+    start: "var(--neon-primary-start)",
+    end: "var(--neon-primary-end)",
+    glow: "var(--neon-primary-start)",
+    textColor: "var(--on-primary)",
   },
   "primary": {
-    gradient: "linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)",
-    colors: ["#4F46E5", "#06B6D4"],
-    glow: "rgba(79, 70, 229, 0.6)",
-    textColor: "#ffffff",
+    start: "var(--neon-primary-start)",
+    end: "var(--neon-primary-end)",
+    glow: "var(--neon-primary-start)",
+    textColor: "var(--on-primary)",
   },
   "secondary": {
-    gradient: "linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)",
-    colors: ["#7C3AED", "#DB2777"],
-    glow: "rgba(124, 58, 237, 0.6)",
-    textColor: "#ffffff",
+    start: "var(--neon-secondary-start)",
+    end: "var(--neon-secondary-end)",
+    glow: "var(--neon-secondary-start)",
+    textColor: "var(--on-secondary)",
   },
   "accent": {
-    gradient: "linear-gradient(135deg, #84CC16 0%, #10B981 100%)",
-    colors: ["#84CC16", "#10B981"],
-    glow: "rgba(132, 204, 22, 0.6)",
-    textColor: "#0f0d12",
+    start: "var(--neon-accent-start)",
+    end: "var(--neon-accent-end)",
+    glow: "var(--neon-accent-start)",
+    textColor: "var(--on-accent)",
   },
 };
 
@@ -130,7 +130,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     disabled,
     breathing = false,
   }, ref) => {
-    const styles = gradientStyles[variant];
+    const styles = variantVars[variant];
     const highContrast = highContrastStyles[variant];
     const isHighContrast = useHighContrast();
     
@@ -145,7 +145,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     const springRotation = useSpring(gradientRotation, { stiffness: 100, damping: 20 });
     const animatedGradient = useTransform(
       springRotation,
-      (r) => `linear-gradient(${r}deg, ${styles.colors[0]}, ${styles.colors[1]})`
+      (r) => `linear-gradient(${r}deg, ${styles.start}, ${styles.end})`
     );
 
     // Heartbeat breathing animation (Luminous spec: opacity 0.9→1.0, scale pulse every 4s)
@@ -170,7 +170,11 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
     // Glow intensity pulsing with breath (disabled in high contrast)
     const animatedGlow = useTransform(
       breatheOpacity,
-      (opacity) => isHighContrast ? "none" : `0 0 ${20 * glowIntensity * opacity}px ${styles.glow}`
+      (opacity) => {
+        if (isHighContrast) return "none";
+        const alphaPercent = Math.round(opacity * 60); 
+        return `0 0 ${20 * glowIntensity}px color-mix(in srgb, ${styles.glow}, transparent ${100 - alphaPercent}%)`;
+      }
     );
 
     const handleMouseMove = (event: React.MouseEvent<HTMLElement>) => {
@@ -216,7 +220,7 @@ export const JellyButton = React.forwardRef<HTMLButtonElement, JellyButtonProps>
       y: isHighContrast ? 0 : springY,
       scale: breatheScale,
       opacity: breatheOpacity,
-      background: isHighContrast ? highContrast.background : styles.gradient,
+      background: isHighContrast ? highContrast.background : `linear-gradient(135deg, ${styles.start}, ${styles.end})`,
       color: isHighContrast ? highContrast.textColor : styles.textColor,
       boxShadow: animatedGlow,
       border: isHighContrast ? `2px solid ${highContrast.border}` : undefined,
@@ -350,7 +354,7 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
       onClick?.();
     };
 
-    const accentStyles = accentColor ? gradientStyles[accentColor] : null;
+    const accentStyles = accentColor ? variantVars[accentColor] : null;
 
     const sharedClassName = cn(
       "relative inline-flex items-center justify-center rounded-full font-medium cursor-pointer",
@@ -370,7 +374,7 @@ export const GhostButton = React.forwardRef<HTMLButtonElement, GhostButtonProps>
       y: isHighContrast ? 0 : springY,
       opacity: breatheOpacity,
       boxShadow: (accentStyles && !isHighContrast)
-        ? `0 0 20px ${accentStyles.glow.replace("0.6", "0.2")}` 
+        ? `0 0 20px color-mix(in srgb, ${accentStyles.glow}, transparent 80%)` 
         : undefined,
     };
 
