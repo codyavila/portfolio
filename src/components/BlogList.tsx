@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { PortalCard, PortalCardTitle, PortalCardDescription } from '@/components/ui/portal-card';
 import { KineticText } from '@/components/ui/kinetic-text';
 import { motion } from 'framer-motion';
@@ -85,15 +86,30 @@ export function BlogList({ posts }: BlogListProps) {
             >
               <div className="grid md:grid-cols-[1.2fr_1fr] gap-0 min-h-[400px]">
                 {/* Image/Visual Side */}
-                <div className="relative bg-[var(--glass-2-fill)] border-b md:border-b-0 md:border-r border-[var(--glass-1-border)] overflow-hidden p-12 flex flex-col justify-center items-center">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--lum-neon-purple)]/10 to-[var(--lum-neon-blue)]/10 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
-                  
-                  {/* Abstract decorative elements */}
-                  <div className="relative z-10 w-full max-w-xs aspect-square rounded-full border border-[var(--glass-2-border)] flex items-center justify-center">
-                    <div className="w-2/3 h-2/3 rounded-full bg-[var(--lum-neon-purple)]/20 blur-3xl animate-pulse" />
-                    <div className="absolute inset-0 border border-[var(--glass-1-border)] rounded-full scale-110 opacity-30" />
-                    <div className="absolute inset-0 border border-[var(--glass-1-border)] rounded-full scale-75 opacity-30" />
-                  </div>
+                <div className="relative bg-[var(--glass-2-fill)] border-b md:border-b-0 md:border-r border-[var(--glass-1-border)] overflow-hidden p-0 flex flex-col justify-center items-center">
+                  {featuredPost.metadata.image ? (
+                    <div className="absolute inset-0 w-full h-full">
+                      <Image 
+                        src={featuredPost.metadata.image} 
+                        alt={featuredPost.metadata.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)]/80 via-transparent to-transparent opacity-60" />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-br from-[var(--lum-neon-purple)]/10 to-[var(--lum-neon-blue)]/10 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
+                      
+                      {/* Abstract decorative elements */}
+                      <div className="relative z-10 w-full max-w-xs aspect-square rounded-full border border-[var(--glass-2-border)] flex items-center justify-center">
+                        <div className="w-2/3 h-2/3 rounded-full bg-[var(--lum-neon-purple)]/20 blur-3xl animate-pulse" />
+                        <div className="absolute inset-0 border border-[var(--glass-1-border)] rounded-full scale-110 opacity-30" />
+                        <div className="absolute inset-0 border border-[var(--glass-1-border)] rounded-full scale-75 opacity-30" />
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Content Side */}
