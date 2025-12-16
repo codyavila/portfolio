@@ -98,11 +98,41 @@ export function BlogList({ posts }: BlogListProps) {
             Engineering & Design
           </span>
           <h1 className="text-display-xl font-bold mb-6 text-[var(--text-primary)] tracking-tight">
-            <KineticText velocityFactor={1.2}>Insights &</KineticText>
+            <motion.span
+              className="inline-block origin-left"
+              initial={{ opacity: 0, skewX: 0 }}
+              animate={{ 
+                opacity: 1,
+                skewX: -12
+              }}
+              transition={{ 
+                opacity: { duration: 0.8 },
+                skewX: { delay: 0.5, duration: 1.5, type: "spring", bounce: 0.5 }
+              }}
+            >
+              <KineticText as="span" velocityFactor={1.2}>
+                Insights &
+              </KineticText>
+            </motion.span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--lum-neon-purple)] to-[var(--lum-neon-blue)]">
+            <motion.span 
+              className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-[var(--lum-neon-purple)] to-[var(--lum-neon-blue)] origin-left"
+              initial={{ opacity: 0, scaleX: 1, scaleY: 1, fontWeight: 700 }}
+              animate={{ 
+                opacity: 1, 
+                scaleX: 1.25,
+                scaleY: 0.85,
+                fontWeight: 900,
+              }}
+              transition={{ 
+                opacity: { duration: 0.8 },
+                scaleX: { delay: 1.2, type: "spring", stiffness: 150, damping: 10 },
+                scaleY: { delay: 1.2, type: "spring", stiffness: 150, damping: 10 },
+                fontWeight: { delay: 1.2, duration: 0.1 }
+              }}
+            >
               Perspectives
-            </span>
+            </motion.span>
           </h1>
           <p className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-2xl leading-relaxed">
             Deep dives into frontend architecture, product strategy, and the craft of building digital experiences.
@@ -201,7 +231,13 @@ export function BlogList({ posts }: BlogListProps) {
                 {filteredPosts.map((post) => (
                   <motion.div key={post.slug} variants={itemVariants}>
                     <Link href={`/blog/${post.slug}`} className="group block h-full">
-                      <PortalCard className="h-full p-8 flex flex-col group-hover:shadow-xl transition-all duration-300">
+                      <PortalCard 
+                        className="h-full p-8 flex flex-col group-hover:shadow-xl transition-colors duration-300"
+                        enableTilt={false}
+                        enableIridescence={false}
+                        enableChromatic={false}
+                        enableShimmer={false}
+                      >
                         <div className="flex flex-col h-full">
                           <div className="flex items-center gap-3 text-xs text-[var(--text-tertiary)] mb-4 font-mono">
                             <Calendar className="w-3 h-3" />
@@ -357,9 +393,13 @@ export function BlogList({ posts }: BlogListProps) {
             <motion.div key={post.slug} variants={itemVariants}>
               <Link href={`/blog/${post.slug}`} className="group h-full block">
                 <PortalCard 
-                  className="h-full p-8 flex flex-col transition-all duration-300 group-hover:-translate-y-2" 
+                  className="h-full p-8 flex flex-col transition-colors duration-300" 
                   glow={index % 2 === 0 ? "cotton-candy" : "aurora"}
                   delay={index * 0.1}
+                  enableTilt={false}
+                  enableIridescence={false}
+                  enableChromatic={false}
+                  enableShimmer={false}
                 >
                   <div className="mb-6">
                     <div className="flex items-center justify-between mb-4">

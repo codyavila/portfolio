@@ -171,10 +171,20 @@ const GlassCardComponent = ({
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y: 30, filter: "blur(0px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      whileInView={{ 
+        opacity: 1, 
+        y: 0, 
+        filter: "blur(0px)",
+        transition: { 
+          type: "spring", 
+          stiffness: 200, 
+          damping: 20,
+          delay: delay 
+        }
+      }}
       viewport={{ once: true, margin: "-50px" }}
       whileHover={interactive && !isMobile ? { 
-        y: -8,
+        y: -4,
         transition: { type: "spring", stiffness: 300, damping: 15 }
       } : {}}
       whileTap={interactive ? { scale: 0.98 } : {}}
@@ -182,7 +192,6 @@ const GlassCardComponent = ({
         type: "spring", 
         stiffness: 200, 
         damping: 20,
-        delay: delay,
       }}
       {...motionProps}
       onClick={handleClick}

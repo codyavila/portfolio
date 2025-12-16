@@ -175,7 +175,14 @@ export default function Home() {
         <BentoGrid className="grid-cols-1 md:grid-cols-2 gap-6">
           {/* Project 1 */}
           <Link href="/projects/blox-nxt-cms-rebuild" className="group">
-            <PortalCard className="h-full p-8 transition-all duration-300 group-hover:border-[var(--neon-primary-start)]" glow="solar-flare">
+            <PortalCard 
+              className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-primary-start)]" 
+              glow="solar-flare"
+              enableTilt={false}
+              enableIridescence={false}
+              enableChromatic={false}
+              enableShimmer={false}
+            >
               <div className="flex flex-col h-full justify-between gap-6">
                 <div>
                   <div className="flex items-center gap-3 mb-4">
@@ -195,13 +202,20 @@ export default function Home() {
                 <div className="flex items-center text-[var(--neon-primary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
                   View Case Study <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
+              className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-secondary-start)]" 
+              glow="cotton-candy"
+              enableTilt={false}
+              enableIridescence={false}
+              enableChromatic={false}
+              enableShimmer={false}
+            
               </div>
             </PortalCard>
           </Link>
 
           {/* Project 2 */}
           <Link href="/projects/email-campaign-system" className="group">
-            <PortalCard className="h-full p-8 transition-all duration-300 group-hover:border-[var(--neon-secondary-start)]" glow="cotton-candy">
+            <PortalCard className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-secondary-start)]" glow="cotton-candy">
               <div className="flex flex-col h-full justify-between gap-6">
                 <div>
                   <div className="flex items-center gap-3 mb-4">
