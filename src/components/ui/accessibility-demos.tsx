@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Sun, Moon, Eye, EyeOff, Keyboard, Volume2, VolumeX } from "lucide-react";
+import { Sun, Moon, Eye, Keyboard } from "lucide-react";
 
 /**
  * ContrastChecker — Interactive contrast ratio demonstration

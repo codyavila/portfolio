@@ -1,5 +1,3 @@
-import { Spotlight } from "@/components/ui/Spotlight";
-
 export default function BlogLayout({
   children,
 }: {

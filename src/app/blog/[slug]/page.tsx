@@ -3,7 +3,7 @@ import { CustomMDX } from '@/components/mdx-components';
 import { notFound } from 'next/navigation';
 import { KineticText } from '@/components/ui/kinetic-text';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { BlogCard } from '@/components/ui/blog-card';
 
 export async function generateStaticParams() {

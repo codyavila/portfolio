@@ -60,10 +60,6 @@ export function TableRow({ children, className }: TableProps) {
   );
 }
 
-interface TableCellProps extends TableProps {
-  header?: boolean;
-}
-
 export function TableHeader({ children, className }: TableProps) {
   return (
     <th className={cn(
