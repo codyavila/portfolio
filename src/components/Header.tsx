@@ -52,7 +52,7 @@ export function Header() {
   const { timeOverride, setTimeOverride } = useDynamicTheme();
   const pathname = usePathname();
   useTimeOfDay();
-  const { playToggle, playHover, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome, isMuted, toggleMute } = useSoundSystem();
+  const { playToggle, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome, isMuted, toggleMute } = useSoundSystem();
   
   // Magnetic effect values with smoother springs
   const mx = useMotionValue(0);
@@ -82,7 +82,9 @@ export function Header() {
   // Scroll spy - track which section is in view
   useEffect(() => {
     if (pathname?.startsWith('/blog')) {
-      setActiveTab("Blog");
+      if (activeTab !== "Blog") {
+        setTimeout(() => setActiveTab("Blog"), 0);
+      }
       return;
     }
 
@@ -141,7 +143,7 @@ export function Header() {
       observer.disconnect();
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [pathname]);
+  }, [pathname, activeTab]);
 
   useEffect(() => {
     iconRotation.set(settingsOpen ? 180 : 0);
@@ -239,8 +241,7 @@ export function Header() {
 
   const handleEnter = useCallback(() => {
     setIsHovered(true);
-    playHover();
-  }, [playHover]);
+  }, []);
 
   const toggleContrast = () => {
     playToggle();

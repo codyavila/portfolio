@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { motion, useAnimationFrame } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Volume2, VolumeX, Play, Square } from "lucide-react";
+import { Volume2, Play, Square } from "lucide-react";
 
 /**
  * SoundCompare — Compare different sound characteristics
@@ -195,7 +195,7 @@ export function SoundPalette() {
     return audioContextRef.current;
   };
 
-  const playClick = () => {
+  const playClick = useCallback(() => {
     const ctx = getContext();
     const now = ctx.currentTime;
     
@@ -215,9 +215,9 @@ export function SoundPalette() {
     gain.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.12);
-  };
+  }, []);
 
-  const playToggleOn = () => {
+  const playToggleOn = useCallback(() => {
     const ctx = getContext();
     const now = ctx.currentTime;
     
@@ -237,9 +237,9 @@ export function SoundPalette() {
     gain.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.15);
-  };
+  }, []);
 
-  const playToggleOff = () => {
+  const playToggleOff = useCallback(() => {
     const ctx = getContext();
     const now = ctx.currentTime;
     
@@ -259,9 +259,9 @@ export function SoundPalette() {
     gain.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.15);
-  };
+  }, []);
 
-  const playSuccess = () => {
+  const playSuccess = useCallback(() => {
     const ctx = getContext();
     const now = ctx.currentTime;
     
@@ -283,9 +283,9 @@ export function SoundPalette() {
       osc.start(now + i * 0.05);
       osc.stop(now + 0.3 + i * 0.05);
     });
-  };
+  }, []);
 
-  const playError = () => {
+  const playError = useCallback(() => {
     const ctx = getContext();
     const now = ctx.currentTime;
     
@@ -305,19 +305,18 @@ export function SoundPalette() {
     gain.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.2);
-  };
-
-  const sounds = [
-    { label: "Click", icon: "👆", play: playClick, color: "bg-zinc-600" },
-    { label: "Toggle On", icon: "✓", play: playToggleOn, color: "bg-emerald-500" },
-    { label: "Toggle Off", icon: "✗", play: playToggleOff, color: "bg-zinc-500" },
-    { label: "Success", icon: "🎉", play: playSuccess, color: "bg-cyan-500" },
-    { label: "Error", icon: "⚠", play: playError, color: "bg-red-500" },
-  ];
+  }, []);
 
   return (
     <div className="flex flex-wrap justify-center gap-2">
-      {sounds.map((sound) => (
+      {/* eslint-disable-next-line react-hooks/refs */}
+      {[
+        { label: "Click", icon: "👆", play: playClick, color: "bg-zinc-600" },
+        { label: "Toggle On", icon: "✓", play: playToggleOn, color: "bg-emerald-500" },
+        { label: "Toggle Off", icon: "✗", play: playToggleOff, color: "bg-zinc-500" },
+        { label: "Success", icon: "🎉", play: playSuccess, color: "bg-cyan-500" },
+        { label: "Error", icon: "⚠", play: playError, color: "bg-red-500" },
+      ].map((sound) => (
         <motion.button
           key={sound.label}
           onClick={sound.play}
@@ -349,47 +348,62 @@ export function WaveformVisualizer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const animationRef = useRef<number | undefined>(undefined);
 
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    const analyser = analyserRef.current;
-    if (!canvas || !analyser) return;
+  useEffect(() => {
+    if (!isPlaying) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      return;
+    }
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const draw = () => {
+      const canvas = canvasRef.current;
+      const analyser = analyserRef.current;
+      if (!canvas || !analyser) return;
 
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-    analyser.getByteTimeDomainData(dataArray);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    ctx.fillStyle = "rgba(15, 17, 22, 1)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteTimeDomainData(dataArray);
 
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "#00ff99";
-    ctx.beginPath();
+      ctx.fillStyle = "rgba(15, 17, 22, 1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const sliceWidth = canvas.width / bufferLength;
-    let x = 0;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#00ff99";
+      ctx.beginPath();
 
-    for (let i = 0; i < bufferLength; i++) {
-      const v = dataArray[i] / 128.0;
-      const y = (v * canvas.height) / 2;
+      const sliceWidth = canvas.width / bufferLength;
+      let x = 0;
 
-      if (i === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = (v * canvas.height) / 2;
+
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+
+        x += sliceWidth;
       }
 
-      x += sliceWidth;
-    }
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
 
-    ctx.lineTo(canvas.width, canvas.height / 2);
-    ctx.stroke();
-
-    if (isPlaying) {
       animationRef.current = requestAnimationFrame(draw);
-    }
+    };
+
+    draw();
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
   }, [isPlaying]);
 
   const togglePlay = () => {
@@ -426,12 +440,6 @@ export function WaveformVisualizer() {
       setIsPlaying(true);
     }
   };
-
-  useEffect(() => {
-    if (isPlaying) {
-      draw();
-    }
-  }, [isPlaying, draw]);
 
   useEffect(() => {
     if (oscillatorRef.current && isPlaying) {

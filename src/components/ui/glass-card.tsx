@@ -135,7 +135,7 @@ const GlassCardComponent = ({
       glowX.set(percentX);
       glowY.set(percentY);
     }
-  }, [enableTilt, enableSpotlight, tiltX, tiltY, glowX, glowY, isMobile]);
+  }, [enableTilt, enableSpotlight, tiltX, tiltY, glowX, glowY, isMobile, interactive]);
 
   const handleMouseLeave = useCallback(() => {
     if (isMobile || !interactive) return;
@@ -143,7 +143,7 @@ const GlassCardComponent = ({
     tiltY.set(0);
     // Don't reset glow position - let it fade out where cursor last was
     setIsHovered(false);
-  }, [tiltX, tiltY, isMobile]);
+  }, [tiltX, tiltY, isMobile, interactive]);
 
   const handleMouseEnter = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (isMobile || !interactive) return;
@@ -160,7 +160,7 @@ const GlassCardComponent = ({
     }
     setIsHovered(true);
     // Note: Removed hover sound - can get annoying on cards
-  }, [enableSpotlight, glowX, glowY, isMobile]);
+  }, [enableSpotlight, glowX, glowY, isMobile, interactive]);
 
   const handleClick = useCallback(() => {
     playThud();

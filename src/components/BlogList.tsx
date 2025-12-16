@@ -59,9 +59,9 @@ export function BlogList({ posts }: BlogListProps) {
         post.metadata.summary.toLowerCase().includes(searchQuery.toLowerCase())
       );
       
-      const matchesTags = selectedTags.length === 0 || (
-        post.metadata.tags?.some(tag => selectedTags.includes(tag)) ?? false
-      );
+      // Use AND logic: post must have ALL selected tags
+      const matchesTags = selectedTags.length === 0 || 
+        selectedTags.every(selectedTag => post.metadata.tags?.includes(selectedTag) ?? false);
 
       return matchesSearch && matchesTags;
     });
@@ -204,7 +204,7 @@ export function BlogList({ posts }: BlogListProps) {
         {isFiltering ? (
           /* Filtered Results View */
           <motion.div
-            key="filtered"
+            key={`filtered-${selectedTags.join('-')}-${searchQuery}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

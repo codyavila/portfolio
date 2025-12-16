@@ -1,12 +1,11 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
-import { ArrowRight, Code2, Layout, Users, BarChart3, Database } from "lucide-react";
+import { ArrowRight, Code2, Users, BarChart3, Database } from "lucide-react";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { BentoGrid } from "@/components/ui/bento-grid";
 import { NanoCard, NanoCardTitle, NanoCardDescription } from "@/components/ui/nano-card";
 import { PortalCard, PortalCardTitle, PortalCardDescription } from "@/components/ui/portal-card";
-import { DiscoverGraphic, FeasibilityGraphic, ExecuteGraphic } from "@/components/ui/process-graphics";
 import { JellyButton, GhostButton } from "@/components/ui/jelly-button";
 import { SectionDivider } from "@/components/ui/section-divider";
 import { KineticText } from "@/components/ui/kinetic-text";
@@ -66,7 +65,13 @@ export default function Home() {
   useEffect(() => {
     // Check sessionStorage after mount to avoid hydration mismatch
     const alreadyAnimated = sessionStorage.getItem(HERO_ANIMATED_KEY) === 'true';
-    setAnimationState(alreadyAnimated ? 'skip' : 'animate');
+    
+    // Only update state if it's different to avoid unnecessary renders/warnings
+    if (alreadyAnimated && animationState !== 'skip') {
+      setTimeout(() => setAnimationState('skip'), 0);
+    } else if (!alreadyAnimated && animationState !== 'animate') {
+      setTimeout(() => setAnimationState('animate'), 0);
+    }
     
     // Mark as animated after a delay
     if (!alreadyAnimated) {
@@ -75,7 +80,7 @@ export default function Home() {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [animationState]);
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden">
@@ -100,46 +105,65 @@ export default function Home() {
         animate="visible"
       >
         <div className="grid lg:grid-cols-[1fr_auto] gap-12 items-center">
-          <div className="flex flex-col gap-8 sm:gap-10">
-            <KineticText 
-              as="h1"
-              variants={itemVariants}
-              className="text-display-xl font-bold tracking-tighter text-[var(--text-primary)] heartbeat"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              velocityFactor={1.5}
-            >
-              <span 
-                className="text-glow inline-block"
-                style={{
-                  background: "linear-gradient(135deg, var(--text-primary) 0%, var(--neon-primary-end) 50%, var(--text-primary) 100%)",
-                  backgroundSize: "200% auto",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >Cody Avila</span>
-            </KineticText>
-            <KineticText 
-              as="h2"
-              variants={itemVariants}
-              className="text-2xl sm:text-4xl font-medium text-[var(--text-primary)] flex flex-wrap items-center gap-4 tracking-tight"
-              velocityFactor={1}
-            >
-              Frontend Engineer 
-              <ArrowRight className="h-6 w-6 text-[var(--neon-primary-end)]" />
-              <span className="text-[var(--text-secondary)]">Technical Product Manager</span>
-            </KineticText>
+          <div className="flex flex-col gap-6 sm:gap-8">
+            <motion.div variants={itemVariants}>
+              <span className="inline-block mb-4 px-3 py-1 rounded-full bg-[var(--neon-primary-end)]/10 border border-[var(--neon-primary-end)]/20 text-xs font-mono text-[var(--neon-primary-end)]">
+                Frontend Engineer & TPM
+              </span>
+              <h1 className="text-display-xl font-bold tracking-tight text-[var(--text-primary)] leading-[0.9]">
+                <motion.span
+                  className="block"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ 
+                    opacity: 1,
+                    x: 0
+                  }}
+                  transition={{ 
+                    duration: 0.8,
+                    type: "spring",
+                    bounce: 0.4
+                  }}
+                >
+                  <KineticText as="span" velocityFactor={1}>
+                    Cody
+                  </KineticText>
+                </motion.span>
+                <motion.span 
+                  className="block"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ 
+                    opacity: 1, 
+                    x: 0,
+                  }}
+                  transition={{ 
+                    duration: 0.8,
+                    delay: 0.1,
+                    type: "spring",
+                    bounce: 0.4
+                  }}
+                >
+                  <span 
+                    className="text-transparent"
+                    style={{
+                      WebkitTextStroke: "2px var(--neon-primary-end)",
+                    }}
+                  >
+                    Avila
+                  </span>
+                </motion.span>
+              </h1>
+            </motion.div>
+            
             <motion.p 
               variants={itemVariants}
-              className="text-body-l leading-relaxed max-w-2xl text-[var(--text-secondary)] font-normal"
+              className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-2xl leading-relaxed"
             >
               I bridge the gap between engineering reality and product vision. 
               With deep roots in frontend architecture, I translate complex technical constraints into viable product strategies.
             </motion.p>
             <motion.div 
               variants={itemVariants}
-              className="flex flex-wrap gap-5 mt-8"
+              className="flex flex-wrap gap-5 mt-4"
             >
               <JellyButton href="#contact" variant="cyber-lime">
                 Get in Touch
@@ -202,13 +226,6 @@ export default function Home() {
                 <div className="flex items-center text-[var(--neon-primary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
                   View Case Study <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
-              className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-secondary-start)]" 
-              glow="cotton-candy"
-              enableTilt={false}
-              enableIridescence={false}
-              enableChromatic={false}
-              enableShimmer={false}
-            
               </div>
             </PortalCard>
           </Link>

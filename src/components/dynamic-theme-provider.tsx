@@ -151,8 +151,8 @@ export function DynamicThemeProvider({ children }: { children: React.ReactNode }
     const newBgDeep = getColorForTime(deepSchedule, effectiveTime);
     const newBgSurface = getColorForTime(surfaceSchedule, effectiveTime);
 
-    setBgDeep(newBgDeep);
-    setBgSurface(newBgSurface);
+    if (bgDeep !== newBgDeep) setTimeout(() => setBgDeep(newBgDeep), 0);
+    if (bgSurface !== newBgSurface) setTimeout(() => setBgSurface(newBgSurface), 0);
 
     // Apply to CSS variables
     const root = document.documentElement;
@@ -214,7 +214,7 @@ export function DynamicThemeProvider({ children }: { children: React.ReactNode }
     root.style.setProperty("--chip-purple-bg", `color-mix(in srgb, ${secondaryEnd}, transparent 85%)`);
     root.style.setProperty("--chip-purple-border", `color-mix(in srgb, ${secondaryEnd}, transparent 70%)`);
 
-  }, [sourceColor, resolvedTheme, theme, realHour, timeOverride]);
+  }, [sourceColor, resolvedTheme, theme, realHour, timeOverride, bgDeep, bgSurface]);
 
   return (
     <DynamicThemeContext.Provider value={{ sourceColor, setSourceColor, timeOverride, setTimeOverride, bgDeep, bgSurface }}>
