@@ -1,0 +1,317 @@
+---
+title: "Sound Design for the Web with the Web Audio API"
+publishedAt: "2025-12-11"
+summary: "Creating satisfying UI sounds that feel modern and refined—not annoying 8-bit bleeps."
+tags: ["Web Audio", "Sound Design", "JavaScript", "UX"]
+---
+
+# The Forgotten Sense
+
+<Callout type="insight">
+  Sound is the forgotten dimension of web design. We obsess over colors, typography, and motion—but ignore the sense that games and native apps leverage constantly.
+</Callout>
+
+Done well, sound makes interfaces feel tangible. A button doesn't just change color when clicked—it *thuds*. A notification doesn't just appear—it *chimes*.
+
+Done poorly, sound is annoying. We've all muted those websites that autoplay music or blast a fanfare when you open a menu.
+
+The difference is **craft**.
+
+<ComponentPreview title="Hear the Difference" description="Compare harsh vs refined UI sounds (turn sound on!)">
+  <SoundCompare />
+</ComponentPreview>
+
+## Please Stop Using 8-Bit Bleeps
+
+Most web UI sounds are terrible because they're:
+
+<Steps>
+  <Step title="Too synthetic">
+    Pure sine waves scream "computer generated"
+  </Step>
+  <Step title="Too harsh">
+    High frequencies without filtering hurt ears
+  </Step>
+  <Step title="Too loud">
+    Sounds should complement, not dominate
+  </Step>
+  <Step title="Too retro">
+    Unless you're building a pixel-art game, chiptuney bleeps feel dated
+  </Step>
+</Steps>
+
+Modern OS sounds (iOS, macOS, Android) feel organic and satisfying. That's our target.
+
+## Web Audio API Basics
+
+The Web Audio API is a graph-based system. You create nodes and connect them:
+
+```tsx
+const audioContext = new AudioContext();
+
+// Create nodes
+const oscillator = audioContext.createOscillator();
+const gainNode = audioContext.createGain();
+
+// Connect: oscillator → gain → speakers
+oscillator.connect(gainNode);
+gainNode.connect(audioContext.destination);
+
+// Configure and play
+oscillator.frequency.value = 440; // A4 note
+gainNode.gain.value = 0.5;
+oscillator.start();
+```
+
+Simple, but this produces a harsh, synthetic tone. Let's refine it.
+
+Here's what different waveforms look like—and sound like:
+
+<ComponentPreview title="Waveform Visualizer" description="Play different oscillator types and see their shape">
+  <WaveformVisualizer />
+</ComponentPreview>
+
+## The Secret Sauce: Filtering
+
+Every sound in this portfolio runs through a low-pass filter:
+
+```tsx
+const createFilteredSound = (ctx: AudioContext, frequency: number) => {
+  const osc = ctx.createOscillator();
+  const filter = ctx.createBiquadFilter();
+  const gain = ctx.createGain();
+  
+  // Soft low-pass filter removes harshness
+  filter.type = 'lowpass';
+  filter.frequency.value = 2000; // Cut highs above 2kHz
+  filter.Q.value = 0.5; // Gentle slope
+  
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  
+  return { osc, filter, gain };
+};
+```
+
+This single addition transforms the sound from "computer" to "instrument."
+
+## Creating Warmth with Detuning
+
+Real instruments are never perfectly in tune. Multiple oscillators with slight pitch variations create warmth:
+
+```tsx
+const createWarmTone = (ctx: AudioContext, baseFreq: number) => {
+  const oscillators = [
+    { freq: baseFreq, detune: 0 },
+    { freq: baseFreq, detune: -5 },   // Slightly flat
+    { freq: baseFreq, detune: 7 },    // Slightly sharp
+  ];
+  
+  const merger = ctx.createChannelMerger(1);
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 1500;
+  
+  oscillators.forEach(({ freq, detune }) => {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    osc.detune.value = detune;
+    osc.connect(merger);
+    osc.start();
+  });
+  
+  merger.connect(filter);
+  return filter;
+};
+```
+
+Three oscillators, each slightly different, blend into something that feels analog.
+
+## Adding Texture with Noise
+
+Pink noise bursts add tactile texture—like the "click" feeling of a physical button:
+
+```tsx
+const createNoiseBuffer = (ctx: AudioContext, duration: number) => {
+  const sampleRate = ctx.sampleRate;
+  const bufferSize = sampleRate * duration;
+  const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+  const data = buffer.getChannelData(0);
+  
+  // Pink noise (more natural than white noise)
+  let b0 = 0, b1 = 0, b2 = 0;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    b0 = 0.99765 * b0 + white * 0.0990460;
+    b1 = 0.96300 * b1 + white * 0.2965164;
+    b2 = 0.57000 * b2 + white * 1.0526913;
+    data[i] = (b0 + b1 + b2) * 0.1;
+  }
+  
+  return buffer;
+};
+
+const playClickNoise = (ctx: AudioContext) => {
+  const noise = ctx.createBufferSource();
+  noise.buffer = createNoiseBuffer(ctx, 0.05); // 50ms burst
+  
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 800;
+  filter.Q.value = 1;
+  
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+  
+  noise.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  noise.start();
+};
+```
+
+Layer this under a tone for a satisfying "thud."
+
+## Dynamics Compression
+
+Volume spikes are jarring. A compressor smooths them out:
+
+```tsx
+const createCompressor = (ctx: AudioContext) => {
+  const compressor = ctx.createDynamicsCompressor();
+  compressor.threshold.value = -24;  // Start compressing at -24dB
+  compressor.knee.value = 12;        // Soft knee for natural response
+  compressor.ratio.value = 4;        // 4:1 compression
+  compressor.attack.value = 0.003;   // Fast attack
+  compressor.release.value = 0.1;    // Moderate release
+  return compressor;
+};
+
+// Use it as the final node before destination
+const compressor = createCompressor(ctx);
+compressor.connect(ctx.destination);
+
+// Connect all sounds to compressor instead of destination
+mySound.connect(compressor);
+```
+
+This creates that "polished" feel of professional audio.
+
+## Example: Complete Click Sound
+
+Here's the full implementation of a satisfying button click:
+
+```tsx
+const playClick = () => {
+  const ctx = new AudioContext();
+  const now = ctx.currentTime;
+  
+  // Tone component
+  const osc = ctx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.value = 600;
+  osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+  
+  // Filter
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 1500;
+  
+  // Envelope
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.15, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+  
+  // Noise component
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0.08, now);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+  
+  const noise = ctx.createBufferSource();
+  noise.buffer = createNoiseBuffer(ctx, 0.05);
+  
+  // Connect
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  
+  noise.connect(noiseGain);
+  noiseGain.connect(ctx.destination);
+  
+  // Play
+  osc.start(now);
+  osc.stop(now + 0.15);
+  noise.start(now);
+};
+```
+
+The frequency drops from 600Hz to 200Hz, creating a "thud" rather than a "beep."
+
+## Sound Palette for UI
+
+Different interactions deserve different sounds:
+
+| Interaction | Character | Frequency | Duration |
+|-------------|-----------|-----------|----------|
+| Button click | Thud | 400-600Hz | 100-150ms |
+| Toggle on | Rising chime | 500→800Hz | 150ms |
+| Toggle off | Falling tone | 600→300Hz | 150ms |
+| Success | Bright chord | Major third | 300ms |
+| Error | Soft buzz | 150Hz | 200ms |
+
+Try each sound type:
+
+<ComponentPreview title="UI Sound Palette" description="Click each button to hear different interaction sounds">
+  <SoundPalette />
+</ComponentPreview>
+
+## Respecting User Preferences
+
+Always provide a mute option. Some users have sound sensitivity, are in public spaces, or simply prefer silence.
+
+```tsx
+const useSoundSystem = () => {
+  const [muted, setMuted] = useState(() => {
+    return localStorage.getItem('sound-muted') === 'true';
+  });
+  
+  const playSound = useCallback((sound: () => void) => {
+    if (!muted) sound();
+  }, [muted]);
+  
+<Grid cols={2}>
+  <GridItem title="Filtered">
+    No harsh frequencies
+  </GridItem>
+  <GridItem title="Brief">
+    Under 200ms
+  </GridItem>
+  <GridItem title="Layered">
+    Tone + noise for texture
+  </GridItem>
+  <GridItem title="Compressed">
+    Consistent volume
+  </GridItem>
+  <GridItem title="Optional">
+    Easily muted
+  </GridItem>
+</Grid>-motion`—if users want reduced motion, they probably want reduced sound too.
+
+## The Result
+
+The sound system in this portfolio uses all these techniques. Every click, toggle, and transition has a corresponding sound that's:
+
+- **Filtered** — No harsh frequencies
+- **Brief** — Under 200ms
+- **Layered** — Tone + noise for texture
+- **Compressed** — Consistent volume
+- **Optional** — Easily muted
+
+The goal isn't to add sound—it's to add *feel*.
+
+---
+
+*Try clicking the buttons on this site with your volume on. Notice how they feel more substantial?*

@@ -1,0 +1,277 @@
+---
+title: "Mastering Spring Physics with Framer Motion"
+publishedAt: "2025-12-13"
+summary: "Why spring animations feel better than duration-based ones, and how to tune them for different UI contexts."
+tags: ["Framer Motion", "Animation", "React", "UX"]
+---
+
+# Why Linear Animation Feels Dead
+
+When most developers animate something, they default to duration:
+
+```css
+transition: transform 300ms ease-in-out;
+```
+
+It's the standard. It's easy. And it feels... fine. But watch closely—the element moves, then *stops*. There's no momentum, no follow-through. It feels robotic.
+
+Real objects don't move like this. When you toss a keys on a table, they don't travel at constant speed then freeze in place. They slide, decelerate, maybe bump into a coaster.
+
+**Spring physics simulate this natural motion.** And once you start using them, you can't go back.
+
+## Springs vs. Durations
+
+A duration-based animation is a command: "Move from A to B in exactly 300ms."
+
+A spring-based animation is a simulation: "Apply this force toward B, with this much resistance."
+
+The difference is subtle but profound:
+
+<Grid cols={3}>
+  <GridItem>
+    **Timing**
+    Duration: Fixed
+    Spring: Variable
+  </GridItem>
+  <GridItem>
+    **Interruption**
+    Duration: Awkward
+    Spring: Seamless
+  </GridItem>
+  <GridItem>
+    **Feel**
+    Duration: Mechanical
+    Spring: Organic
+  </GridItem>
+</Grid>
+
+## Framer Motion Springs
+
+Framer Motion makes springs easy:
+
+```tsx
+<motion.div
+  animate={{ x: 100 }}
+  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+/>
+```
+
+Three parameters control the physics:
+
+<Grid cols={3}>
+  <GridItem>
+    ### Stiffness
+    How strongly the spring pulls toward the target. Higher = faster, snappier motion.
+    - **100** — Lazy, floaty
+    - **300** — Balanced
+    - **500+** — Snappy
+  </GridItem>
+  <GridItem>
+    ### Damping
+    How quickly the spring settles. Lower = more oscillation (bounce).
+    - **10** — Bouncy
+    - **20** — Balanced
+    - **30+** — Smooth
+  </GridItem>
+  <GridItem>
+    ### Mass
+    How heavy the object feels. Higher = more momentum.
+    - **0.5** — Light
+    - **1** — Default
+    - **2+** — Heavy
+  </GridItem>
+</Grid>
+
+## My Go-To Presets
+
+After endless tweaking, I settled on four spring configurations:
+
+```tsx
+const springs = {
+  // Micro-interactions (buttons, toggles)
+  snappy: { stiffness: 500, damping: 30, mass: 1 },
+  
+  // Cards, modals appearing
+  smooth: { stiffness: 300, damping: 25, mass: 1 },
+  
+  // Playful elements (badges, notifications)
+  bouncy: { stiffness: 400, damping: 15, mass: 1 },
+  
+  // Large page transitions
+  gentle: { stiffness: 200, damping: 20, mass: 1.5 },
+};
+```
+
+Here's what these presets feel like in practice:
+
+<ComponentPreview title="Spring Presets Comparison" description="Click the button to trigger all four and compare">
+  <SpringCompare />
+</ComponentPreview>
+
+Want to experiment with your own values? Try the interactive slider:
+
+<ComponentPreview title="Spring Parameter Explorer" description="Adjust stiffness and damping to see how they affect the animation">
+  <SpringSlider />
+</ComponentPreview>
+
+## Why Interruption Matters
+
+Here's where springs really shine. Imagine a tooltip that appears on hover:
+
+<Grid cols={2}>
+  <GridItem>
+    **With duration animation:**
+    1. User hovers → tooltip animates in (300ms)
+    2. User moves away at 150ms → tooltip awkwardly reverses
+    3. The timing feels broken
+  </GridItem>
+  <GridItem>
+    **With spring animation:**
+    1. User hovers → tooltip accelerates toward visible
+    2. User moves away at any point → tooltip smoothly reverses
+    3. Momentum is preserved, feels natural
+  </GridItem>
+</Grid>
+
+<ComponentPreview title="Duration vs Spring" description="Watch the difference—the gray box uses duration, the green uses spring">
+  <DurationVsSpring />
+</ComponentPreview>
+
+Springs automatically handle mid-animation interruption because they're simulating physics, not following a timeline.
+
+## Practical Examples
+
+### Hover Scale
+
+```tsx
+<motion.div
+  whileHover={{ scale: 1.02 }}
+  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+>
+  <Card />
+</motion.div>
+```
+
+The 1.02 scale is subtle—just enough to feel responsive without being distracting. Here's how different scale values feel:
+
+<ComponentPreview title="Hover Scale Comparison" description="Hover each box to feel the different scale amounts">
+  <HoverScaleCompare />
+</ComponentPreview>
+
+### Page Transitions
+
+```tsx
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
+
+<motion.main
+  variants={pageVariants}
+  initial="initial"
+  animate="animate"
+  exit="exit"
+  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+>
+  {children}
+</motion.main>
+```
+
+### Staggered Lists
+
+```tsx
+const containerVariants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transition: { type: "spring", stiffness: 400, damping: 25 }
+  },
+};
+
+<motion.ul variants={containerVariants} initial="initial" animate="animate">
+  {items.map(item => (
+    <motion.li key={item.id} variants={itemVariants}>
+      {item.content}
+    </motion.li>
+  ))}
+</motion.ul>
+```
+
+## The useSpring Hook
+
+For continuous values (like mouse tracking), use the `useSpring` hook:
+
+```tsx
+import { useSpring, useMotionValue } from 'framer-motion';
+
+function Cursor() {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  // Springs smooth out the raw mouse position
+  const springX = useSpring(mouseX, { stiffness: 500, damping: 30 });
+  const springY = useSpring(mouseY, { stiffness: 500, damping: 30 });
+  
+  useEffect(() => {
+    const handleMouse = (e) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+    window.addEventListener('mousemove', handleMouse);
+    return () => window.removeEventListener('mousemove', handleMouse);
+  }, []);
+  
+  return (
+    <motion.div
+      style={{ x: springX, y: springY }}
+      className="cursor-dot"
+    />
+  );
+}
+```
+
+This creates a cursor that follows your mouse with a satisfying lag—it has momentum.
+
+## CSS Custom Properties Alternative
+
+If you can't use Framer Motion, CSS custom properties with cubic-bezier can approximate springs:
+
+```css
+:root {
+  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --spring-snappy: cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+.card {
+  transition: transform 150ms var(--spring-snappy);
+}
+```
+
+These aren't true springs (they still have fixed durations), but the overshoot in the bezier curves creates a similar feel.
+<Callout type="warning" title="Use Linear For:">
+- **Progress indicators** — Should move predictably
+- **Loading states** — Linear or ease-in-out is fine
+- **Critical UI feedback** — Sometimes instant is better
+</Callout>
+Springs aren't always the answer:
+
+- **Progress indicators** — Should move predictably
+- **Loading states** — Linear or ease-in-out is fine
+- **Critical UI feedback** — Sometimes instant is better
+
+The goal is natural motion, not bouncy chaos.
+
+---
+
+*Every animation in this portfolio uses spring physics. Once you train your eye to see the difference, linear animations will feel broken.*

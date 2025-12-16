@@ -1194,3 +1194,50 @@ html.dark .iridescent:hover .iridescent-fresnel {
   90% { background-position: -10% 10%; }
   100% { background-position: 0 0; }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PROSE CUSTOMIZATION — Typography overrides
+   ───────────────────────────────────────────────────────────────────────────── */
+.prose {
+  --tw-prose-body: var(--text-secondary);
+  --tw-prose-headings: var(--text-primary);
+  --tw-prose-links: var(--neon-primary-end);
+  --tw-prose-bold: var(--text-primary);
+  --tw-prose-counters: var(--neon-primary-end);
+  --tw-prose-bullets: var(--neon-primary-end);
+  --tw-prose-hr: var(--glass-2-border);
+  --tw-prose-quotes: var(--text-tertiary);
+  --tw-prose-quote-borders: var(--neon-primary-end);
+  --tw-prose-captions: var(--text-tertiary);
+  --tw-prose-code: var(--text-primary);
+  --tw-prose-pre-code: var(--text-secondary);
+  --tw-prose-pre-bg: var(--lum-void-elevated);
+  --tw-prose-th-borders: var(--glass-2-border);
+  --tw-prose-td-borders: var(--glass-1-border);
+}
+
+/* Custom Bullet Styling */
+.prose ul > li {
+  position: relative;
+  padding-left: 0.5em;
+}
+
+.prose ul > li::marker {
+  color: var(--neon-primary-end);
+}
+
+/* Custom Link Styling */
+.prose a {
+  text-decoration: none;
+  background-image: linear-gradient(to right, var(--neon-primary-end), var(--neon-secondary-end));
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s var(--spring-smooth), color 0.3s ease;
+}
+
+.prose a:hover {
+  background-size: 100% 2px;
+  color: var(--neon-primary-end);
+}
+

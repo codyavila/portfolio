@@ -1,84 +1,212 @@
 ---
-title: "Building a Portfolio with Next.js and Shaders"
+title: "Behind the Build: A Portfolio Journey"
 publishedAt: "2025-12-15"
-summary: "How I built this portfolio using Next.js, Tailwind CSS, custom WebGL shaders, and refined audio design."
-tags: ["Next.js", "React", "WebGL", "Shaders", "Audio"]
+summary: "The messy, iterative, coffee-fueled story of how this portfolio came together—failures, breakthroughs, and lessons learned."
+tags: ["Behind the Scenes", "Process", "Web Development"]
 ---
 
-# Introduction
+# The Blank Canvas Problem
 
-Welcome to my new portfolio! I built this site to showcase my work and experiments with creative coding.
+Every developer knows this feeling: you open a new project, stare at the empty folder, and think *"this time it'll be different."*
 
-## The Tech Stack
+I'd been meaning to rebuild my portfolio for... let's say *a while*. The old one was fine. Functional. Boring. It showed my work but didn't show *me*.
 
-I chose **Next.js** for its performance and developer experience. For styling, I'm using **Tailwind CSS** because it allows me to iterate quickly.
+This time, I wanted to build something I'd actually be proud of.
 
-But the real star of the show is the custom shader background.
+---
 
-## Sound Design
+## Week 1: The Rabbit Hole
 
-One detail I'm particularly proud of is the audio feedback system. Instead of the typical "8-bit" bleeps and bloops you often hear in web UI, I wanted something more refined—closer to modern iOS/macOS system sounds.
+I started where every developer starts: research. "Just a few hours of inspiration gathering," I told myself.
 
-### The Approach
+Three days later, I had:
+- 47 browser tabs open
+- A Figma file with 12 competing directions
+- Zero lines of code
+- Strong opinions about the state of portfolio design
 
-The key to making synthesized sounds feel organic rather than retro:
+Most portfolios fell into two camps:
 
-1. **Low-pass filtering** — Every sound runs through a filter to remove harsh high frequencies
-2. **Dynamics compression** — A compressor smooths out volume spikes for a polished feel
-3. **Pink noise layers** — Subtle noise bursts add tactile texture to clicks and impacts
-4. **Simulated reverb** — Delay-based reverb gives sounds space and depth
-5. **Detuned oscillators** — Multiple oscillators with slight pitch differences create warmth
+<Grid cols={2}>
+  <GridItem>
+    **Camp A: The Minimalist**
+    White background. Helvetica. A grid of rectangles. Clean? Yes. Memorable? No.
+  </GridItem>
+  <GridItem>
+    **Camp B: The Showoff**
+    Every WebGL trick in the book. Parallax on parallax. Loading screens for loading screens. Cool for 30 seconds, then exhausting.
+  </GridItem>
+</Grid>
 
-### Implementation
+I wanted a third option: something that felt *alive* without feeling like a theme park.
 
-Here's a simplified example of how I create a warm, filtered tone:
+---
 
-```tsx
-const createWarmOsc = (ctx: AudioContext, freq: number, detune: number = 0) => {
-  const osc = ctx.createOscillator();
-  const filter = ctx.createBiquadFilter();
-  const gain = ctx.createGain();
-  
-  osc.type = "sine";
-  osc.frequency.value = freq;
-  osc.detune.value = detune; // Slight detuning for warmth
-  
-  // Soft low-pass filter removes harsh overtones
-  filter.type = "lowpass";
-  filter.frequency.value = 2000;
-  filter.Q.value = 0.5;
-  
-  osc.connect(filter);
-  filter.connect(gain);
-  
-  return { osc, filter, gain };
-};
-```
+## The "Aha" Moment
 
-The result is a sound palette that feels modern, subtle, and satisfying without being distracting.
+It happened at 2am, watching a nature documentary. (Don't judge—this is peak developer behavior.)
 
-## Code Snippet Example
+The episode was about bioluminescence. Deep-sea creatures glowing in the darkness. And it hit me:
 
-Here is how I set up a simple React component:
+<Callout type="insight" title="The Core Concept">
+  What if interfaces could glow like that? Not garish neon signs, but organic light that *emanates* from within?
+</Callout>
 
-```tsx
-import React from 'react';
+I scribbled some notes:
+- Purple-tinted darkness (not harsh black)
+- Colors that feel like they emit light
+- Motion that feels organic, not mechanical
+- Glass surfaces that refract and blur
 
-export const MyComponent = () => {
-  return (
-    <div className="p-4 bg-blue-500 text-white rounded-lg">
-      Hello, World!
-    </div>
-  );
-};
-```
+That became the foundation of [Project Luminous](/blog/creating-project-luminous)—the design system powering this site.
 
-## Custom Components
+---
 
-I can also use custom components directly in my markdown!
+## Week 2: The Shader Saga
 
-<JellyButton className="bg-purple-500 hover:bg-purple-600 text-white">
-  Click Me!
-</JellyButton>
+I knew I wanted an animated background. Video felt heavy. GIFs felt cheap. So naturally, I decided to write a custom WebGL shader.
 
-Stay tuned for more updates!
+I had never written a shader before.
+
+<ComponentPreview title="The Result" description="Real-time procedural noise—no video files">
+  <ShaderGradient />
+</ComponentPreview>
+
+What looks simple took an embarrassing amount of time. The learning curve was steep:
+
+**Day 1:** "How hard can GLSL be?"  
+**Day 3:** "Why is everything pink?"  
+**Day 5:** "Finally! It works! ...on Chrome."  
+**Day 7:** "Safari, why do you hate me?"
+
+The breakthrough came when I stopped trying to be clever. Simple layered noise, mapped to a color palette. No fancy raymarching, no volumetric fog. Just the minimum needed for that flowing, aurora-like effect.
+
+→ I wrote up everything I learned in [WebGL Shaders for Beginners](/blog/webgl-shaders-beginners)
+
+---
+
+## The Spring Physics Obsession
+
+Somewhere around week 3, I became unreasonably fixated on animation easing.
+
+It started innocently. A button hover felt *off*. Not wrong, just... lifeless. I swapped `ease-in-out` for a spring curve and suddenly the button had *weight*.
+
+<ComponentPreview title="The Difference" description="Duration-based vs. spring physics">
+  <DurationVsSpring />
+</ComponentPreview>
+
+One button became every button. Then every card. Then every page transition. I banned linear easing entirely.
+
+The obsession paid off. Springs make everything feel tactile—like the interface has mass and momentum. It's subtle, but once you see it, you can't unsee it.
+
+→ Deep dive: [Mastering Spring Physics with Framer Motion](/blog/framer-motion-spring-physics)
+
+---
+
+## Week 4: Sound Design Detour
+
+"What if buttons made sounds?"
+
+Famous last words.
+
+I thought it would take an afternoon. Add some click sounds, done. But every sound library I found had the same problem: they sounded like 2005. Harsh, synthetic, annoying.
+
+I wanted sounds that felt like a premium operating system. iOS notifications. MacOS clicks. That subtle, satisfying *thunk*.
+
+<ComponentPreview title="The Difference" description="Harsh synth vs. filtered warmth (sound on)">
+  <SoundCompare />
+</ComponentPreview>
+
+So I learned the Web Audio API and synthesized everything from scratch. Low-pass filters. Pink noise layers. Detuned oscillators for warmth. Dynamics compression for polish.
+
+Was it overkill? Absolutely. Do I regret it? Not even a little.
+
+→ The full breakdown: [Sound Design for the Web](/blog/web-audio-api-sound-design)
+
+---
+
+## The Accessibility Reckoning
+
+Around week 5, I showed a friend the site. She uses a screen reader.
+
+It... did not go well.
+
+All my fancy effects? Meaningless to her. Worse, some were actively hostile—animations triggered motion sickness, contrast was insufficient, focus states were invisible.
+
+I spent the next week fixing everything:
+- Proper ARIA labels
+- `prefers-reduced-motion` support
+- WCAG AA contrast ratios
+- Keyboard navigation throughout
+- Sound muting (always)
+
+The humbling part? The accessible version is *better*. Constraints forced clearer hierarchy. Focus states became design features. Light mode pushed me to explore new color palettes.
+
+→ Everything I learned: [Making Creative Web Design Accessible](/blog/accessible-creative-design)
+
+---
+
+## The Components That Made It
+
+Not everything survived. For every component in production, three died in `/experiments`. But these became the workhorses:
+
+### JellyButton
+
+Physics-based squish on press. Overshoot on release. Surprisingly satisfying.
+
+<ComponentPreview title="Try It" description="Press and release">
+  <div className="flex gap-4 flex-wrap justify-center">
+    <JellyButton variant="cyber-lime">Cyber Lime</JellyButton>
+    <JellyButton variant="cotton-candy">Cotton Candy</JellyButton>
+  </div>
+</ComponentPreview>
+
+### GlassCard
+
+The workhorse. Three tiers of glass (Mist, Prism, Lume), configurable glow, 3D tilt, shimmer borders.
+
+<ComponentPreview title="Hover to Explore" description="Tilt, spotlight, and shimmer">
+  <GlassCard glow="aurora" enableTilt={true} enableShimmer={true} className="p-6 max-w-sm mx-auto">
+    <p className="text-zinc-600 dark:text-zinc-400 text-sm">Move your cursor around to see the effects.</p>
+  </GlassCard>
+</ComponentPreview>
+
+→ The full component library is documented in [Project Luminous](/blog/creating-project-luminous)
+
+---
+
+## What I'd Do Differently
+
+<Steps>
+  <Step title="Design tokens first">
+    I waited too long to systematize colors and spacing. Should have done it day one.
+  </Step>
+  <Step title="Mobile earlier">
+    I built desktop-first and paid for it in responsive fixes. Never again.
+  </Step>
+  <Step title="Ship faster">
+    I held off launching until everything was "perfect." It never was. Ship the MVP, iterate publicly.
+  </Step>
+  <Step title="Test with real users sooner">
+    The accessibility issues would have surfaced earlier with diverse testers.
+  </Step>
+</Steps>
+
+---
+
+## The Never-Ending Project
+
+A portfolio is never done. This one will keep evolving:
+
+- More case studies with live demos
+- An experiments section for creative coding toys
+- Animated theme transitions
+- Maybe a secret easter egg or two
+
+But for now? It's shipped. It's live. It's *mine*.
+
+And that feels pretty good.
+
+---
+
+*Thanks for reading. If you want the technical deep-dives, check out the [Project Luminous design system](/blog/creating-project-luminous) or any of the linked posts above.*

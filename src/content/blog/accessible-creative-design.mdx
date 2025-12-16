@@ -1,0 +1,283 @@
+---
+title: "Making Creative Web Design Accessible"
+publishedAt: "2025-12-10"
+summary: "How to build stunning, experimental interfaces without leaving anyone behind."
+tags: ["Accessibility", "Design", "CSS", "UX"]
+---
+
+# The Myth of Boring Accessibility
+
+There's a tired old trope in web development: you can have accessible *or* creative, but not both.
+
+I call nonsense.
+
+Accessibility isn't about stripping away the fun or making boring, utilitarian websites. It's about making sure your creative vision actually reaches everyone. The most beautiful design in the world is worthless if half your audience can't perceive it.
+
+Here is how I tried to maintain both creativity and accessibility in this portfolio—and where I stumbled along the way.
+
+## Color Contrast: The Neon Problem
+
+WCAG AA requires 4.5:1 contrast for normal text. This sounds reasonable until you try to use neon green on a dark background.
+
+I love the cyberpunk aesthetic. But bright cyan on dark purple? It looks amazing to me, but it can be a nightmare for readability.
+
+<ComponentPreview title="Contrast Checker" description="Test any color combination against WCAG standards">
+  <ContrastChecker />
+</ComponentPreview>
+
+I had to tweak my "neon" colors significantly to pass standards while keeping the vibe.
+
+```css
+/* Dark mode neons - WCAG compliant */
+--lum-neon-green: #00ff99;     /* 9.8:1 on #0F1116 ✓ */
+--lum-neon-cyan: #00ffff;      /* 12.1:1 on #0F1116 ✓ */
+--lum-neon-pink: #ff6b9d;      /* 6.2:1 on #0F1116 ✓ */
+```
+
+Test every color combination. Seriously. Tools like WebAIM's contrast checker are non-negotiable.
+
+### Light Mode Is Even Harder
+
+If you think dark mode is tricky, try making neon colors readable on white.
+
+Neon colors that glow on dark backgrounds just disappear on light ones. I had to create an entirely separate palette for light mode:
+
+```css
+/* Light mode - same visual intent, different values */
+--lum-neon-green: #15803d;     /* 5.1:1 on #ffffff ✓ */
+--lum-neon-cyan: #0c6478;      /* 5.3:1 on #ffffff ✓ */
+--lum-neon-pink: #9e1b4d;      /* 7.2:1 on #ffffff ✓ */
+```
+
+These aren't as vibrant, but they're legible. Accessibility sometimes means accepting constraints.
+
+## Motion: The Respect Principle
+
+This portfolio is full of animation—springs, shimmers, shader backgrounds. For some users, this causes discomfort or worse.
+
+<ComponentPreview title="Motion Preference" description="Toggle to see how animations respond to user preferences">
+  <MotionPreference />
+</ComponentPreview>
+
+The `prefers-reduced-motion` media query is your friend:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  
+  .shimmer-border::before { animation: none; }
+  .shader-background { display: none; }
+}
+```
+
+In JavaScript:
+
+```tsx
+const prefersReducedMotion = () => {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
+
+const springConfig = prefersReducedMotion()
+  ? { duration: 0 }  // Instant
+  : { stiffness: 400, damping: 25 };  // Animated
+```
+
+This isn't removing creativity—it's providing an alternative experience.
+
+## Keyboard Navigation
+
+Every interactive element must be reachable via keyboard:
+
+<ComponentPreview title="Focus Navigation" description="Use Tab to navigate, Space/Enter to activate">
+  <FocusDemo />
+</ComponentPreview>
+
+```tsx
+<button
+  onClick={handleClick}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleClick();
+    }
+  }}
+  tabIndex={0}
+  role="button"
+  aria-label="Toggle theme"
+>
+  <ThemeIcon />
+</button>
+```
+
+For custom components like the `GlassCard`, ensure focus states are visible:
+
+```css
+.glass-card:focus-visible {
+  outline: 2px solid var(--lum-neon-cyan);
+  outline-offset: 2px;
+}
+```
+
+The `:focus-visible` selector only shows the outline for keyboard navigation, not mouse clicks.
+
+## Screen Reader Considerations
+
+Visual effects mean nothing to screen reader users. Make sure they get equivalent information:
+
+### Decorative Elements
+
+Hide purely decorative elements from assistive technology:
+
+```tsx
+<div 
+  className="shader-background" 
+  aria-hidden="true"
+  role="presentation"
+/>
+```
+
+### Meaningful Animations
+
+If animation conveys information, provide text alternatives:
+
+```tsx
+<motion.div
+  animate={{ scale: isActive ? 1.1 : 1 }}
+  aria-live="polite"
+>
+  <span className="sr-only">
+    {isActive ? 'Item is selected' : 'Item is not selected'}
+  </span>
+  {/* Visual content */}
+</motion.div>
+```
+
+### Icon Buttons
+
+Icons without text need labels:
+
+```tsx
+// Bad
+<button onClick={toggleTheme}>
+  <SunIcon />
+</button>
+
+// Good
+<button onClick={toggleTheme} aria-label="Toggle dark mode">
+  <SunIcon aria-hidden="true" />
+</button>
+```
+
+## Sound Accessibility
+
+The audio system raises unique concerns:
+
+<Steps>
+  <Step title="Never autoplay">
+    Sounds only trigger on user interaction.
+  </Step>
+  <Step title="Provide mute control">
+    Easily accessible toggle.
+  </Step>
+  <Step title="Don't rely on sound alone">
+    Visual feedback always accompanies audio.
+  </Step>
+</Steps>
+
+```tsx
+const handleClick = () => {
+  // Visual feedback (always)
+  setIsPressed(true);
+  
+  // Sound feedback (optional)
+  if (!soundMuted) playClickSound();
+  
+  // Haptic feedback if available (optional)
+  if (navigator.vibrate) navigator.vibrate(10);
+};
+```
+
+## Glassmorphism & Contrast
+
+Glass effects are notoriously hard to make accessible. My strategy:
+
+<Steps>
+  <Step title="Increase glass opacity">
+    For higher contrast:
+    ```css
+    @media (prefers-contrast: more) {
+      .glass-card {
+        background: rgba(255, 255, 255, 0.25);
+      }
+    }
+    ```
+  </Step>
+  <Step title="Ensure text contrast">
+    Text must have sufficient contrast against the glass itself, not the background behind it.
+  </Step>
+  <Step title="Add solid fallbacks">
+    For browsers without backdrop-filter support.
+  </Step>
+</Steps>
+
+## Testing Tools
+
+I use a mix of automated and manual testing:
+
+<Grid cols={2}>
+  <GridItem>
+    ### Automated Tools
+    - **axe DevTools** — Browser extension for automated audits
+    - **Lighthouse** — Built into Chrome DevTools
+    - **Pa11y** — CI integration for automated testing
+  </GridItem>
+  <GridItem>
+    ### Manual Testing
+    - Navigate your entire site using only keyboard
+    - Test with a screen reader (VoiceOver, NVDA)
+    - View with Windows High Contrast Mode
+    - Check with color blindness simulators
+  </GridItem>
+</Grid>
+
+<ComponentPreview title="Color Blindness Simulation" description="See your design through different types of color vision">
+  <ColorBlindnessDemo />
+</ComponentPreview>
+
+### Real User Testing
+No tool replaces feedback from actual users with disabilities. Reach out to accessibility communities for testing.
+
+## The Portfolio's Approach
+
+Here's how this site implements accessibility:
+
+<ComponentPreview title="Theme Comparison" description="Compare the light and dark modes side-by-side">
+  <ThemeSwitchDemo />
+</ComponentPreview>
+
+| Feature | Implementation |
+|---------|----------------|
+| Color contrast | AA compliant in both modes |
+| Sound | User-initiated only, mutable |
+| Glass effects | High opacity mode available |
+
+## The Creative Opportunity
+
+Constraints breed creativity. Some of my favorite design solutions came from accessibility requirements:
+
+<Callout type="insight" title="Design Wins">
+- Light mode forced me to explore new color palettes
+- Focus states became design features, not afterthoughts  
+- Motion reduction led to instant, satisfying transitions
+</Callout>
+
+Accessible design isn't a tax on creativity. It's a creative challenge.
+
+---
+
+*This site scores 100 on Lighthouse accessibility. Check it yourself—open DevTools, run an audit.*

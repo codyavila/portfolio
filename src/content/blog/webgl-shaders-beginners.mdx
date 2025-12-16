@@ -1,0 +1,223 @@
+---
+title: "WebGL Shaders for Web Developers"
+publishedAt: "2025-12-14"
+summary: "A practical introduction to GLSL shaders—from your first fragment shader to creating mesmerizing backgrounds."
+tags: ["WebGL", "Shaders", "GLSL", "Creative Coding"]
+---
+
+# Don't Fear the Shader
+
+When I tell web developers I use shaders for backgrounds, I often get blank stares. Shaders sound intimidating—they're associated with game engines, C++, and complex math.
+
+<Callout type="insight">
+  **Shaders are just functions that run really fast**. And "really fast" means they can generate complex, animated visuals that would be impossible with CSS or Canvas 2D.
+</Callout>
+
+You don't need a PhD in math to write them.
+
+## Shaders: A Crash Course
+
+A shader is a program that runs on your GPU. Unlike JavaScript (which runs sequentially on the CPU), shader code runs *in parallel* across thousands of GPU cores.
+
+There are two types you need to know:
+
+<Grid cols={2}>
+  <GridItem title="Vertex Shaders">
+    Position geometry in 3D space
+  </GridItem>
+  <GridItem title="Fragment Shaders">
+    Color individual pixels
+  </GridItem>
+</Grid>
+
+For 2D backgrounds, we mostly care about fragment shaders. They answer one simple question for every single pixel on the screen: *"What color should I be?"*
+
+<ComponentPreview title="Live Shader Gradient" description="Adjust the hue to see how shaders generate colors mathematically">
+  <ShaderGradient />
+</ComponentPreview>
+
+## Your First Fragment Shader
+
+Here's the simplest possible fragment shader:
+
+```glsl
+void main() {
+  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+```
+
+This colors every pixel red. Let's break it down:
+
+- `gl_FragColor` — The output color (RGBA)
+- `vec4(r, g, b, a)` — A 4-component vector
+- Values range from 0.0 to 1.0, not 0-255
+
+## Making It Interesting: UV Coordinates
+
+Every fragment shader receives the pixel's position. We typically normalize this to "UV coordinates" where both X and Y range from 0 to 1:
+
+```glsl
+varying vec2 vUv;
+
+void main() {
+  gl_FragColor = vec4(vUv.x, vUv.y, 0.5, 1.0);
+}
+```
+
+This creates a gradient: red increases left-to-right, green increases bottom-to-top.
+
+## Adding Time
+
+Static gradients are boring. Let's animate:
+
+```glsl
+uniform float uTime;
+varying vec2 vUv;
+
+void main() {
+  float r = sin(uTime + vUv.x * 6.28) * 0.5 + 0.5;
+  float g = cos(uTime + vUv.y * 6.28) * 0.5 + 0.5;
+  gl_FragColor = vec4(r, g, 0.5, 1.0);
+}
+```
+
+The `uniform` keyword means this value comes from JavaScript. We update `uTime` every frame with `requestAnimationFrame`.
+
+## Noise Functions
+
+The secret ingredient for organic-looking effects is **noise**. Unlike `Math.random()`, noise functions are:
+
+- Continuous (nearby inputs give nearby outputs)
+- Deterministic (same input always gives same output)
+
+See the difference:
+
+<ComponentPreview title="Random vs Noise" description="Click regenerate to see how they differ">
+  <NoiseDemo />
+</ComponentPreview>
+
+Here's simplex noise creating a cloudy pattern:
+
+```glsl
+uniform float uTime;
+varying vec2 vUv;
+
+// Simplex noise function (usually imported)
+float snoise(vec3 v) { /* ... */ }
+
+void main() {
+  vec3 pos = vec3(vUv * 3.0, uTime * 0.2);
+  float n = snoise(pos) * 0.5 + 0.5;
+  
+  vec3 color = mix(
+    vec3(0.05, 0.0, 0.1),  // Dark purple
+    vec3(0.0, 1.0, 0.6),   // Cyan
+    n
+  );
+  
+  gl_FragColor = vec4(color, 1.0);
+}
+```
+
+The `mix()` function is incredibly useful for blending colors:
+
+<ComponentPreview title="Color Mixing" description="Drag the slider to blend between two colors">
+  <ColorMixDemo />
+</ComponentPreview>
+
+## The Portfolio Background
+
+The background you see on this site layers multiple noise octaves:
+
+```glsl
+float fbm(vec3 p) {
+  float value = 0.0;
+  float amplitude = 0.5;
+  
+  for (int i = 0; i < 5; i++) {
+    value += amplitude * snoise(p);
+    p *= 2.0;
+    amplitude *= 0.5;
+  }
+  
+  return value;
+}
+```
+
+This "fractal Brownian motion" creates detail at multiple scales—like how coastlines are jagged whether you view them from space or standing on the beach.
+
+<ComponentPreview title="Fractal Brownian Motion" description="Adjust octaves to add more detail layers">
+  <FBMDemo />
+</ComponentPreview>
+
+## Integrating with React
+
+In this portfolio, I use Three.js with React Three Fiber:
+
+```tsx
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+
+function ShaderBackground() {
+  const materialRef = useRef();
+  
+  useFrame(({ clock }) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = clock.elapsedTime;
+    }
+  });
+  
+  return (
+    <mesh>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        ref={materialRef}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        uniforms={{ uTime: { value: 0 } }}
+      />
+    </mesh>
+  );
+}
+<Steps>
+  <Step title="Minimize texture samples">
+    Each `texture2D()` call is expensive
+  </Step>
+  <Step title="Avoid branching">
+    GPUs don't like `if` statements
+  </Step>
+  <Step title="Use lower precision">
+    `mediump` vs `highp`
+<Grid cols={3}>
+  <GridItem title="The Book of Shaders">
+    Best free resource for learning GLSL
+  </GridItem>
+  <GridItem title="Shadertoy">
+    Gallery of incredible shader examples
+  </GridItem>
+  <GridItem title="Three.js Journey">
+    Bruno Simon's comprehensive course
+  </GridItem>
+</Grid>
+  </Step>
+</Steps>
+Shaders are fast, but they can still hurt performance:
+
+1. **Minimize texture samples** — Each `texture2D()` call is expensive
+2. **Avoid branching** — GPUs don't like `if` statements
+3. **Use lower precision when possible** — `mediump` vs `highp`
+4. **Reduce canvas resolution** — Render at 0.5x and upscale
+
+For this portfolio, I render the background at 75% resolution. The blur from noise masks any quality loss.
+
+## Resources to Learn More
+
+- **The Book of Shaders** — Best free resource for learning GLSL
+- **Shadertoy** — Gallery of incredible shader examples
+- **Three.js Journey** — Bruno Simon's comprehensive course
+
+Shaders have a learning curve, but once they click, you'll see creative possibilities everywhere.
+
+---
+
+*The background on this page is running a shader right now. Open DevTools and you won't find a single `<img>` or `<video>` element.*

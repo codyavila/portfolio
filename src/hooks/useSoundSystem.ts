@@ -44,13 +44,11 @@ export function useSoundSystem() {
   const lastTickTimeRef = useRef<number>(0);
   const tickIndexRef = useRef<number>(0);
   const hapticsEnabledRef = useRef<boolean>(true);
-  const mutedRef = useRef<boolean>(() => {
-    // Initialize from localStorage immediately
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(SOUND_MUTED_KEY) === 'true';
-    }
-    return false;
-  });
+  const mutedRef = useRef<boolean>(
+    typeof window !== 'undefined' 
+      ? localStorage.getItem(SOUND_MUTED_KEY) === 'true'
+      : false
+  );
   const [isMuted, setIsMuted] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem(SOUND_MUTED_KEY) === 'true';

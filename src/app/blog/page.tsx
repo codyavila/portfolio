@@ -35,14 +35,14 @@ export default function BlogPage() {
                   2025-12-15
                 </p>
                 <h2 className="text-xl font-semibold text-zinc-900 dark:text-white mb-2">
-                  Project Luminous: Design System
+                  Project Luminous: Engineering Deep Dive
                 </h2>
                 <p className="text-zinc-600 dark:text-zinc-400 line-clamp-3">
-                  Interactive documentation for the portfolio design system. Explore the physics, colors, and components that power this site.
+                  The technical story behind the design system—spring physics, bioluminescent materials, sound synthesis, and performance optimization.
                 </p>
               </div>
               <div className="mt-auto flex flex-wrap gap-2">
-                {["Design System", "Interactive", "React"].map((tag) => (
+                {["Engineering", "Design System", "Physics"].map((tag) => (
                   <span
                     key={tag}
                     className="text-xs px-2 py-1 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300"

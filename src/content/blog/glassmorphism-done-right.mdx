@@ -1,0 +1,326 @@
+---
+title: "Glassmorphism Done Right"
+publishedAt: "2025-12-12"
+summary: "How to use glass effects without sacrificing readability, performance, or accessibility."
+tags: ["CSS", "Design", "Glassmorphism", "UI"]
+---
+
+# Why Most Glass UI Sucks
+
+Glassmorphism looks stunning in Dribbble shots. Translucent panels, blurred backgrounds, subtle borders catching light—it's beautiful.
+
+Then you try to implement it.
+
+Suddenly your text is unreadable, your CPU fan spins up like a jet engine, and mobile users see a muddy, laggy mess. What went wrong?
+
+## The Mistakes We All Make
+
+Most glassmorphism implementations fail because they prioritize the "cool factor" over usability. Here are the common traps:
+
+<Steps>
+  <Step title="Too much transparency">
+    If I can't read the text because the background image is too loud, you've failed.
+  </Step>
+  <Step title="Uniform blur everywhere">
+    When everything is blurry, nothing is focused.
+  </Step>
+  <Step title="Ignoring light mode">
+    Glass that looks moody and cool on dark mode often looks like dirty water on light mode.
+  </Step>
+  <Step title="Performance ignorance">
+    Backdrop-filter is expensive. Use it wisely.
+  </Step>
+</Steps>
+
+Let's fix each of these.
+
+## The Optical Density System
+
+Instead of one glass style, I use three tiers based on how "solid" the element should feel:
+
+```css
+/* Layer 1: Mist — Subtle, recedes */
+--glass-mist-fill: rgba(255, 255, 255, 0.03);
+--glass-mist-blur: 12px;
+
+/* Layer 2: Prism — Interactive, present */
+--glass-prism-fill: rgba(255, 255, 255, 0.08);
+--glass-prism-blur: 24px;
+
+/* Layer 3: Lume — Demanding attention */
+--glass-lume-fill: rgba(255, 255, 255, 0.15);
+--glass-lume-blur: 48px;
+```
+
+Each layer has a purpose:
+
+<Grid cols={3}>
+  <GridItem>
+    **Mist**
+    Opacity: 3%
+    Blur: 12px
+    Use: Backgrounds
+  </GridItem>
+  <GridItem>
+    **Prism**
+    Opacity: 8%
+    Blur: 24px
+    Use: Cards
+  </GridItem>
+  <GridItem>
+    **Lume**
+    Opacity: 15%
+    Blur: 48px
+    Use: Modals
+  </GridItem>
+</Grid>
+
+This creates depth. Lower layers feel distant, higher layers feel close.
+
+<ComponentPreview title="Glass Density Comparison" description="Notice how blur and opacity increase with each layer">
+  <GlassDensityCompare />
+</ComponentPreview>
+
+## The Border Trick
+
+Glass without borders looks flat. But borders need finesse:
+
+```css
+.glass-card {
+  background: var(--glass-prism-fill);
+  backdrop-filter: blur(var(--glass-prism-blur));
+  
+  /* Top/left borders catch "light" */
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: 1px solid rgba(255, 255, 255, 0.10);
+  
+  /* Bottom/right borders are subtler */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+```
+
+This asymmetric border creates the illusion of light hitting from the top-left.
+
+## Text Contrast Solutions
+
+Glass behind text is dangerous. Here's how to maintain readability:
+
+### Option 1: Text Shadow
+
+```css
+.glass-text {
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+```
+
+The shadow creates separation without adding elements.
+
+### Option 2: Background Gradient
+
+```css
+.glass-card {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.04)
+  );
+}
+```
+
+Slightly more opacity at the top (where text usually is) helps readability.
+
+### Option 3: Inner Glow
+
+```css
+.glass-card {
+  box-shadow: 
+    inset 0 0 80px rgba(255, 255, 255, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.3);
+}
+```
+
+The inner glow brightens the surface, the outer shadow separates it from content behind.
+
+## Light Mode Adaptation
+
+Glass that looks ethereal on dark backgrounds becomes invisible or muddy on light ones.
+
+The solution: **invert your thinking**.
+
+```css
+/* Dark mode: white glass on dark background */
+.dark .glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+<Steps>
+  <Step title="Render background">
+    Render everything behind the element
+  </Step>
+  <Step title="Sample pixels">
+    Sample multiple pixels per fragment
+  </Step>
+  <Step title="Apply blur">
+    Apply the blur algorithm
+  </Step>
+  <Step title="Composite">
+    Composite the result
+  </Step>
+</Steps>
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+```
+
+Or consider whether glass is even appropriate in light mode. Sometimes a solid white card with a subtle shadow works better.
+
+## Performance Optimization
+
+`backdrop-filter: blur()` is expensive. Every frame, the browser must:
+
+1. Render everything behind the element
+2. Sample multiple pixels per fragment
+3. Apply the blur algorithm
+4. Composite the result
+
+### Tip 1: Contain the Damage
+
+```css
+.glass-card {
+  contain: layout style paint;
+  will-change: transform;
+}
+```
+
+CSS containment tells the browser this element won't affect others, enabling optimizations.
+
+### Tip 2: Reduce Blur on Mobile
+
+```css
+.glass-card {
+  backdrop-filter: blur(24px);
+}
+
+@media (max-width: 768px) {
+  .glass-card {
+    backdrop-filter: blur(12px);
+  }
+}
+```
+
+Less blur = less work. Mobile GPUs will thank you.
+
+### Tip 3: Static Backgrounds
+
+If your glass overlays a static background (not animated), consider pre-rendering the blur:
+
+```css
+.glass-container {
+  position: relative;
+}
+
+.glass-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/blurred-bg.jpg');
+  filter: blur(20px);
+  z-index: -1;
+}
+```
+
+No runtime blur calculation needed.
+
+## The Shimmer Effect
+
+Adding a subtle animated shimmer elevates glass from "functional" to "premium":
+
+```css
+.glass-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: shimmer 8s ease infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+```
+
+Keep it slow and subtle—this should be noticed subconsciously, not consciously.
+
+## Complete Glass Card Example
+
+Here's the full implementation used in this portfolio:
+
+```css
+.glass-card {
+  /* Base glass */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  
+  /* Borders that catch light */
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255, 255, 255, 0.2);
+  
+  /* Depth via shadow */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  
+  /* Smooth corners */
+  border-radius: 20px;
+  
+  /* Performance */
+  contain: layout style paint;
+<Callout type="warning" title="Avoid Glass For:">
+- **Dense data interfaces** — Tables, dashboards, forms
+- **Long-form reading** — Blog content, documentation
+- **Accessibility requirements** — Some users need high contrast
+</Callout>
+    transform 150ms cubic-bezier(0.2, 0.8, 0.3, 1.2),
+    box-shadow 300ms ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+```
+
+Try hovering over the glass cards to see the hover effect in action:
+
+<ComponentPreview title="Glass Card Hover" description="Hover over each card to see the spring-physics animation">
+  <HoverScaleCompare />
+</ComponentPreview>
+
+## When to Avoid Glass
+
+Glassmorphism isn't always appropriate:
+
+- **Dense data interfaces** — Tables, dashboards, forms
+- **Long-form reading** — Blog content, documentation
+- **Accessibility requirements** — Some users need high contrast
+
+Use glass for UI chrome, not content. Cards, navigation, modals—not paragraphs.
+
+---
+
+*The cards on this site use the Prism glass tier. Notice how they're legible while still feeling translucent?*
