@@ -1,0 +1,350 @@
+---
+title: "Overhauling the Sound System: Glass, Water & The Resonant Hum"
+publishedAt: "2025-12-16"
+summary: "How I rebuilt my portfolio's audio from scratch—creating an underwater, bioluminescent sonic identity with the Web Audio API."
+tags: ["Engineering", "Sound Design", "Web Audio", "Process"]
+---
+
+# The Sound of Glass & Water
+
+<Callout type="insight">
+  Imagine tapping a thick pane of glass with a felt mallet underwater. It doesn't "click"—it *thuds*, then *rings*. That's the sonic identity I was chasing.
+</Callout>
+
+My portfolio already had sound, but it wasn't *right*. The sounds were functional—they made noise when you clicked things—but they didn't have a cohesive identity. They didn't feel like they belonged to the bioluminescent, underwater aesthetic of the rest of the site.
+
+So I tore it all out and started fresh.
+
+---
+
+## Defining the Sonic Identity
+
+Before writing any code, I needed to answer a fundamental question: **what should this portfolio *sound* like?**
+
+I started with references:
+
+<Grid cols={2}>
+  <GridItem>
+    **Nintendo Switch UI**
+    Clean, distinct chimes that echo. Each sound feels premium and intentional.
+  </GridItem>
+  <GridItem>
+    **PS5 Ambient Menu**
+    Gentle, spatial, almost hypnotic. Sound that makes you want to *linger*.
+  </GridItem>
+</Grid>
+
+<Grid cols={2}>
+  <GridItem>
+    **Annihilation Soundtrack**
+    That alien shimmer. Organic sounds made uncanny through processing.
+  </GridItem>
+  <GridItem>
+    **BOTW Ambient Sounds**
+    Glass kalimba notes that feel like they're coming from *behind* you.
+  </GridItem>
+</Grid>
+
+From these, I distilled three principles:
+
+<Steps>
+  <Step title="The Material: Glass">
+    Sounds should feel like hitting thick glass with a felt mallet. Not sharp clicks—soft thuds followed by resonant rings.
+  </Step>
+  <Step title="The Medium: Water">
+    All sounds travel through a "liquid medium." High frequencies are dampened. Bass frequencies travel deeply. Everything feels slightly muffled, like you're underwater.
+  </Step>
+  <Step title="The Harmony: F# Major 9">
+    Every sound should be harmonically related. No random pitches—everything lives in the same musical universe.
+  </Step>
+</Steps>
+
+---
+
+## Building the Synthesis Engine
+
+The Web Audio API gives you building blocks: oscillators, filters, gain nodes. But to create the sounds I wanted, I needed higher-level abstractions.
+
+### The Underwater Master Chain
+
+Every sound passes through a "liquid medium" simulation:
+
+```tsx
+// Underwater low-pass filter - rolls off high frequencies
+this.underwaterFilter = ctx.createBiquadFilter();
+this.underwaterFilter.type = 'lowpass';
+this.underwaterFilter.frequency.value = 5000;
+
+// Bass frequencies travel deeply
+this.bassBoost = ctx.createBiquadFilter();
+this.bassBoost.type = 'lowshelf';
+this.bassBoost.frequency.value = 200;
+this.bassBoost.gain.value = 3;
+```
+
+This creates that characteristic "everything is underwater" feeling. High frequencies get soft, low frequencies get warm.
+
+### Hear the Difference
+
+Compare what the raw oscillator sounds like versus the "underwater" version:
+
+<ComponentPreview title="Sound Quality Comparison" description="Click each button to hear how filtering transforms raw oscillators into premium, organic sounds.">
+  <SoundCompare />
+</ComponentPreview>
+
+### Glass Resonance Synthesis
+
+Real glass has *inharmonic partials*—the overtones aren't perfect integer multiples of the fundamental. This is what makes glass sound different from a pure tone:
+
+```tsx
+createGlassResonance(frequency: number, modes: number) {
+  const inharmonicity = 0.008 + density * 0.025;
+  
+  for (let i = 0; i < modes; i++) {
+    const n = i + 1;
+    // Glass-like inharmonicity formula
+    const partialFreq = frequency * n * Math.sqrt(1 + inharmonicity * n * n);
+    
+    // Each partial has decreasing amplitude
+    const amplitude = Math.pow(0.55, i * (1.1 - brightness * 0.4)) / modes;
+    
+    // Create oscillator for this partial
+    const osc = ctx.createOscillator();
+    osc.frequency.value = partialFreq;
+    osc.detune.value = (Math.random() - 0.5) * 4; // Subtle organic detuning
+  }
+}
+```
+
+The result: sounds that *ring* like glass, not *beep* like a computer.
+
+### Visualizing Oscillators
+
+The foundation of every sound is oscillators. Different waveforms create different timbres:
+
+<ComponentPreview title="Waveform Visualizer" description="See how different oscillator types create different wave shapes and sounds.">
+  <WaveformVisualizer />
+</ComponentPreview>
+
+### Water Droplet Synthesis
+
+The "droplet" sound—like a water drop hitting a pool—combines two elements:
+
+1. **The "plip"**: A high, short tone (the initial impact)
+2. **The ripple**: A lower sub-tone that decays more slowly
+
+```tsx
+createWaterDroplet(pitch: number, size: number) {
+  const baseFreq = 440 * Math.pow(2, pitch / 12);
+  
+  // Primary droplet tone - the "plip"
+  const primary = ctx.createOscillator();
+  primary.frequency.value = baseFreq;
+  
+  // Sub tone for body/depth - the ripple
+  const sub = ctx.createOscillator();
+  sub.frequency.value = baseFreq * 0.5;
+  
+  // Resonant bandpass for liquid quality
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.Q.value = 6 + size * 12; // Larger drops = more resonance
+}
+```
+
+---
+
+## The Reverb Problem
+
+Early on, I hit a nasty bug: **the reverb kept getting louder and louder**. Click something once—sounds fine. Click it ten times—sounds like you're in a cathedral during an earthquake.
+
+The problem? I was creating new connections to the convolver (reverb) every time a sound played:
+
+```tsx
+// ❌ BAD: Creates new connections each time
+createReverbSend() {
+  input.connect(preDelay);
+  preDelay.connect(lowCut);
+  lowCut.connect(this.convolver);  // New connection every time!
+  this.convolver.connect(highCut);
+  highCut.connect(wet);
+}
+```
+
+The solution: a **shared reverb bus** that's connected once during initialization:
+
+```tsx
+// ✅ GOOD: Single connection, shared bus
+constructor() {
+  // Connect reverb chain ONCE
+  this.reverbBus.connect(this.reverbPreDelay);
+  this.reverbPreDelay.connect(this.convolver);
+  this.convolver.connect(this.reverbWetGain);
+}
+
+createReverbSend() {
+  // Sounds just connect to the shared bus
+  wet.connect(this.reverbBus);
+}
+```
+
+<Callout type="warning">
+  Web Audio graphs are additive. If you connect the same source to a destination multiple times, the signal gets *louder* each time. Always be intentional about your graph structure.
+</Callout>
+
+---
+
+## Sound Preset Architecture
+
+With the synthesis primitives built, I created a declarative preset system. Each sound is defined as layers:
+
+```tsx
+const SOUND_PRESETS = {
+  click: {
+    name: 'click',
+    duration: 0.22,
+    layers: [
+      {
+        type: 'droplet',
+        droplet: { pitch: 5, size: 0.55, ripples: 3 },
+        gain: 0.16,
+        envelope: { attack: 0.001, decay: 0.06, sustain: 0, release: 0.1 },
+      },
+      {
+        type: 'glass',
+        glass: { frequency: NOTE['C#5'], modes: 5, brightness: 0.65 },
+        gain: 0.1,
+        envelope: { attack: 0.001, decay: 0.15, sustain: 0.03, release: 0.08 },
+      },
+      {
+        type: 'oscillator',
+        oscillator: { type: 'sine', frequency: { start: 200, end: 100 } },
+        gain: 0.1,
+        envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.03 },
+      },
+    ],
+    reverb: { decay: 1.5, wetDry: 0.2, underwater: true },
+    masterGain: 0.4,
+    pitchVariation: 2,  // ±2 semitones randomization
+  },
+};
+```
+
+Each layer has:
+- **Type**: What synthesis method to use (oscillator, glass, droplet, noise, etc.)
+- **Parameters**: Type-specific settings
+- **Envelope**: ADSR for amplitude shaping
+- **Gain**: Individual layer volume
+- **Optional**: Filter, pan, delay
+
+The `masterGain` and `pitchVariation` apply to the whole sound.
+
+---
+
+## Volume Normalization
+
+<Callout type="insight">
+  Sounds that trigger frequently should be quieter. Sounds that need attention should be louder. But nothing should be jarring.
+</Callout>
+
+I created a tiered volume system:
+
+| Tier | Volume | Use Case |
+|------|--------|----------|
+| **Quiet** | 0.25-0.30 | Hover, tick, slider, ambient |
+| **Light** | 0.35-0.38 | Secondary actions, deselect |
+| **Medium** | 0.40-0.42 | Primary clicks, toggles |
+| **Noticeable** | 0.42-0.45 | Errors, notifications |
+
+The key insight: multi-note sounds (like the success chime) need *lower* master gain because the notes stack perceptually.
+
+---
+
+## The Time Travel Slider
+
+The time travel slider needed a special sound—something satisfying that you'd want to play with. I created a dedicated `sliderTick` preset:
+
+```tsx
+sliderTick: {
+  layers: [
+    // Glassy attack transient
+    {
+      type: 'oscillator',
+      oscillator: { frequency: { start: 2400, end: 1200 } },
+      envelope: { attack: 0.0003, decay: 0.008, sustain: 0, release: 0.005 },
+      filter: { type: 'bandpass', frequency: 2000, Q: 3 },
+    },
+    // Primary glass resonance
+    {
+      type: 'glass',
+      glass: { frequency: NOTE['F#5'], modes: 5, brightness: 0.85 },
+      envelope: { attack: 0.001, decay: 0.06, sustain: 0.02, release: 0.04 },
+    },
+    // High shimmer overtone
+    {
+      type: 'oscillator',
+      oscillator: { frequency: NOTE['F#6'], detune: 8 },
+      filter: { type: 'highpass', frequency: 1800 },
+    },
+  ],
+  masterGain: 0.25,  // Quiet—it triggers a lot
+}
+```
+
+The pitch maps to the slider value, so sliding from morning to evening creates an ascending/descending melody. A separate throttle (65ms vs 40ms for regular ticks) keeps it from firing too often.
+
+---
+
+## Pitch Variation
+
+Every sound has subtle pitch variation—a random offset within a range. This prevents the "machine gun effect" where identical sounds played rapidly sound artificial:
+
+```tsx
+// ±2 semitones variation
+const pitchOffset = (Math.random() - 0.5) * 2 * pitchVariation;
+const pitchMultiplier = Math.pow(2, pitchOffset / 12);
+
+// Apply to all frequencies
+osc.frequency.value = baseFreq * pitchMultiplier;
+```
+
+The slider tick uses more dramatic variation (0.7x to 1.4x) so the pitch change as you slide is clearly audible.
+
+---
+
+## What I Learned
+
+<Steps>
+  <Step title="Identity First, Code Second">
+    Defining "glass and water underwater" gave every decision a framework. Without it, I would've made random sounds.
+  </Step>
+  <Step title="Shared Resources Matter">
+    The reverb buildup bug taught me that Web Audio graphs need careful architecture. Shared buses and single-connection patterns prevent chaos.
+  </Step>
+  <Step title="Volume is Relative">
+    Normalization isn't about making everything the same volume—it's about making the *perceived* loudness appropriate for the context.
+  </Step>
+  <Step title="Variation Creates Realism">
+    Tiny random variations in pitch, timing, and envelope make sounds feel organic instead of robotic.
+  </Step>
+</Steps>
+
+---
+
+## The Result
+
+The portfolio now has a cohesive sonic identity. Every click feels like tapping glass. Every hover breathes. The time travel slider is genuinely satisfying to play with.
+
+More importantly, the sounds feel like they *belong*. They're not an afterthought or a gimmick—they're part of the experience.
+
+### Try It Yourself
+
+Don't take my word for it—experience the full sound palette:
+
+<ComponentPreview title="Sound Palette" description="Click any sound to hear it. Each one is synthesized in real-time using the Web Audio API.">
+  <SoundPalette />
+</ComponentPreview>
+
+<Callout type="reflection">
+  Sound is the hidden layer that makes interfaces feel *real*. It's worth the investment.
+</Callout>

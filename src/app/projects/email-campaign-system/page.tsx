@@ -1,162 +1,145 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Layout, Zap, BarChart3 } from "lucide-react";
-import { NanoCard } from "@/components/ui/nano-card";
-import { motion, type Variants } from "framer-motion";
-
-const container: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 50 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 320, damping: 26 },
-  },
-};
+import { CheckCircle2, Layout, Zap, BarChart3 } from "lucide-react";
+import { CaseStudyLayout } from "@/components/ui/case-study-layout";
+import { BentoGrid } from "@/components/ui/bento-grid";
+import { PortalCard, PortalCardTitle, PortalCardDescription } from "@/components/ui/portal-card";
+import { NanoCard, NanoCardTitle, NanoCardDescription } from "@/components/ui/nano-card";
 
 export default function EmailCampaignSystem() {
   return (
-    <motion.main
-      className="max-w-4xl mx-auto px-6 py-12 sm:py-20 squish-scroll"
-      variants={container}
-      initial="hidden"
-      animate="show"
+    <CaseStudyLayout
+      title="Email Campaign Management System"
+      subtitle="A multi-step wizard that simplified complex campaign setups, reducing user error and increasing successful launches."
+      role="Lead Frontend Engineer"
+      timeline="3 Months"
+      techStack={["React", "React Query", "TypeScript", "Zod"]}
+      layoutId="project-email-system"
     >
-      <motion.div variants={item}>
-        <Link
-        href="/#projects"
-        className="inline-flex items-center text-body-s text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-12"
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Projects
-      </Link>
-      </motion.div>
-
-      <motion.header className="mb-16" variants={item}>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-[var(--lum-neon-blue)]/10 text-[var(--lum-neon-blue)]">
-            <Layout className="h-6 w-6" />
+      {/* Problem */}
+      <section className="mb-24">
+        <h2 className="text-display-s text-[var(--text-primary)] mb-8">The Problem</h2>
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <p className="text-body-l text-[var(--text-secondary)] leading-relaxed">
+              Users were struggling to configure email campaigns correctly. The existing interface was a monolithic form with poor validation, leading to:
+            </p>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
+                <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
+                High rate of configuration errors requiring support intervention.
+              </li>
+              <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
+                <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
+                Frustration with the &quot;black box&quot; scheduling logic.
+              </li>
+              <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
+                <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
+                Slow UI performance due to unnecessary network requests.
+              </li>
+            </ul>
           </div>
-          <span className="text-label-m text-[var(--text-secondary)]">
-            BLOX Digital
-          </span>
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--lum-neon-pink)]/20 to-[var(--lum-neon-orange)]/20 blur-3xl rounded-full" />
+            <PortalCard glow="cotton-candy" className="relative z-10 p-8">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-4">
+                  <span className="text-sm font-mono text-[var(--text-tertiary)]">Error Rate</span>
+                  <span className="text-xs text-[var(--lum-neon-pink)]">High</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-4">
+                  <span className="text-sm font-mono text-[var(--text-tertiary)]">UX Friction</span>
+                  <span className="text-xs text-[var(--lum-neon-pink)]">Severe</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-mono text-[var(--text-tertiary)]">Performance</span>
+                  <span className="text-xs text-[var(--lum-neon-pink)]">Slow</span>
+                </div>
+              </div>
+            </PortalCard>
+          </div>
         </div>
-        <h1 className="text-display-l text-[var(--text-primary)] mb-6 on-glass">
-          Email Campaign Management System
-        </h1>
-        <p className="text-title-m text-[var(--text-secondary)] leading-relaxed max-w-2xl on-glass">
-          A multi-step wizard that simplified complex campaign setups, reducing user error and increasing successful launches.
+      </section>
+
+      {/* Solution */}
+      <section className="mb-24">
+        <h2 className="text-display-s text-[var(--text-primary)] mb-8">The Solution</h2>
+        <p className="text-body-l text-[var(--text-secondary)] leading-relaxed mb-12 max-w-3xl">
+          I led cross-functional discovery and defined the product requirements for a new <strong>multi-step wizard</strong> that guided users through the process, validating each step before proceeding.
         </p>
-      </motion.header>
+        
+        <BentoGrid className="auto-rows-[20rem]">
+          <PortalCard className="md:col-span-2 p-8" glow="aurora">
+            <div className="flex flex-col h-full justify-between">
+              <div className="p-3 w-fit rounded-xl bg-[var(--lum-neon-yellow)]/10 text-[var(--lum-neon-yellow)] mb-4">
+                <Zap className="h-6 w-6" />
+              </div>
+              <div>
+                <PortalCardTitle className="mb-2">Natural Language Scheduling</PortalCardTitle>
+                <PortalCardDescription>
+                  Replaced complex cron-like selectors with a human-readable summary (e.g., &quot;Sends every Monday at 9:00 AM&quot;). This immediate feedback loop drastically reduced scheduling errors.
+                </PortalCardDescription>
+              </div>
+            </div>
+          </PortalCard>
 
-      <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-20 border-y border-[var(--glass-border)] py-8" variants={item}>
-        <div>
-          <h3 className="text-label-s text-[var(--text-tertiary)] mb-2 uppercase tracking-wider">Role</h3>
-          <p className="text-body-l text-[var(--text-primary)]">Lead Frontend Engineer</p>
-        </div>
-        <div>
-          <h3 className="text-label-s text-[var(--text-tertiary)] mb-2 uppercase tracking-wider">Timeline</h3>
-          <p className="text-body-l text-[var(--text-primary)]">3 Months</p>
-        </div>
-        <div>
-          <h3 className="text-label-s text-[var(--text-tertiary)] mb-2 uppercase tracking-wider">Tech Stack</h3>
-          <p className="text-body-l text-[var(--text-primary)]">React, React Query, TypeScript</p>
-        </div>
-      </motion.div>
+          <PortalCard className="md:col-span-1 p-8" glow="cyber-lime">
+            <div className="flex flex-col h-full justify-between">
+              <div className="p-3 w-fit rounded-xl bg-[var(--lum-neon-blue)]/10 text-[var(--lum-neon-blue)] mb-4">
+                <Layout className="h-6 w-6" />
+              </div>
+              <div>
+                <PortalCardTitle className="mb-2">Granular Validation</PortalCardTitle>
+                <PortalCardDescription>
+                  Leveraged React Hook Form and Zod to validate inputs in real-time.
+                </PortalCardDescription>
+              </div>
+            </div>
+          </PortalCard>
 
-      <motion.section className="space-y-20" variants={item}>
-        {/* Problem */}
-        <div>
-          <h2 className="text-display-s text-[var(--text-primary)] mb-6">The Problem</h2>
-          <p className="text-body-l text-[var(--text-secondary)] leading-relaxed mb-8">
-            Users were struggling to configure email campaigns correctly. The existing interface was a monolithic form with poor validation, leading to:
-          </p>
-          <ul className="space-y-4">
-            <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
-              <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
-              High rate of configuration errors requiring support intervention.
-            </li>
-            <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
-              <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
-              Frustration with the &quot;black box&quot; scheduling logic.
-            </li>
-            <li className="flex items-start gap-3 text-body-m text-[var(--text-secondary)]">
-              <div className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--lum-neon-pink)] shrink-0" />
-              Slow UI performance due to unnecessary network requests.
-            </li>
-          </ul>
-        </div>
+          <PortalCard className="md:col-span-3 p-8" glow="solar-flare">
+            <div className="flex flex-col md:flex-row gap-8 items-center h-full">
+              <div className="flex-1">
+                <div className="p-3 w-fit rounded-xl bg-[var(--lum-neon-green)]/10 text-[var(--lum-neon-green)] mb-4">
+                  <BarChart3 className="h-6 w-6" />
+                </div>
+                <PortalCardTitle className="mb-2">Optimistic Updates</PortalCardTitle>
+                <PortalCardDescription>
+                  Used React Query to manage server state, implementing optimistic updates for immediate UI feedback and request deduping to cut network overhead.
+                </PortalCardDescription>
+              </div>
+              <div className="flex-1 w-full h-full min-h-[150px] bg-[var(--glass-ghost-fill)] rounded-xl border border-[var(--glass-border)] flex items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--lum-neon-green)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="font-mono text-sm text-[var(--text-tertiary)]">Real-time Feedback</span>
+              </div>
+            </div>
+          </PortalCard>
+        </BentoGrid>
+      </section>
 
-        {/* Solution */}
-        <div>
-          <h2 className="text-display-s text-[var(--text-primary)] mb-6">The Solution</h2>
-          <p className="text-body-l text-[var(--text-secondary)] leading-relaxed mb-10">
-            I architected a new <strong>multi-step wizard</strong> that guided users through the process, validating each step before proceeding.
-          </p>
+      {/* Results */}
+      <section>
+        <h2 className="text-display-s text-[var(--text-primary)] mb-8">The Results</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <NanoCard className="p-8 bg-[var(--lum-neon-blue)]/10 border-[var(--lum-neon-blue)]/20">
+            <div className="text-display-xl font-bold mb-2 text-[var(--lum-neon-blue)]">30%</div>
+            <NanoCardTitle className="text-[var(--text-primary)]">Reduction in Support Tickets</NanoCardTitle>
+            <NanoCardDescription>
+              Simplified workflow drastically reduced user errors.
+            </NanoCardDescription>
+          </NanoCard>
           
-          <div className="grid gap-6">
-            <NanoCard className="p-8">
-              <div className="flex items-center gap-4 mb-4">
-                <Zap className="h-6 w-6 text-[var(--lum-neon-yellow)]" />
-                <h3 className="text-title-m text-[var(--text-primary)]">Natural Language Scheduling</h3>
-              </div>
-              <p className="text-body-m text-[var(--text-secondary)]">
-                Replaced complex cron-like selectors with a human-readable summary (e.g., &quot;Sends every Monday at 9:00 AM&quot;). This immediate feedback loop drastically reduced scheduling errors.
-              </p>
-            </NanoCard>
-
-            <NanoCard className="p-8">
-              <div className="flex items-center gap-4 mb-4">
-                <Layout className="h-6 w-6 text-[var(--lum-neon-blue)]" />
-                <h3 className="text-title-m text-[var(--text-primary)]">Granular State & Validation</h3>
-              </div>
-              <p className="text-body-m text-[var(--text-secondary)]">
-                Leveraged React Hook Form and Zod to validate inputs in real-time. Users couldn&apos;t proceed to the &quot;Review&quot; step without valid configuration.
-              </p>
-            </NanoCard>
-
-            <NanoCard className="p-8">
-              <div className="flex items-center gap-4 mb-4">
-                <BarChart3 className="h-6 w-6 text-[var(--lum-neon-green)]" />
-                <h3 className="text-title-m text-[var(--text-primary)]">Optimistic Updates</h3>
-              </div>
-              <p className="text-body-m text-[var(--text-secondary)]">
-                Used React Query to manage server state, implementing optimistic updates for immediate UI feedback and request deduping to cut network overhead.
-              </p>
-            </NanoCard>
-          </div>
+          <NanoCard className="p-8">
+            <div className="flex items-center gap-3 mb-4 text-[var(--lum-neon-green)]">
+              <CheckCircle2 className="h-8 w-8" />
+            </div>
+            <NanoCardTitle className="mb-2">Success</NanoCardTitle>
+            <NanoCardDescription>
+              Increased successful campaign launches and received positive feedback from the editorial team.
+            </NanoCardDescription>
+          </NanoCard>
         </div>
-
-        {/* Results */}
-        <div>
-          <h2 className="text-display-s text-[var(--text-primary)] mb-6">The Results</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <NanoCard className="p-8 bg-[var(--lum-neon-blue)]/10 border-[var(--lum-neon-blue)]/20">
-              <div className="text-display-l font-bold mb-2 text-[var(--lum-neon-blue)]">30%</div>
-              <div className="text-title-s text-[var(--text-secondary)]">Reduction in Support Tickets</div>
-            </NanoCard>
-            <NanoCard className="p-8">
-              <div className="flex items-center gap-3 mb-4 text-[var(--lum-neon-green)]">
-                <CheckCircle2 className="h-6 w-6" />
-                <span className="text-title-m">Success</span>
-              </div>
-              <p className="text-body-m text-[var(--text-secondary)]">
-                Increased successful campaign launches and received positive feedback from the editorial team for the simplified workflow.
-              </p>
-            </NanoCard>
-          </div>
-        </div>
-      </motion.section>
-    </motion.main>
+      </section>
+    </CaseStudyLayout>
   );
 }

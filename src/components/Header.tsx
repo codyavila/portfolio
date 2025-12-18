@@ -52,7 +52,7 @@ export function Header() {
   const { timeOverride, setTimeOverride } = useDynamicTheme();
   const pathname = usePathname();
   useTimeOfDay();
-  const { playToggle, playTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome, isMuted, toggleMute } = useSoundSystem();
+  const { playToggle, playTick, playSliderTick, playOpen, playClose, playNavNote, playLightMode, playDarkMode, playHome, isMuted, toggleMute } = useSoundSystem();
   
   // Magnetic effect values with smoother springs
   const mx = useMotionValue(0);
@@ -279,9 +279,9 @@ export function Header() {
   }, [playLightMode, playDarkMode, setTheme]);
 
   const handleTimeSliderChange = useCallback((value: number, min: number, max: number) => {
-    playTick(value, min, max);
+    playSliderTick(value, min, max);
     setTimeOverride(value < 0 ? null : value);
-  }, [playTick, setTimeOverride]);
+  }, [playSliderTick, setTimeOverride]);
   
   return (
     <motion.header

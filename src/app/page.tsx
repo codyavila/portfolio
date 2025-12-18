@@ -108,7 +108,7 @@ export default function Home() {
           <div className="flex flex-col gap-6 sm:gap-8">
             <motion.div variants={itemVariants}>
               <span className="inline-block mb-4 px-3 py-1 rounded-full bg-[var(--neon-primary-end)]/10 border border-[var(--neon-primary-end)]/20 text-xs font-mono text-[var(--neon-primary-end)]">
-                Frontend Engineer & TPM
+                Frontend Engineer → Technical PM
               </span>
               <h1 className="text-display-xl font-bold tracking-tight text-[var(--text-primary)] leading-[0.9]">
                 <motion.span
@@ -158,8 +158,8 @@ export default function Home() {
               variants={itemVariants}
               className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-2xl leading-relaxed"
             >
-              I bridge the gap between engineering reality and product vision. 
-              With deep roots in frontend architecture, I translate complex technical constraints into viable product strategies.
+              Frontend engineer transitioning to Technical Product Management. 
+              I bring deep technical expertise to product strategy—turning complex constraints into clear, buildable roadmaps.
             </motion.p>
             <motion.div 
               variants={itemVariants}
@@ -192,68 +192,72 @@ export default function Home() {
             <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--neon-accent-start)] to-[var(--neon-accent-end)] opacity-70" />
           </h3>
           <p className="text-body-l text-[var(--text-secondary)] max-w-2xl">
-            A selection of projects where I&apos;ve applied my technical background to solve complex product challenges.
+            Products I&apos;ve driven from concept to launch, balancing technical feasibility, stakeholder needs, and business impact.
           </p>
         </motion.div>
 
         <BentoGrid className="grid-cols-1 md:grid-cols-2 gap-6">
           {/* Project 1 */}
           <Link href="/projects/blox-nxt-cms-rebuild" className="group">
-            <PortalCard 
-              className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-primary-start)]" 
-              glow="solar-flare"
-              enableTilt={false}
-              enableIridescence={false}
-              enableChromatic={false}
-              enableShimmer={false}
-            >
-              <div className="flex flex-col h-full justify-between gap-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)] border border-[var(--chip-primary-border)]">
-                      CMS Architecture
-                    </span>
-                    <span className="text-xs text-[var(--text-tertiary)]">2024</span>
+            <motion.div layoutId="project-blox-nxt" className="h-full">
+              <PortalCard 
+                className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-primary-start)]" 
+                glow="solar-flare"
+                enableTilt={false}
+                enableIridescence={false}
+                enableChromatic={false}
+                enableShimmer={false}
+              >
+                <div className="flex flex-col h-full justify-between gap-6">
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)] border border-[var(--chip-primary-border)]">
+                        CMS Architecture
+                      </span>
+                      <span className="text-xs text-[var(--text-tertiary)]">2024</span>
+                    </div>
+                    <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-primary-end)] transition-colors">
+                      BLOX NXT CMS Rebuild
+                    </PortalCardTitle>
+                    <PortalCardDescription>
+                      Leading the architectural overhaul of a legacy CMS serving 2,000+ media sites. 
+                      Migrating from Angular.js to a modern React/Next.js ecosystem.
+                    </PortalCardDescription>
                   </div>
-                  <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-primary-end)] transition-colors">
-                    BLOX NXT CMS Rebuild
-                  </PortalCardTitle>
-                  <PortalCardDescription>
-                    Leading the architectural overhaul of a legacy CMS serving 2,000+ media sites. 
-                    Migrating from Angular.js to a modern React/Next.js ecosystem.
-                  </PortalCardDescription>
+                  <div className="flex items-center text-[var(--neon-primary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
+                    View Case Study <ArrowRight className="ml-2 w-4 h-4" />
+                  </div>
                 </div>
-                <div className="flex items-center text-[var(--neon-primary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
-                  View Case Study <ArrowRight className="ml-2 w-4 h-4" />
-                </div>
-              </div>
-            </PortalCard>
+              </PortalCard>
+            </motion.div>
           </Link>
 
           {/* Project 2 */}
           <Link href="/projects/email-campaign-system" className="group">
-            <PortalCard className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-secondary-start)]" glow="cotton-candy">
-              <div className="flex flex-col h-full justify-between gap-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-secondary-bg)] text-[var(--chip-secondary-text)] border border-[var(--chip-secondary-border)]">
-                      System Design
-                    </span>
-                    <span className="text-xs text-[var(--text-tertiary)]">2023</span>
+            <motion.div layoutId="project-email-system" className="h-full">
+              <PortalCard className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-secondary-start)]" glow="cotton-candy">
+                <div className="flex flex-col h-full justify-between gap-6">
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-secondary-bg)] text-[var(--chip-secondary-text)] border border-[var(--chip-secondary-border)]">
+                        System Design
+                      </span>
+                      <span className="text-xs text-[var(--text-tertiary)]">2023</span>
+                    </div>
+                    <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-secondary-end)] transition-colors">
+                      Email Campaign System
+                    </PortalCardTitle>
+                    <PortalCardDescription>
+                      Designing a high-throughput email delivery system capable of sending 50M+ emails daily. 
+                      Focused on deliverability, analytics, and template flexibility.
+                    </PortalCardDescription>
                   </div>
-                  <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-secondary-end)] transition-colors">
-                    Email Campaign System
-                  </PortalCardTitle>
-                  <PortalCardDescription>
-                    Designing a high-throughput email delivery system capable of sending 50M+ emails daily. 
-                    Focused on deliverability, analytics, and template flexibility.
-                  </PortalCardDescription>
+                  <div className="flex items-center text-[var(--neon-secondary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
+                    View Case Study <ArrowRight className="ml-2 w-4 h-4" />
+                  </div>
                 </div>
-                <div className="flex items-center text-[var(--neon-secondary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
-                  View Case Study <ArrowRight className="ml-2 w-4 h-4" />
-                </div>
-              </div>
-            </PortalCard>
+              </PortalCard>
+            </motion.div>
           </Link>
         </BentoGrid>
       </section>
@@ -274,7 +278,7 @@ export default function Home() {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
             <h3 className="text-display-m text-[var(--text-primary)] relative inline-block">
-              The Technical Edge
+              Why Engineering Makes Me a Better PM
               <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--neon-primary-start)] to-[var(--neon-primary-end)] opacity-70" />
             </h3>
           </motion.div>
@@ -290,25 +294,24 @@ export default function Home() {
                 <div className="flex-1">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--chip-primary-bg)] border border-[var(--chip-primary-border)] mb-6">
                     <Code2 className="w-4 h-4 text-[var(--chip-primary-text)]" />
-                    <span className="text-sm font-semibold text-[var(--chip-primary-text)]">Engineer → PM</span>
+                    <span className="text-sm font-semibold text-[var(--chip-primary-text)]">Engineer → TPM</span>
                   </div>
                   <PortalCardTitle className="text-2xl sm:text-3xl mb-4">
-                    I speak both languages fluently
+                    I already think like a PM
                   </PortalCardTitle>
                   <PortalCardDescription className="text-base sm:text-lg leading-relaxed">
                     At BLOX Digital, I didn&apos;t just implement features—I owned the technical lifecycle of product initiatives. 
-                    I partnered with Product and Design to de-risk complex requirements early, identifying API limitations 
-                    and architectural trade-offs before a single line of code was written.
+                    I partnered with Product, Design, and Engineering to de-risk requirements, shape roadmaps, 
+                    and remove blockers—helping ship 20+ features impacting 141M+ monthly users.
                   </PortalCardDescription>
                 </div>
                 <div className="flex-1">
                   <PortalCardDescription className="text-base sm:text-lg leading-relaxed">
-                    My background allows me to earn the trust of engineering teams immediately. I can dive into API specs, 
-                    understand database schemas, and make informed decisions about technical debt versus speed.
+                    Engineering teams will trust me because I&apos;ve shipped code alongside them. I understand API contracts, 
+                    database constraints, and the real cost of technical debt—which means I can write specs that are actually buildable.
                   </PortalCardDescription>
                   <p className="mt-6 text-[var(--text-primary)] font-medium text-lg">
-                    I&apos;m now applying this rigorous technical lens to product strategy, ensuring we build scalable solutions 
-                    that deliver real value.
+                    I&apos;m ready to bring this technical depth to a TPM role where I can drive product outcomes, not just deliver features.
                   </p>
                 </div>
               </div>
@@ -515,10 +518,10 @@ export default function Home() {
             
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
               {[
-                { text: "Architected payment integrations supporting 2M+ paid subscribers.", color: "var(--lum-neon-blue)" },
-                { text: "Established a reusable component library, accelerating feature delivery by ~30%.", color: "var(--lum-neon-purple)" },
-                { text: "Improved perceived performance via render profiling and request batching.", color: "var(--lum-neon-green)" },
-                { text: "Mentored peers and advocated for accessibility (WCAG).", color: "var(--lum-cotton-candy)" },
+                { text: "Drove payment integrations end-to-end, coordinating across 3 teams to support 2M+ paid subscribers.", color: "var(--lum-neon-blue)" },
+                { text: "Defined and shipped a reusable component library, accelerating team velocity by ~30%.", color: "var(--lum-neon-purple)" },
+                { text: "Led performance initiative: identified bottlenecks, prioritized fixes, measured 40% LCP improvement.", color: "var(--lum-neon-green)" },
+                { text: "Championed accessibility (WCAG) org-wide; mentored 5+ engineers on best practices.", color: "var(--lum-cotton-candy)" },
               ].map((item, i) => (
                 <motion.div 
                   key={i}
@@ -590,12 +593,14 @@ export default function Home() {
             
             <div className="flex flex-wrap gap-3">
               {[
-                "Technical Feasibility Analysis",
-                "API Design & Strategy",
-                "System Architecture Review",
-                "Data-Driven Roadmapping",
-                "Agile & Scrum Methodologies",
-                "Stakeholder Management"
+                "Cross-Functional Leadership",
+                "Technical Requirements & Specs",
+                "Roadmap Prioritization",
+                "Stakeholder Management",
+                "Risk Assessment & Mitigation",
+                "Agile & Scrum",
+                "Data-Driven Decision Making",
+                "API Design & Strategy"
               ].map((skill, i) => (
                 <motion.div
                   key={skill}
@@ -618,16 +623,15 @@ export default function Home() {
               <div className="p-3 rounded-2xl bg-[var(--chip-purple-bg)] text-[var(--chip-purple-text)]">
                 <Code2 className="h-6 w-6" />
               </div>
-              <h4 className="text-title-m text-[var(--text-primary)] font-bold">Engineering</h4>
+              <h4 className="text-title-m text-[var(--text-primary)] font-bold">Engineering Foundation</h4>
             </div>
             
             <div className="flex flex-wrap gap-3">
               {[
                 "React", "TypeScript", "Next.js",
-                "Material UI (MUI)", "Tailwind CSS",
-                "React Query", "React Hook Form",
-                "Node.js", "Express.js",
-                "Accessibility (WCAG)", "Performance Optimization"
+                "System Architecture", "API Design",
+                "Performance Optimization", "CI/CD Pipelines",
+                "Accessibility (WCAG)", "Technical Documentation"
               ].map((skill, i) => (
                 <motion.div
                   key={skill}
@@ -662,7 +666,7 @@ export default function Home() {
               <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--lum-neon-green)] to-[var(--lum-neon-cyan)] opacity-70" />
             </h3>
             <p className="text-body-l text-[var(--text-secondary)] max-w-xl">
-              Thoughts on engineering, product strategy, and the intersection of both.
+              Thoughts on product strategy, technical leadership, and delivering impact.
             </p>
           </motion.div>
           
@@ -760,7 +764,7 @@ export default function Home() {
               </motion.div>
               
               <p className="text-body-l text-[var(--text-secondary)] mb-10 max-w-lg mx-auto on-glass leading-relaxed">
-                I&apos;m currently open to Product Management roles where I can leverage my engineering background to build better products.
+                I&apos;m looking for my first Technical Product Manager role where I can leverage my engineering background to build better products.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-5">

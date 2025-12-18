@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Volume2, Play, Square } from "lucide-react";
+import { Volume2, Play, Square, Sparkles, Bell, Home, Sun, Moon, Check, X, ChevronRight, Zap } from "lucide-react";
+import { useSoundSystem } from "@/hooks/useSoundSystem";
 
 /**
  * SoundCompare — Compare different sound characteristics
@@ -53,6 +54,7 @@ function SoundButton({ label, description, playSound, color }: SoundButtonProps)
 }
 
 export function SoundCompare() {
+  const { playClick, playToggle, playSuccess } = useSoundSystem();
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const getContext = () => {
@@ -106,58 +108,6 @@ export function SoundCompare() {
     osc.stop(ctx.currentTime + 0.15);
   };
 
-  // With noise layer (premium example)
-  const playWithNoise = () => {
-    const ctx = getContext();
-    const now = ctx.currentTime;
-    
-    // Tone
-    const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-    
-    osc.type = "sine";
-    osc.frequency.value = 550;
-    osc.frequency.exponentialRampToValueAtTime(280, now + 0.1);
-    
-    filter.type = "lowpass";
-    filter.frequency.value = 1500;
-    
-    gain.gain.setValueAtTime(0.1, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-    
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    
-    // Noise burst
-    const bufferSize = ctx.sampleRate * 0.04;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.3;
-    }
-    
-    const noise = ctx.createBufferSource();
-    noise.buffer = buffer;
-    
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = "bandpass";
-    noiseFilter.frequency.value = 1000;
-    
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.06, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-    
-    noise.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-    
-    osc.start(now);
-    osc.stop(now + 0.15);
-    noise.start(now);
-  };
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
       <SoundButton
@@ -173,9 +123,9 @@ export function SoundCompare() {
         color="bg-amber-500"
       />
       <SoundButton
-        label="Layered (Best)"
-        description="Filtered + noise texture"
-        playSound={playWithNoise}
+        label="OS-Quality (Best)"
+        description="Multi-layer + reverb"
+        playSound={playClick}
         color="bg-emerald-500"
       />
     </div>
@@ -183,155 +133,81 @@ export function SoundCompare() {
 }
 
 /**
- * SoundPalette — Different UI sounds demo
+ * SoundPalette — Different UI sounds demo using the new sound engine
  */
 export function SoundPalette() {
-  const audioContextRef = useRef<AudioContext | null>(null);
+  const { 
+    playClick, 
+    playToggle, 
+    playSuccess, 
+    playError, 
+    playHover,
+    playOpen,
+    playClose,
+    playNavigate,
+    playSelect,
+    playThud,
+    playChime,
+    playNotification,
+    playLightMode,
+    playDarkMode,
+    playHome,
+  } = useSoundSystem();
 
-  const getContext = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContext();
-    }
-    return audioContextRef.current;
-  };
-
-  const playClick = useCallback(() => {
-    const ctx = getContext();
-    const now = ctx.currentTime;
+  const sounds = [
+    // Primary interactions
+    { label: "Click", icon: Zap, play: () => playClick(), color: "bg-zinc-600", description: "Tactile button press" },
+    { label: "Hover", icon: Sparkles, play: playHover, color: "bg-violet-500", description: "Soft interaction hint" },
+    { label: "Select", icon: Check, play: playSelect, color: "bg-cyan-500", description: "Confirm selection" },
+    { label: "Toggle", icon: Check, play: playToggle, color: "bg-emerald-500", description: "Switch state change" },
     
-    const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
+    // Navigation
+    { label: "Navigate", icon: ChevronRight, play: playNavigate, color: "bg-blue-500", description: "Page transition" },
+    { label: "Open", icon: ChevronRight, play: playOpen, color: "bg-indigo-500", description: "Expand/reveal" },
+    { label: "Close", icon: X, play: playClose, color: "bg-slate-500", description: "Collapse/dismiss" },
+    { label: "Home", icon: Home, play: playHome, color: "bg-amber-500", description: "Return home" },
     
-    osc.frequency.value = 500;
-    osc.frequency.exponentialRampToValueAtTime(250, now + 0.1);
-    filter.type = "lowpass";
-    filter.frequency.value = 1500;
-    gain.gain.setValueAtTime(0.1, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    // Feedback
+    { label: "Success", icon: Sparkles, play: playSuccess, color: "bg-green-500", description: "Action completed" },
+    { label: "Error", icon: X, play: playError, color: "bg-red-500", description: "Something went wrong" },
+    { label: "Notification", icon: Bell, play: playNotification, color: "bg-pink-500", description: "New alert" },
+    { label: "Chime", icon: Bell, play: playChime, color: "bg-purple-500", description: "Attention getter" },
     
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.12);
-  }, []);
-
-  const playToggleOn = useCallback(() => {
-    const ctx = getContext();
-    const now = ctx.currentTime;
+    // Theme
+    { label: "Light Mode", icon: Sun, play: playLightMode, color: "bg-yellow-500", description: "Switch to light" },
+    { label: "Dark Mode", icon: Moon, play: playDarkMode, color: "bg-slate-700", description: "Switch to dark" },
     
-    const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-    
-    osc.frequency.value = 400;
-    osc.frequency.exponentialRampToValueAtTime(800, now + 0.12);
-    filter.type = "lowpass";
-    filter.frequency.value = 2000;
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-    
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.15);
-  }, []);
-
-  const playToggleOff = useCallback(() => {
-    const ctx = getContext();
-    const now = ctx.currentTime;
-    
-    const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-    
-    osc.frequency.value = 600;
-    osc.frequency.exponentialRampToValueAtTime(300, now + 0.12);
-    filter.type = "lowpass";
-    filter.frequency.value = 1500;
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-    
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.15);
-  }, []);
-
-  const playSuccess = useCallback(() => {
-    const ctx = getContext();
-    const now = ctx.currentTime;
-    
-    // Two-note chord
-    [523.25, 659.25].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const filter = ctx.createBiquadFilter();
-      const gain = ctx.createGain();
-      
-      osc.frequency.value = freq;
-      filter.type = "lowpass";
-      filter.frequency.value = 2000;
-      gain.gain.setValueAtTime(0.06, now + i * 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3 + i * 0.05);
-      
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now + i * 0.05);
-      osc.stop(now + 0.3 + i * 0.05);
-    });
-  }, []);
-
-  const playError = useCallback(() => {
-    const ctx = getContext();
-    const now = ctx.currentTime;
-    
-    const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-    
-    osc.type = "sine";
-    osc.frequency.value = 180;
-    filter.type = "lowpass";
-    filter.frequency.value = 400;
-    gain.gain.setValueAtTime(0.1, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-    
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.2);
-  }, []);
+    // Effects
+    { label: "Thud", icon: Zap, play: playThud, color: "bg-orange-600", description: "Heavy impact" },
+  ];
 
   return (
-    <div className="flex flex-wrap justify-center gap-2">
-      {/* eslint-disable-next-line react-hooks/refs */}
-      {[
-        { label: "Click", icon: "👆", play: playClick, color: "bg-zinc-600" },
-        { label: "Toggle On", icon: "✓", play: playToggleOn, color: "bg-emerald-500" },
-        { label: "Toggle Off", icon: "✗", play: playToggleOff, color: "bg-zinc-500" },
-        { label: "Success", icon: "🎉", play: playSuccess, color: "bg-cyan-500" },
-        { label: "Error", icon: "⚠", play: playError, color: "bg-red-500" },
-      ].map((sound) => (
-        <motion.button
-          key={sound.label}
-          onClick={sound.play}
-          className={cn(
-            "px-4 py-2 rounded-lg font-medium text-sm text-white",
-            sound.color
-          )}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        >
-          <span className="mr-1.5">{sound.icon}</span>
-          {sound.label}
-        </motion.button>
-      ))}
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      {sounds.map((sound) => {
+        const Icon = sound.icon;
+        return (
+          <motion.button
+            key={sound.label}
+            onClick={sound.play}
+            className={cn(
+              "flex flex-col items-center gap-2 p-3 rounded-xl",
+              "bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10",
+              "hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors"
+            )}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          >
+            <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", sound.color)}>
+              <Icon className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-center">
+              <p className="font-medium text-sm text-zinc-900 dark:text-white">{sound.label}</p>
+              <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight">{sound.description}</p>
+            </div>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }
