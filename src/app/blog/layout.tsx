@@ -7,8 +7,12 @@ export default function BlogLayout({
     <div className="relative min-h-screen w-full overflow-x-hidden bg-[var(--background)]">
       {/* Blog-specific ambient background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] rounded-full bg-[var(--lum-neon-purple)] opacity-[0.03] blur-[120px]" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[var(--lum-neon-blue)] opacity-[0.03] blur-[100px]" />
+        <div 
+          className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] rounded-full bg-[var(--lum-neon-purple)] opacity-[0.03] blur-[120px]" 
+        />
+        <div 
+          className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[var(--lum-neon-blue)] opacity-[0.03] blur-[100px]" 
+        />
       </div>
 
       {/* Subtle grid pattern */}

@@ -45,6 +45,8 @@ export function Header() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const hasAnimated = useRef(false);
+  const isAnimating = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [indicator, setIndicator] = useState({ x: 0, y: 0, w: 56, h: 56 });
   const indicatorRef = useRef({ x: 0, y: 0, w: 56, h: 56 });
@@ -72,6 +74,10 @@ export function Header() {
     // and reading from localStorage which is only available client-side
     requestAnimationFrame(() => {
       setMounted(true);
+      // Mark as animated after the animation completes
+      setTimeout(() => {
+        hasAnimated.current = true;
+      }, 800);
       const stored = localStorage.getItem(CONTRAST_KEY);
       const enabled = stored === "high";
       setHighContrast(enabled);
@@ -261,12 +267,21 @@ export function Header() {
   }, [playNavNote, playHome]);
 
   const handleSettingsToggle = useCallback(() => {
+    // Prevent rapid toggling which causes animation bugs
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+    
     if (settingsOpen) {
       playClose();
     } else {
       playOpen();
     }
     setSettingsOpen(!settingsOpen);
+    
+    // Release lock after animation completes
+    setTimeout(() => {
+      isAnimating.current = false;
+    }, 300);
   }, [playOpen, playClose, settingsOpen]);
 
   const handleThemeChange = useCallback((newTheme: string) => {
@@ -285,13 +300,13 @@ export function Header() {
   
   return (
     <motion.header
-      initial={{ y: 100, opacity: 0, scale: 0.8 }}
+      initial={hasAnimated.current ? false : { y: 100, opacity: 0, scale: 0.8 }}
       animate={{ y: 0, opacity: 1, scale: 1 }}
       transition={{ 
         type: "spring", 
         stiffness: 200, 
         damping: 20,
-        delay: 0.3 
+        delay: hasAnimated.current ? 0 : 0.3 
       }}
       className="fixed z-50 bottom-5 left-1/2 -translate-x-1/2 md:left-8 md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:translate-x-0 w-auto"
     >
@@ -307,7 +322,7 @@ export function Header() {
       />
 
       {/* Mobile Settings Panel - absolutely positioned above navbar */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {settingsOpen && (
           <motion.div
             data-settings-panel
@@ -315,10 +330,19 @@ export function Header() {
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={jellySpring}
+            transition={{
+              ...jellySpring,
+              opacity: { duration: 0.15 }
+            }}
             className="md:hidden absolute bottom-full left-0 right-0 mb-2 glass-2 glass-noise glass-noise-ghost rounded-2xl border border-[var(--glass-2-border)] shadow-lg overflow-hidden"
           >
-            <div className="px-3 py-3">
+            <motion.div 
+              className="px-3 py-3 overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.1 }}
+            >
               <div className="flex items-center justify-center gap-2">
                 {mounted && (
                   <>
@@ -372,7 +396,7 @@ export function Header() {
                   onClick={toggleContrast}
                 />
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -567,29 +591,26 @@ export function Header() {
         </motion.nav>
 
         {/* Settings Panel - Desktop only (horizontal expansion) */}
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="wait">
           {settingsOpen && (
             <motion.div
               data-settings-panel
               key="desktop-panel"
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "auto", opacity: 1 }}
+              animate={{ width: 185, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{
-                width: { type: "spring", stiffness: 500, damping: 35 },
+                width: { type: "spring", stiffness: 500, damping: 30 },
                 opacity: { duration: 0.15 },
               }}
               className="hidden md:block overflow-hidden origin-left rounded-r-[28px]"
             >
               <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ 
-                  duration: 0.2,
-                  delay: 0.05,
-                }}
-                className="py-3 px-4 min-w-[170px] border-l border-[var(--glass-2-border)]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ opacity: { duration: 0.1, delay: 0.05 } }}
+                className="py-3 px-4 w-[185px] border-l border-[var(--glass-2-border)]"
               >
                 {/* Theme Section */}
                 <div className="space-y-1.5">
@@ -674,7 +695,7 @@ export function Header() {
                   </span>
                   <SettingsOption
                     icon={Sparkles}
-                    label={highContrast ? "High Contrast" : "Normal"}
+                    label="High Contrast"
                     isActive={highContrast}
                     onClick={toggleContrast}
                   />
@@ -707,13 +728,13 @@ function SettingsOption({
       whileTap={{ scale: 0.96 }}
       className={cn(
         "relative flex items-center gap-2.5 w-full px-3 py-2 rounded-xl transition-colors overflow-hidden",
-        "text-sm font-medium",
+        "text-sm font-medium whitespace-nowrap",
         isActive 
           ? "bg-[var(--chip-primary-bg)] border border-[var(--chip-primary-border)] text-[var(--chip-primary-text)]"
           : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-1-fill)] border border-transparent"
       )}
     >
-      <Icon className="w-4 h-4" />
+      <Icon className="w-4 h-4 flex-shrink-0" />
       <span>{label}</span>
       {isActive && (
         <motion.div

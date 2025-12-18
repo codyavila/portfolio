@@ -16,20 +16,22 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.08,
+      delayChildren: 0.6,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 30, scale: 0.97 },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
       type: "spring" as const,
-      stiffness: 200,
-      damping: 20,
+      stiffness: 180,
+      damping: 18,
     },
   },
 };
@@ -90,13 +92,22 @@ export function BlogList({ posts }: BlogListProps) {
       {/* Header Section */}
       <div className="mb-12 md:mb-16 max-w-4xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ 
+            duration: 0.7,
+            delay: 0.1,
+            ease: [0.25, 0.46, 0.45, 0.94]
+          }}
         >
-          <span className="inline-block mb-4 px-3 py-1 rounded-full bg-[var(--glass-2-fill)] border border-[var(--glass-1-border)] text-xs font-mono text-[var(--lum-neon-purple)]">
+          <motion.span 
+            className="inline-block mb-4 px-3 py-1 rounded-full bg-[var(--glass-2-fill)] border border-[var(--glass-1-border)] text-xs font-mono text-[var(--lum-neon-purple)]"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+          >
             Engineering & Design
-          </span>
+          </motion.span>
           <h1 className="text-display-xl font-bold mb-6 text-[var(--text-primary)] tracking-tight">
             <motion.span
               className="inline-block origin-left"
@@ -134,17 +145,22 @@ export function BlogList({ posts }: BlogListProps) {
               Perspectives
             </motion.span>
           </h1>
-          <p className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+          <motion.p 
+            className="text-xl md:text-2xl text-[var(--text-secondary)] max-w-2xl leading-relaxed"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
             Deep dives into frontend architecture, product strategy, and the craft of building digital experiences.
-          </p>
+          </motion.p>
         </motion.div>
       </div>
 
       {/* Search and Filter Section */}
       <motion.div 
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.5, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
         className="mb-16 space-y-6"
       >
         {/* Search Bar */}
