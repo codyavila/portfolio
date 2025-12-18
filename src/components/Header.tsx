@@ -13,7 +13,7 @@ import { useSoundSystem } from "@/hooks/useSoundSystem";
 
 const navItems = [
   { name: "Home", href: "/", icon: Home, sectionId: null },
-  { name: "Projects", href: "/#projects", icon: FolderGit2, sectionId: "projects" },
+  { name: "Projects", href: "/projects", icon: FolderGit2, sectionId: null },
   { name: "About", href: "/#about", icon: User, sectionId: "about" },
   { name: "Process", href: "/#process", icon: Layers, sectionId: "process" },
   { name: "Experience", href: "/#experience", icon: Briefcase, sectionId: "experience" },

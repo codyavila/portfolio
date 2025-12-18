@@ -1,0 +1,77 @@
+---
+title: "Case Study: Email Campaign Management System"
+publishedAt: "2023-09-20"
+summary: "Building a multi-step wizard that simplified complex campaign setups, reducing user error and increasing successful launches."
+image: "/images/blog/email-campaign.jpg"
+tags: ["Case Study", "UX", "React", "Product"]
+---
+
+A multi-step wizard that simplified complex campaign setups, reducing user error and increasing successful launches.
+
+**Role:** Lead Frontend Engineer  
+**Timeline:** 3 Months  
+**Tech Stack:** React, React Query, TypeScript, Zod
+
+---
+
+## The Problem
+
+Users were struggling to configure email campaigns correctly. The existing interface was a monolithic form with poor validation, leading to:
+
+- **High configuration error rate** requiring support intervention
+- **"Black box" scheduling logic** that frustrated users
+- **Slow UI performance** due to unnecessary network requests
+
+The support team was overwhelmed, and users were abandoning campaign creation mid-flow.
+
+---
+
+## The Solution
+
+I led cross-functional discovery and defined the product requirements for a new **multi-step wizard** that guided users through the process, validating each step before proceeding.
+
+### Natural Language Scheduling
+
+Replaced complex cron-like selectors with a human-readable summary:
+
+> "Sends every Monday at 9:00 AM"
+
+This immediate feedback loop drastically reduced scheduling errors. Users could finally *see* what they were configuring without mental translation.
+
+### Granular Validation
+
+Leveraged React Hook Form and Zod to validate inputs in real-time:
+
+- Field-level validation with instant feedback
+- Step-level validation preventing progression with errors
+- Clear error messages in plain language
+
+### Optimistic Updates
+
+Used React Query to manage server state:
+
+- **Optimistic updates** for immediate UI feedback
+- **Request deduping** to cut network overhead
+- **Smart caching** to persist state across navigation
+
+---
+
+## The Results
+
+| Metric | Impact |
+|--------|--------|
+| Support Tickets | **30% reduction** in configuration-related issues |
+| Campaign Launches | Significant increase in successful launches |
+| User Feedback | Positive reception from editorial teams |
+
+The wizard pattern proved so successful it became the template for other complex configuration flows in the product.
+
+---
+
+## Key Learnings
+
+1. **Progressive disclosure wins** — Don't show everything at once. Guide users through complexity step by step.
+
+2. **Immediate feedback reduces anxiety** — Real-time validation and natural language summaries help users feel confident.
+
+3. **Invest in state management** — React Query's caching and optimistic updates made the UI feel instant despite network operations.

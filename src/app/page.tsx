@@ -178,7 +178,7 @@ export default function Home() {
 
       <SectionDivider variant="glow" />
 
-      {/* Featured Projects Section - New Addition */}
+      {/* Featured Projects Section */}
       <section id="projects" className="mb-20 sm:mb-32 scroll-mt-32 max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -192,74 +192,104 @@ export default function Home() {
             <span className="absolute -bottom-2 left-0 w-1/3 h-1 rounded-full bg-gradient-to-r from-[var(--neon-accent-start)] to-[var(--neon-accent-end)] opacity-70" />
           </h3>
           <p className="text-body-l text-[var(--text-secondary)] max-w-2xl">
-            Products I&apos;ve driven from concept to launch, balancing technical feasibility, stakeholder needs, and business impact.
+            Live projects I&apos;ve built and shipped—from this portfolio to enterprise-scale systems.
           </p>
         </motion.div>
 
         <BentoGrid className="grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Project 1 */}
-          <Link href="/projects/blox-nxt-cms-rebuild" className="group">
-            <motion.div layoutId="project-blox-nxt" className="h-full">
-              <PortalCard 
-                className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-primary-start)]" 
-                glow="solar-flare"
-                enableTilt={false}
-                enableIridescence={false}
-                enableChromatic={false}
-                enableShimmer={false}
-              >
-                <div className="flex flex-col h-full justify-between gap-6">
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)] border border-[var(--chip-primary-border)]">
-                        CMS Architecture
-                      </span>
-                      <span className="text-xs text-[var(--text-tertiary)]">2024</span>
-                    </div>
-                    <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-primary-end)] transition-colors">
-                      BLOX NXT CMS Rebuild
-                    </PortalCardTitle>
-                    <PortalCardDescription>
-                      Leading the architectural overhaul of a legacy CMS serving 2,000+ media sites. 
-                      Migrating from Angular.js to a modern React/Next.js ecosystem.
-                    </PortalCardDescription>
+          {/* Project 1 - This Portfolio */}
+          <motion.div className="h-full">
+            <PortalCard 
+              className="h-full p-8 transition-colors duration-300 hover:border-[var(--neon-primary-start)]" 
+              glow="cyber-lime"
+              enableTilt={false}
+              enableIridescence={false}
+              enableChromatic={false}
+              enableShimmer={false}
+            >
+              <div className="flex flex-col h-full justify-between gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-green-500/10 text-green-500 border border-green-500/20">
+                      ● Live
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)] border border-[var(--chip-primary-border)]">
+                      Next.js
+                    </span>
                   </div>
-                  <div className="flex items-center text-[var(--neon-primary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
-                    View Case Study <ArrowRight className="ml-2 w-4 h-4" />
-                  </div>
+                  <PortalCardTitle className="text-2xl mb-3">
+                    This Portfolio
+                  </PortalCardTitle>
+                  <PortalCardDescription>
+                    A creative portfolio featuring glassmorphism, WebGL shaders, procedural audio, and physics-based animations.
+                  </PortalCardDescription>
                 </div>
-              </PortalCard>
-            </motion.div>
-          </Link>
+                <div className="flex flex-wrap gap-2">
+                  <Link 
+                    href="/blog/building-portfolio"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)] border border-[var(--chip-primary-border)] hover:scale-105 active:scale-95 transition-all"
+                  >
+                    Case Study
+                  </Link>
+                </div>
+              </div>
+            </PortalCard>
+          </motion.div>
 
-          {/* Project 2 */}
-          <Link href="/projects/email-campaign-system" className="group">
-            <motion.div layoutId="project-email-system" className="h-full">
-              <PortalCard className="h-full p-8 transition-colors duration-300 group-hover:border-[var(--neon-secondary-start)]" glow="cotton-candy">
-                <div className="flex flex-col h-full justify-between gap-6">
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-secondary-bg)] text-[var(--chip-secondary-text)] border border-[var(--chip-secondary-border)]">
-                        System Design
-                      </span>
-                      <span className="text-xs text-[var(--text-tertiary)]">2023</span>
-                    </div>
-                    <PortalCardTitle className="text-2xl mb-3 group-hover:text-[var(--neon-secondary-end)] transition-colors">
-                      Email Campaign System
-                    </PortalCardTitle>
-                    <PortalCardDescription>
-                      Designing a high-throughput email delivery system capable of sending 50M+ emails daily. 
-                      Focused on deliverability, analytics, and template flexibility.
-                    </PortalCardDescription>
+          {/* Project 2 - BLOX CMS */}
+          <motion.div className="h-full">
+            <PortalCard 
+              className="h-full p-8 transition-colors duration-300 hover:border-[var(--neon-secondary-start)]" 
+              glow="solar-flare"
+              enableTilt={false}
+              enableIridescence={false}
+              enableChromatic={false}
+              enableShimmer={false}
+            >
+              <div className="flex flex-col h-full justify-between gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-green-500/10 text-green-500 border border-green-500/20">
+                      ● Live
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono bg-[var(--chip-secondary-bg)] text-[var(--chip-secondary-text)] border border-[var(--chip-secondary-border)]">
+                      Enterprise
+                    </span>
                   </div>
-                  <div className="flex items-center text-[var(--neon-secondary-end)] font-medium text-sm group-hover:translate-x-2 transition-transform">
-                    View Case Study <ArrowRight className="ml-2 w-4 h-4" />
-                  </div>
+                  <PortalCardTitle className="text-2xl mb-3">
+                    BLOX NXT CMS
+                  </PortalCardTitle>
+                  <PortalCardDescription>
+                    Enterprise CMS serving 2,000+ media organizations with 141M+ monthly users. Led frontend architecture and design system.
+                  </PortalCardDescription>
                 </div>
-              </PortalCard>
-            </motion.div>
-          </Link>
+                <div className="flex flex-wrap gap-2">
+                  <Link 
+                    href="/blog/case-study-blox-cms"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--glass-1-fill)] text-[var(--text-secondary)] border border-[var(--glass-1-border)] hover:text-[var(--text-primary)] hover:scale-105 active:scale-95 transition-all"
+                  >
+                    Case Study
+                  </Link>
+                </div>
+              </div>
+            </PortalCard>
+          </motion.div>
         </BentoGrid>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="mt-8 text-center"
+        >
+          <Link 
+            href="/projects"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            View all projects <ArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
       </section>
 
       <SectionDivider variant="gradient" />
