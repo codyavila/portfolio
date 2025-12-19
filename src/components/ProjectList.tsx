@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { PortalCard, PortalCardTitle, PortalCardDescription } from '@/components/ui/portal-card';
 import { KineticText } from '@/components/ui/kinetic-text';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Briefcase, Calendar, Code2, BarChart3, Layers, Target, ExternalLink, Github, FileText } from 'lucide-react';
+import { Search, X, Briefcase, Calendar, Code2, BarChart3, Layers, Target, ExternalLink, Github, FileText, Play } from 'lucide-react';
 import { Project, ProjectCategory } from '@/lib/projects';
 import { cn } from '@/lib/utils';
 
@@ -353,6 +353,19 @@ export function ProjectList({ projects }: ProjectListProps) {
 
                   {/* Links */}
                   <div className="flex flex-wrap gap-2 pt-2">
+                    {project.hasInteractivePage && (
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+                          "bg-[var(--chip-primary-bg)] text-[var(--chip-primary-text)] border border-[var(--chip-primary-border)]",
+                          "hover:scale-105 active:scale-95"
+                        )}
+                      >
+                        <Play className="w-3 h-3" />
+                        Try it
+                      </Link>
+                    )}
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}

@@ -163,9 +163,11 @@ const GlassCardComponent = ({
   }, [enableSpotlight, glowX, glowY, isMobile, interactive]);
 
   const handleClick = useCallback(() => {
-    playThud();
+    if (interactive) {
+      playThud();
+    }
     onClick?.();
-  }, [playThud, onClick]);
+  }, [playThud, onClick, interactive]);
 
   return (
     <motion.div

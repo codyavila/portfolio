@@ -16,11 +16,25 @@ export type Project = {
   liveUrl?: string;
   githubUrl?: string;
   caseStudySlug?: string; // Links to /blog/[slug]
+  hasInteractivePage?: boolean; // Has a page at /projects/[slug]
   status: 'live' | 'in-progress' | 'archived';
 };
 
 // Add your projects here
 export const projects: Project[] = [
+  {
+    slug: 'animation-playground',
+    title: 'Animation Playground',
+    summary: 'Interactive tool to experiment with spring physics. Tweak stiffness, damping, and mass to craft the perfect animation feel.',
+    year: '2025',
+    category: 'engineering',
+    tags: ['Interactive', 'Animation', 'Tool'],
+    role: 'Designer & Developer',
+    techStack: ['React', 'Framer Motion', 'TypeScript'],
+    hasInteractivePage: true,
+    status: 'live',
+    featured: true,
+  },
   {
     slug: 'portfolio',
     title: 'This Portfolio',
